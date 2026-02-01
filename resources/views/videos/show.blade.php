@@ -1,0 +1,258 @@
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-text leading-tight">
+                {{ $project->title ?? 'Video Project' }}
+            </h2>
+            <a href="{{ route('videos.index') }}" class="btn-secondary px-4 py-2">
+                ← Back to Videos
+            </a>
+        </div>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="card p-6">
+                {{-- Status Banner --}}
+                @if($project->status === 'scripting')
+                    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-yellow-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                                </circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            <div>
+                                <p class="font-bold text-yellow-500">Generating Script...</p>
+                                <p class="text-sm text-muted-text">AI is writing your video script. This may take a moment.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {{-- Status Banner with Progress Bar --}}
+                @elseif($project->status === 'generating')
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-6 mb-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <svg class="w-6 h-6 text-blue-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 0 002-2V8a2 0 00-2-2H5a2 0 00-2 2v8a2 0 002 2z"/>
+                            </svg>
+                            <div>
+                                <h3 class="font-bold text-blue-500">Generating Video...</h3>
+                                <p class="text-sm text-muted-text">Your video is being rendered.</p>
+                            </div>
+                        </div>
+
+                        {{-- Progress Bar --}}
+                        <div class="w-full bg-bg-2 rounded-full h-4 overflow-hidden relative">
+                            <div id="progress-bar" class="bg-blue-500 h-full rounded-full transition-all duration-300" style="width: 5%">
+                                <div class="absolute inset-0 bg-white/20 animate-shimmer" style="background-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent); background-size: 200% 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-2 text-xs text-muted-text font-mono">
+                            <span id="progress-text">Initializing...</span>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                    </div>
+                @elseif($project->status === 'completed')
+                    <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <div>
+                                <p class="font-bold text-green-500">Video Complete!</p>
+                                <p class="text-sm text-muted-text">Your video is ready to watch and download.</p>
+                            </div>
+                        </div>
+                    </div>
+                @elseif($project->status === 'failed')
+                    <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <div>
+                                <p class="font-bold text-red-500">Generation Failed</p>
+                                <p class="text-sm text-muted-text">Something went wrong. Please try again.</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Video Player Area --}}
+                {{-- Final/Stitched Video --}}
+                @if($project->video_url)
+                    <div class="card p-6 border-primary/20 bg-primary/5 mb-8">
+                        <h3 class="font-bold text-xl font-display text-text mb-4">
+                            {{ $project->scenes->count() > 0 ? 'Full Movie' : 'Generated Video' }}
+                        </h3>
+                        <div class="aspect-video bg-black rounded-lg overflow-hidden mb-6 shadow-lg">
+                            <video controls class="w-full h-full">
+                                <source src="{{ $project->video_url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="flex gap-4">
+                            <a href="{{ $project->video_url }}" download class="btn-primary w-full md:w-auto justify-center px-6 py-3 flex items-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                Download {{ $project->scenes->count() > 0 ? 'Full Movie' : 'Video' }}
+                            </a>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Individual Scenes List --}}
+                @if($project->scenes->count() > 0)
+                    {{-- Multi-Scene View --}}
+                    <div class="space-y-8 mb-8">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-xl font-display text-text">Scene Breakdown ({{ $project->scenes->count() }})</h3>
+                            <span class="badge bg-surface text-muted-text border-border">Individual Clips</span>
+                        </div>
+
+                        @foreach($project->scenes->sortBy('sequence_order') as $scene)
+                            <div class="card p-4 border border-border/50 bg-bg-2/30">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
+                                            {{ $scene->sequence_order }}
+                                        </span>
+                                        <p class="font-medium text-text text-sm line-clamp-1" title="{{ $scene->script_text }}">
+                                            {{ Str::limit($scene->script_text, 80) }}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        @if($scene->status === 'completed')
+                                            <span class="badge bg-green-500/10 text-green-500 border-green-500/20 text-xs">Ready</span>
+                                        @elseif($scene->status === 'failed')
+                                            <span class="badge bg-red-500/10 text-red-500 border-red-500/20 text-xs">Failed</span>
+                                        @else
+                                            <span class="badge bg-blue-500/10 text-blue-500 border-blue-500/20 text-xs animate-pulse">Generating...</span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                @if($scene->status === 'completed' && $scene->video_url)
+                                    <div class="aspect-video bg-black rounded-lg overflow-hidden relative group">
+                                        <video controls class="w-full h-full" preload="metadata">
+                                            <source src="{{ $scene->video_url }}" type="video/mp4">
+                                        </video>
+                                        <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <a href="{{ $scene->video_url }}" download class="btn btn-sm bg-black/50 text-white backdrop-blur hover:bg-black/70">
+                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @elseif($scene->status === 'failed')
+                                    <div class="aspect-video bg-red-500/5 rounded-lg flex items-center justify-center border border-red-500/10">
+                                        <div class="text-center p-4">
+                                            <svg class="w-8 h-8 text-red-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                            <p class="text-xs text-red-400 font-medium">Generation Failed</p>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="aspect-video bg-surface rounded-lg flex flex-col items-center justify-center border border-dashed border-border">
+                                        <svg class="w-8 h-8 text-primary animate-spin mb-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        <p class="text-xs text-muted-text font-medium animate-pulse">Rendering Scene...</p>
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- Project Details --}}
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="text-sm font-bold text-muted-text uppercase tracking-wide mb-1">Prompt</h4>
+                        <p class="text-text">{{ $project->prompt }}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="text-sm font-bold text-muted-text uppercase tracking-wide mb-1">Visual Style</h4>
+                            <p class="text-text capitalize">{{ $project->visual_style }}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-muted-text uppercase tracking-wide mb-1">Model</h4>
+                            <p class="text-text capitalize">{{ $project->model_provider }}</p>
+                        </div>
+                    </div>
+                    @if($project->script_content)
+                        <div>
+                            <h4 class="text-sm font-bold text-muted-text uppercase tracking-wide mb-1">Generated Script</h4>
+                            <div class="bg-bg-2 rounded-lg p-4 text-sm text-text whitespace-pre-wrap">
+                                {{ $project->script_content }}</div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if($project->status === 'generating' || $project->status === 'scripting')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const pollInterval = setInterval(checkStatus, 5000); // Poll every 5 seconds
+                const progressBar = document.getElementById('progress-bar');
+                const progressText = document.getElementById('progress-text');
+                const progressPercent = document.getElementById('progress-percent');
+                
+                // Simulated progress state
+                let simulatedProgress = 5;
+                const maxSimulated = 90;
+                const duration = 120; // Approx 2 minutes total
+                const increment = (maxSimulated - simulatedProgress) / (duration / 5); // Increment per 5s
+
+                function checkStatus() {
+                    // Update simulated progress locally first
+                    if (simulatedProgress < maxSimulated) {
+                        simulatedProgress += increment;
+                        updateUI(Math.floor(simulatedProgress), "Generating frames...");
+                    }
+
+                    fetch('{{ route('videos.check-status', $project) }}')
+                        .then(response => response.json())
+                        .then(data => {
+                            // Check for percentage in logs (e.g "30%")
+                            let logPercent = 0;
+                            if (data.logs) {
+                                const match = data.logs.match(/(\d+)%/);
+                                if (match) {
+                                    logPercent = parseInt(match[1]); // Changed intval to parseInt
+                                    if (logPercent > simulatedProgress) {
+                                        simulatedProgress = logPercent; // Sync simulation to real data
+                                    }
+                                }
+                            }
+                            
+                            // Update UI with best guess
+                            updateUI(Math.floor(simulatedProgress), data.logs ? "Processing..." : "Generating frames...");
+
+                            if (data.status === 'completed') {
+                                updateUI(100, "Finalizing...");
+                                clearInterval(pollInterval);
+                                setTimeout(() => window.location.reload(), 1000);
+                            } else if (data.status === 'failed') {
+                                clearInterval(pollInterval);
+                                window.location.reload();
+                            }
+                        })
+                        .catch(error => console.error('Error polling status:', error));
+                }
+                
+                function updateUI(percent, text) {
+                    if (progressBar) progressBar.style.width = percent + '%';
+                    if (progressPercent) progressPercent.innerText = percent + '%';
+                    if (progressText && text) progressText.innerText = text;
+                }
+            });
+        </script>
+    @endif
+</x-app-layout>

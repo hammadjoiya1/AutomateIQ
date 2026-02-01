@@ -35,4 +35,20 @@ return [
         ],
     ],
 
+    'openai' => [
+        'api_key' => env('FACELESS_OPENAI_KEY', env('OPENAI_API_KEY')),
+        'organization' => env('OPENAI_ORGANIZATION'),
+        'model' => env('OPENAI_MODEL', 'gpt-4'),
+        'fallback_model' => env('OPENAI_FALLBACK_MODEL', 'gpt-4o-mini'),
+    ],
+
+    'replicate' => [
+        'api_token' => env('REPLICATE_API_TOKEN'),
+    ],
+
+    'webhooks' => [
+        'tool_run' => env('TOOL_RUN_WEBHOOK_URL'),
+        'slack' => env('SLACK_WEBHOOK_URL'),
+    ],
+
 ];

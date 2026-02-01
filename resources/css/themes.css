@@ -1,0 +1,311 @@
+/*
+   PREMIUM THEMES SYSTEM v2.0
+   Enhanced with rich gradients, sophisticated shadows, and premium polish
+*/
+
+/* --- LIGHT THEME (High Contrast Premium) --- */
+:root,
+[data-theme="light"] {
+    /* Backgrounds - Clean whites with subtle depth */
+    --bg: #FFFFFF;
+    --bg-2: #F8FAFC;
+    --card: #FFFFFF;
+    --surface: rgba(248, 250, 252, 0.9);
+
+    /* Brand Colors - Vibrant, high contrast */
+    --primary: #5B21B6;
+    /* Deep vibrant purple */
+    --primary-hover: #6D28D9;
+    --primary-rgb: 91, 33, 182;
+    --primary-light: #7C3AED;
+    --primary-dark: #4C1D95;
+
+    --secondary: #F1F5F9;
+    --secondary-hover: #E2E8F0;
+
+    --accent: #EC4899;
+    /* Hot pink for pop */
+    --accent-light: #F472B6;
+    --accent-dark: #DB2777;
+
+    --danger: #DC2626;
+    /* Deeper red */
+    --success: #059669;
+    /* Deeper green */
+    --warning: #D97706;
+    /* Deeper orange */
+    --info: #2563EB;
+
+    /* Advanced Shadow System - DRAMATIC 4 layers */
+    --shadow-sm:
+        0 2px 4px 0 rgba(0, 0, 0, 0.08);
+
+    --shadow:
+        0 2px 6px 0 rgba(0, 0, 0, 0.10),
+        0 8px 16px 0 rgba(0, 0, 0, 0.12),
+        0 16px 32px 0 rgba(91, 33, 182, 0.20);
+
+    --shadow-lg:
+        0 4px 12px 0 rgba(0, 0, 0, 0.12),
+        0 12px 24px 0 rgba(0, 0, 0, 0.15),
+        0 24px 48px 0 rgba(91, 33, 182, 0.25),
+        0 48px 96px 0 rgba(91, 33, 182, 0.20);
+
+    --shadow-xl:
+        0 8px 20px 0 rgba(0, 0, 0, 0.15),
+        0 20px 40px 0 rgba(0, 0, 0, 0.18),
+        0 40px 80px 0 rgba(91, 33, 182, 0.30),
+        0 80px 160px 0 rgba(91, 33, 182, 0.25);
+
+    --shadow-color: 91 33 182;
+
+    /* Gradient Definitions - More vibrant */
+    --gradient-primary: linear-gradient(135deg, #5B21B6 0%, #7C3AED 50%, #EC4899 100%);
+    --gradient-accent: linear-gradient(135deg, #EC4899 0%, #F472B6 100%);
+    --gradient-mesh:
+        radial-gradient(at 20% 30%, rgba(91, 33, 182, 0.20), transparent 70%),
+        radial-gradient(at 80% 70%, rgba(236, 72, 153, 0.15), transparent 70%),
+        radial-gradient(at 50% 50%, rgba(124, 58, 237, 0.12), transparent 80%);
+
+    /* UI Elements - High contrast */
+    --input-bg: #FFFFFF;
+    --input-text: #111827;
+    --placeholder: #6B7280;
+    --focus-ring: #5B21B6;
+
+    /* Text - Very high contrast */
+    --text: #111827;
+    /* Almost black */
+    --text-secondary: #374151;
+    /* Dark gray */
+    --muted-text: #6B7280;
+    /* Medium gray */
+    --border: #D1D5DB;
+    /* Visible gray */
+    --border-light: #E5E7EB;
+}
+
+/* --- DARK THEME (Premium Deep) --- */
+[data-theme="dark"] {
+    /* Backgrounds - Professional Deep Slate SaaS */
+    --bg: #0B1121;
+    /* Deep Slate/Navy background */
+    --bg-2: #151F32;
+    /* Lighter Slate */
+    --card: #1E293B;
+    /* Slate 800 - Classic Pro Card */
+    --surface: rgba(30, 41, 59, 0.7);
+    /* Glassy Slate */
+
+    /* Brand Colors - Sharp & Professional */
+    --primary: #6366F1;
+    /* Indigo-500 */
+    --primary-hover: #4F46E5;
+    /* Indigo-600 */
+    --primary-rgb: 99, 102, 241;
+    --primary-light: #818CF8;
+    --primary-dark: #4338CA;
+
+    --secondary: #334155;
+    /* Slate-700 */
+    --secondary-hover: #475569;
+    /* Slate-600 */
+
+    --accent: #8B5CF6;
+    /* Violet */
+    --accent-light: #A78BFA;
+    --accent-dark: #7C3AED;
+
+    --danger: #F43F5E;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --info: #3B82F6;
+
+    /* Pro Shadow System - Deep & Clean (No Neon Haze) */
+    --shadow-sm:
+        0 1px 2px 0 rgba(0, 0, 0, 0.3);
+
+    --shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.3),
+        0 2px 4px -1px rgba(0, 0, 0, 0.15);
+
+    --shadow-lg:
+        0 10px 15px -3px rgba(0, 0, 0, 0.4),
+        0 4px 6px -2px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    /* Subtle rim light */
+
+    --shadow-xl:
+        0 20px 25px -5px rgba(0, 0, 0, 0.5),
+        0 10px 10px -5px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+
+    --shadow-color: 0 0 0;
+    /* Clean black shadows */
+
+    /* Gradients - Subtle & Refined */
+    --gradient-primary: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
+    --gradient-accent: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%);
+    --gradient-mesh:
+        radial-gradient(at top right, rgba(99, 102, 241, 0.15), transparent 50%),
+        radial-gradient(at bottom left, rgba(139, 92, 246, 0.15), transparent 50%);
+
+    /* Inputs - Clean Slate */
+    --input-bg: #0F172A;
+    /* Slate 900 */
+    --input-text: #F1F5F9;
+    --placeholder: #64748B;
+    --focus-ring: #6366F1;
+
+    /* Text - High Legibility */
+    --text: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --muted-text: #94A3B8;
+    --border: #334155;
+    /* Slate 700 */
+    --border-light: #475569;
+}
+
+/* --- NEON CYBER THEME --- */
+[data-theme="neon"] {
+    --bg: #0A0118;
+    /* Deep purple-black */
+    --bg-2: #1A0B2E;
+    --card: #16001E;
+    --surface: rgba(22, 0, 30, 0.8);
+
+    /* Electric Colors */
+    --primary: #DD00FF;
+    /* Bright magenta */
+    --primary-hover: #FF00FF;
+    --primary-rgb: 221, 0, 255;
+    --primary-light: #FF40FF;
+    --primary-dark: #BB00DD;
+
+    --secondary: #2D1250;
+    --secondary-hover: #3D1860;
+
+    --accent: #00FFFF;
+    /* Cyan */
+    --accent-light: #40FFFF;
+    --accent-dark: #00DDDD;
+
+    --danger: #FF0055;
+    --success: #00FF94;
+    --warning: #FFD500;
+    --info: #0099FF;
+
+    /* Neon Glows */
+    --shadow-sm:
+        0 0 4px rgba(221, 0, 255, 0.5);
+
+    --shadow:
+        0 0 8px rgba(221, 0, 255, 0.6),
+        0 4px 16px rgba(221, 0, 255, 0.4),
+        0 8px 32px rgba(0, 255, 255, 0.3);
+
+    --shadow-lg:
+        0 0 12px rgba(221, 0, 255, 0.7),
+        0 8px 24px rgba(221, 0, 255, 0.5),
+        0 16px 48px rgba(0, 255, 255, 0.4),
+        0 24px 64px rgba(221, 0, 255, 0.3);
+
+    --shadow-xl:
+        0 0 16px rgba(221, 0, 255, 0.8),
+        0 12px 32px rgba(221, 0, 255, 0.6),
+        0 24px 64px rgba(0, 255, 255, 0.5),
+        0 48px 96px rgba(221, 0, 255, 0.4);
+
+    --shadow-color: 221 0 255;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #DD00FF 0%, #FF00FF 50%, #FF40FF 100%);
+    --gradient-accent: linear-gradient(135deg, #00FFFF 0%, #40FFFF 100%);
+    --gradient-mesh:
+        radial-gradient(at 20% 30%, rgba(221, 0, 255, 0.3), transparent 70%),
+        radial-gradient(at 80% 70%, rgba(0, 255, 255, 0.25), transparent 70%),
+        radial-gradient(at 50% 50%, rgba(255, 0, 255, 0.15), transparent 80%);
+
+    --input-bg: #16001E;
+    --input-text: #F5F5F5;
+    --placeholder: #9CA3AF;
+    --focus-ring: #DD00FF;
+
+    --text: #FFFFFF;
+    --text-secondary: #E5E7EB;
+    --muted-text: rgba(255, 255, 255, 0.7);
+    --border: rgba(221, 0, 255, 0.3);
+    --border-light: rgba(221, 0, 255, 0.2);
+}
+
+/* --- LUXURY GOLD THEME --- */
+[data-theme="luxury"] {
+    --bg: #000000;
+    /* True black */
+    --bg-2: #0A0A0A;
+    --card: #1A1A1A;
+    --surface: rgba(26, 26, 26, 0.8);
+
+    /* Rich Gold Palette */
+    --primary: #FFD700;
+    /* Rich gold */
+    --primary-hover: #FFC400;
+    --primary-rgb: 255, 215, 0;
+    --primary-light: #FFE55C;
+    --primary-dark: #E6C200;
+
+    --secondary: #1A1A1A;
+    --secondary-hover: #2A2A2A;
+
+    --accent: #C9A55C;
+    /* Warm bronze */
+    --accent-light: #D4AF37;
+    --accent-dark: #B8952D;
+
+    --danger: #FF6B6B;
+    --success: #51CF66;
+    --warning: #FFC078;
+    --info: #74C0FC;
+
+    /* Gold Glow Shadows */
+    --shadow-sm:
+        0 1px 2px 0 rgba(0, 0, 0, 0.6);
+
+    --shadow:
+        0 2px 8px 0 rgba(0, 0, 0, 0.5),
+        0 8px 16px 0 rgba(0, 0, 0, 0.6),
+        0 16px 32px 0 rgba(255, 215, 0, 0.15);
+
+    --shadow-lg:
+        0 4px 12px 0 rgba(0, 0, 0, 0.6),
+        0 12px 24px 0 rgba(0, 0, 0, 0.7),
+        0 24px 48px 0 rgba(255, 215, 0, 0.20),
+        0 48px 96px 0 rgba(255, 215, 0, 0.15);
+
+    --shadow-xl:
+        0 8px 16px 0 rgba(0, 0, 0, 0.7),
+        0 16px 32px 0 rgba(0, 0, 0, 0.8),
+        0 32px 64px 0 rgba(255, 215, 0, 0.25),
+        0 64px 128px 0 rgba(255, 215, 0, 0.20);
+
+    --shadow-color: 255 215 0;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #FFD700 0%, #FFC400 50%, #FFE55C 100%);
+    --gradient-accent: linear-gradient(135deg, #C9A55C 0%, #D4AF37 100%);
+    --gradient-mesh:
+        radial-gradient(at 20% 30%, rgba(255, 215, 0, 0.2), transparent 70%),
+        radial-gradient(at 80% 70%, rgba(201, 165, 92, 0.15), transparent 70%),
+        radial-gradient(at 50% 50%, rgba(212, 175, 55, 0.1), transparent 80%);
+
+    --input-bg: #1A1A1A;
+    --input-text: #F5F5F5;
+    --placeholder: #9CA3AF;
+    --focus-ring: #FFD700;
+
+    --text: #F9F9F9;
+    --text-secondary: #E5E7EB;
+    --muted-text: rgba(255, 255, 255, 0.7);
+    --border: rgba(255, 215, 0, 0.25);
+    --border-light: rgba(255, 215, 0, 0.15);
+}
