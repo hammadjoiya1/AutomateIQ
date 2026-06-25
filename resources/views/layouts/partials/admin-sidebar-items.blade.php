@@ -77,6 +77,15 @@
     Profitability
 </a>
 
+<a href="{{ route('admin.credits.index') }}"
+    class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-colors {{ request()->routeIs('admin.credits.*') ? 'bg-primary/10 text-primary' : 'text-text-muted hover:text-text hover:bg-surface' }}">
+    <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 3v18m9-9H3" />
+    </svg>
+    Credit Packs
+</a>
+
 <a href="{{ route('admin.logs.index') }}"
     class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-colors {{ request()->routeIs('admin.logs.*') ? 'bg-primary/10 text-primary' : 'text-text-muted hover:text-text hover:bg-surface' }}">
     <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

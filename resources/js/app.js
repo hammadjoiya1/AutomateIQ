@@ -1,8 +1,12 @@
 import './bootstrap';
 
 import Alpine from 'alpinejs';
+import * as Turbo from '@hotwired/turbo';
 
 window.Alpine = Alpine;
+window.Turbo = Turbo;
+
+Turbo.setProgressBarDelay(150);
 
 Alpine.start();
 
@@ -14,7 +18,7 @@ function trackEvent(event, payload = {}) {
 }
 window.trackEvent = trackEvent;
 
-document.addEventListener('DOMContentLoaded', () => {
+function initPage() {
     trackEvent('page_view', { path: window.location.pathname });
 
     document.querySelectorAll('[data-analytics-event]').forEach((el) => {
@@ -72,25 +76,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pick?.className) el.className = pick.className;
         trackEvent('ab_test', { id: el.getAttribute('data-abtest'), variant: pick?.id });
     });
-});
 
-// Scroll Animation Observer
-const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.1
-};
+    // Scroll Animation Observer
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
 
-const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            observer.unobserve(entry.target); // Only animate once
-        }
-    });
-}, observerOptions);
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target); // Only animate once
+            }
+        });
+    }, observerOptions);
 
-document.addEventListener('DOMContentLoaded', () => {
     const revealedElements = document.querySelectorAll('.reveal');
     revealedElements.forEach(el => observer.observe(el));
 
@@ -125,6 +127,25 @@ document.addEventListener('DOMContentLoaded', () => {
     import('./wow-effects').then(module => {
         module.initWowEffects();
     }).catch(e => console.warn('Wow effects not loaded:', e));
+}
+
+document.addEventListener('turbo:load', () => {
+    Alpine.initTree(document.body);
+    initPage();
+});
+
+document.addEventListener('turbo:before-cache', () => {
+    Alpine.destroyTree(document.body);
+});
+
+document.addEventListener('turbo:visit', () => {
+    document.body.classList.add('turbo-loading');
+});
+
+document.addEventListener('turbo:render', () => {
+    document.body.classList.remove('turbo-loading');
+    document.body.classList.add('turbo-loaded');
+    setTimeout(() => document.body.classList.remove('turbo-loaded'), 250);
 });
 
 // Custom Cursor (works on all pages)

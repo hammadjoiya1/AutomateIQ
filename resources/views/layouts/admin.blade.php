@@ -54,9 +54,19 @@
                     </div>
                     <div
                         class="flex grow flex-col gap-y-5 overflow-y-auto glass-panel border-r border-white/5 px-6 pb-4">
-                        <div class="flex h-16 shrink-0 items-center gap-2">
-                            <x-application-logo class="h-8 w-auto text-primary" />
-                            <span class="font-display font-bold text-xl text-text">Admin Panel</span>
+                        <div class="flex h-16 shrink-0 items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <x-application-logo class="h-8 w-auto text-primary" />
+                                <span class="font-display font-bold text-xl text-text">Admin Panel</span>
+                            </div>
+                            <button type="button" @click="sidebarOpen = false"
+                                class="p-2 rounded-md text-text hover:text-primary hover:bg-surface/60 transition">
+                                <span class="sr-only">Close sidebar</span>
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
                         </div>
                         <nav class="flex flex-1 flex-col">
                             @include('layouts.partials.admin-sidebar-items')
@@ -108,11 +118,13 @@
 
             <main class="py-10">
                 <div class="px-4 sm:px-6 lg:px-8">
+                    <x-flash-alerts />
                     {{ $slot }}
                 </div>
             </main>
         </div>
     </div>
+    <x-confirm-dialog />
 </body>
 
 </html>

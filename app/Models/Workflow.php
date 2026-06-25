@@ -24,4 +24,9 @@ class Workflow extends Model
     {
         return $this->hasMany(WorkflowStep::class);
     }
+
+    public function runs()
+    {
+        return $this->hasMany(WorkflowRun::class);
+    }
 }

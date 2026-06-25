@@ -26,7 +26,7 @@
                         </form>
                     @endif
                     <form action="{{ route('admin.messages.destroy', $message) }}" method="POST"
-                        onsubmit="return confirm('Delete message?');">
+                        x-data @submit.prevent="$dispatch('confirm', { message: 'Delete message?', form: $el })">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="text-red-500 hover:text-red-400 text-sm font-medium">Delete</button>

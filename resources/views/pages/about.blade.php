@@ -8,7 +8,7 @@
                     without showing their face.
                 </p>
                 <p class="mt-4 text-text/70">
-                    Founded in 2024, Faceless AI Toolkit provides a suite of tools designed specifically for the unique
+                    Founded in 2024, AutomateIQ provides a suite of tools designed specifically for the unique
                     needs of "faceless" channels on YouTube, TikTok, and Instagram. Our mission is to democratize
                     content creation through automation.
                 </p>

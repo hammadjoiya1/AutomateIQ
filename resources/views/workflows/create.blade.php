@@ -7,14 +7,18 @@
                 'slug' => $tool->slug,
             ];
         })->values();
+
+        $initialSteps = old('steps', isset($steps) ? $steps->toArray() : [['tool_id' => '', 'input' => '']]);
+        $isEdit = isset($workflow);
     @endphp
-    <div class="py-12" x-data="workflowBuilder()">
+    <div class="py-12" x-data="workflowBuilder(@js($initialSteps))">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="card animate-fade-in-up">
                 <div class="p-8">
                     <div class="flex items-center justify-between mb-8">
                         <div>
-                            <h2 class="font-display font-bold text-3xl text-text leading-tight mb-2">Create New Workflow
+                            <h2 class="font-display font-bold text-3xl text-text leading-tight mb-2">
+                                {{ $isEdit ? 'Edit Workflow' : 'Create New Workflow' }}
                             </h2>
                             <p class="text-text-muted">Automate your content creation by defining a series of steps.</p>
                         </div>
@@ -27,15 +31,19 @@
                         </div>
                     </div>
 
-                    <form method="POST" action="{{ route('workflows.store') }}">
+                    <form method="POST"
+                        action="{{ $isEdit ? route('workflows.update', $workflow) : route('workflows.store') }}">
                         @csrf
+                        @if($isEdit)
+                            @method('PUT')
+                        @endif
 
                         <!-- Basic Info -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                             <div class="floating-label group relative">
                                 <input type="text" name="name" id="name" required
                                     class="w-full rounded-xl border border-primary/20 bg-background text-text focus:border-primary focus:ring-0 px-4 py-3 transition-colors peer placeholder-transparent"
-                                    placeholder=" ">
+                                    placeholder=" " value="{{ old('name', $workflow->name ?? '') }}">
                                 <label for="name"
                                     class="absolute left-4 -top-3 text-xs font-bold text-primary px-2 bg-background transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:text-text-muted peer-focus:-top-3 peer-focus:text-xs peer-focus:font-bold peer-focus:text-primary pointer-events-none"
                                     style="z-index: 10;">Workflow
@@ -48,7 +56,7 @@
         'daily' => 'Daily (Midnight)',
         'weekly' => 'Weekly',
         'hourly' => 'Hourly',
-    ]"
+    ]" :value="old('schedule', $workflow->schedule ?? '')"
                                     class="w-full" />
                             </div>
                         </div>
@@ -75,129 +83,90 @@
                             </div>
                         </div>
 
-                        <!-- Steps Builder -->
-                        <div class="space-y-6 mb-8">
-                            <template x-for="(step, index) in steps" :key="index">
-                                <div
-                                    class="card card-hover border-2 border-primary/10 p-6 relative group transition-all duration-300 hover:border-primary/30">
-                                    <div class="absolute -left-3 top-6 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold shadow-lg ring-4 ring-background z-10"
-                                        x-text="index + 1"></div>
+                        <!-- Steps Builder (n8n‑style) -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                            <!-- Canvas -->
+                            <div class="lg:col-span-2">
+                                <div class="relative rounded-2xl border border-primary/10 bg-surface/40 p-6 min-h-[420px] overflow-hidden">
+                                    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.25),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(56,189,248,0.25),transparent_40%)]"></div>
 
-                                    <div class="absolute top-4 right-4 transition-opacity">
-                                        <button type="button" @click="removeStep(index)"
-                                            class="p-2 rounded-lg text-danger hover:bg-danger/10 transition-colors"
-                                            title="Remove Step">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                </path>
-                                            </svg>
-                                        </button>
-                                    </div>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 ml-4">
-                                        <div class="relative z-20">
-                                            <!-- Tool Select -->
-                                            <div class="relative mb-1">
-                                                <!-- Alpine/Blade component bridging: 
-                                                     We need to recreate the select logic because x-model inside blade components can be tricky.
-                                                     However, for simplicity, we will use the custom select but manually bind x-model to the hidden input
-                                                -->
-                                                <div x-data="{
-                                                    open: false,
-                                                    selected: step.tool_id,
-                                                    label: '',
-                                                    options: [
-                                                        {value: '', label: 'Choose a tool...'},
-                                                        @foreach($tools as $tool)
-                                                            {value: '{{ $tool->id }}', label: '{{ $tool->name }}'}, 
-                                                        @endforeach
-                                                    ],
-                                                    init() {
-                                                        const found = this.options.find(o => o.value == this.selected);
-                                                        this.label = found ? found.label : '';
-                                                        
-                                                        // Watch for external changes (like initial load)
-                                                        this.$watch('step.tool_id', (val) => {
-                                                            this.selected = val;
-                                                            const found = this.options.find(o => o.value == val);
-                                                            this.label = found ? found.label : '';
-                                                        });
-                                                    },
-                                                    select(option) {
-                                                        this.selected = option.value;
-                                                        this.label = option.label;
-                                                        this.open = false;
-                                                        step.tool_id = this.selected; // Update parent alpine model
-                                                    }
-                                                }" class="relative" @click.outside="open = false">
-
-                                                    <label
-                                                        class="block text-xs font-bold text-primary uppercase tracking-wide mb-2 ml-1">Select
-                                                        Tool</label>
-
-                                                    <button type="button" @click="open = !open"
-                                                        class="w-full relative flex items-center justify-between w-full rounded-xl border border-primary/20 bg-background text-text px-4 py-3 transition-all duration-300 hover:border-primary/50 focus:outline-none focus:border-primary focus:ring-0"
-                                                        :class="{'border-primary bg-background shadow-lg': open}">
-
-                                                        <span class="block truncate"
-                                                            x-text="label || 'Choose a tool...'"
-                                                            :class="{'text-text': label, 'text-text-muted': !label}"></span>
-
-                                                        <span
-                                                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-primary">
-                                                            <svg class="h-5 w-5 transition-transform duration-300"
-                                                                :class="{'rotate-180': open}"
-                                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                                fill="currentColor">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                                    clip-rule="evenodd" />
-                                                            </svg>
-                                                        </span>
-                                                    </button>
-
-                                                    <div x-show="open"
-                                                        x-transition:enter="transition ease-out duration-200"
-                                                        x-transition:enter-start="opacity-0 translate-y-2 scale-95"
-                                                        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                                                        x-transition:leave="transition ease-in duration-150"
-                                                        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                                                        x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                                                        class="absolute z-50 mt-2 w-full rounded-xl bg-background/95 backdrop-blur-xl shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none border border-primary/10 max-h-60 overflow-auto py-1 custom-scrollbar">
-
-                                                        <ul class="py-1">
-                                                            <template x-for="option in options" :key="option.value">
-                                                                <li @click="select(option)"
-                                                                    class="cursor-pointer select-none relative py-3 pl-4 pr-4 hover:bg-primary/10 transition-colors group"
-                                                                    :class="{'bg-primary/5 text-primary font-semibold': selected == option.value, 'text-text': selected != option.value}">
-                                                                    <div class="flex items-center">
-                                                                        <span class="block truncate"
-                                                                            :class="{'font-semibold': selected == option.value, 'font-normal': selected != option.value}"
-                                                                            x-text="option.label"></span>
-                                                                    </div>
-                                                                </li>
-                                                            </template>
-                                                        </ul>
+                                    <div class="relative space-y-4">
+                                        <template x-for="(step, index) in steps" :key="index">
+                                            <div class="relative">
+                                                <div class="absolute left-4 -top-4 h-4 w-0.5 bg-primary/30" x-show="index !== 0"></div>
+                                                <div
+                                                    class="group rounded-2xl border border-primary/20 bg-background/70 p-4 shadow-sm hover:shadow-lg transition-all"
+                                                    :class="selectedIndex === index ? 'ring-2 ring-primary/50 border-primary/40' : ''"
+                                                    draggable="true"
+                                                    @dragstart="startDrag(index)"
+                                                    @dragover.prevent
+                                                    @drop="dropOn(index)"
+                                                    @click="selectStep(index)">
+                                                    <div class="flex items-center justify-between">
+                                                        <div class="flex items-center gap-3">
+                                                            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/15 text-primary text-xs font-bold" x-text="index + 1"></span>
+                                                            <div>
+                                                                <div class="text-sm font-semibold text-text" x-text="getToolLabel(step.tool_id) || 'Choose a tool'"
+                                                                ></div>
+                                                                <div class="text-xs text-text-muted" x-text="step.input || 'Click to configure'"
+                                                                ></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex items-center gap-2">
+                                                            <button type="button" class="text-xs text-text-muted hover:text-primary" title="Move">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16M4 14h16"></path>
+                                                                </svg>
+                                                            </button>
+                                                            <button type="button" @click.stop="removeStep(index)" class="text-xs text-danger hover:text-danger">
+                                                                Remove
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <input type="hidden" :name="'steps['+index+'][tool_id]'"
-                                                x-model="step.tool_id">
-                                        </div>
-                                        <div>
-                                            <label
-                                                class="block text-xs font-bold text-primary uppercase tracking-wide mb-2 ml-1">Configuration</label>
-                                            <input type="text" :name="'steps['+index+'][input]'" x-model="step.input"
-                                                class="w-full rounded-xl border-primary/20 bg-surface text-text focus:border-primary focus:ring-0 py-3.5 px-4 transition-all placeholder-text-muted/50"
-                                                placeholder="Optional: Static input parameters">
-                                        </div>
+                                        </template>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Node Settings Panel -->
+                            <div class="card p-5 bg-card/60 border border-primary/10 rounded-2xl">
+                                <div class="text-sm font-semibold text-text mb-4">Node Settings</div>
+                                <template x-if="steps[selectedIndex]">
+                                    <div class="space-y-4">
+                                        <div class="relative">
+                                            <label class="block text-xs font-bold text-primary uppercase tracking-wide mb-2 ml-1">Tool</label>
+                                            <select class="w-full rounded-xl border border-primary/20 bg-background text-text px-4 py-3"
+                                                x-model="steps[selectedIndex].tool_id">
+                                                <option value="">Choose a tool...</option>
+                                                @foreach($tools as $tool)
+                                                    <option value="{{ $tool->id }}">{{ $tool->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold text-primary uppercase tracking-wide mb-2 ml-1">Configuration</label>
+                                            <input type="text" class="w-full rounded-xl border-primary/20 bg-surface text-text focus:border-primary focus:ring-0 py-3.5 px-4"
+                                                placeholder="Optional: Static input parameters"
+                                                x-model="steps[selectedIndex].input">
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <template x-if="!steps[selectedIndex]">
+                                    <div class="text-sm text-text-muted">Select a node to edit its settings.</div>
+                                </template>
+                            </div>
                         </div>
+
+                        <template x-for="(step, index) in steps" :key="'hidden-' + index">
+                            <div class="hidden">
+                                <input type="hidden" :name="'steps['+index+'][tool_id]'" x-model="step.tool_id">
+                                <input type="hidden" :name="'steps['+index+'][input]'" x-model="step.input">
+                            </div>
                         </template>
-                </div>
 
                 <div class="flex justify-center mb-10">
                     <button type="button" @click="addStep"
@@ -222,7 +191,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                             </path>
                         </svg>
-                        Create Workflow
+                        {{ $isEdit ? 'Update Workflow' : 'Create Workflow' }}
                     </button>
                 </div>
                 </form>
@@ -232,17 +201,43 @@
     </div>
 
     <script>
-        function workflowBuilder() {
+        function workflowBuilder(initialSteps = [{ tool_id: '', input: '' }]) {
             return {
-                steps: [
-                    { tool_id: '', input: '' } // Initial step
-                ],
+                steps: (initialSteps && initialSteps.length)
+                    ? initialSteps.map(step => ({
+                        tool_id: step.tool_id ?? '',
+                        input: step.input ?? ''
+                    }))
+                    : [{ tool_id: '', input: '' }],
                 tools: @json($toolOptions),
+                selectedIndex: 0,
+                dragIndex: null,
                 addStep() {
                     this.steps.push({ tool_id: '', input: '' });
+                    this.selectedIndex = this.steps.length - 1;
                 },
                 removeStep(index) {
                     this.steps.splice(index, 1);
+                    if (this.selectedIndex >= this.steps.length) {
+                        this.selectedIndex = Math.max(0, this.steps.length - 1);
+                    }
+                },
+                selectStep(index) {
+                    this.selectedIndex = index;
+                },
+                startDrag(index) {
+                    this.dragIndex = index;
+                },
+                dropOn(index) {
+                    if (this.dragIndex === null || this.dragIndex === index) return;
+                    const moved = this.steps.splice(this.dragIndex, 1)[0];
+                    this.steps.splice(index, 0, moved);
+                    this.selectedIndex = index;
+                    this.dragIndex = null;
+                },
+                getToolLabel(id) {
+                    const tool = this.tools.find(t => String(t.id) === String(id));
+                    return tool ? tool.name : '';
                 },
                 findToolId(keywords) {
                     const lower = (value) => (value || '').toLowerCase();

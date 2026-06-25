@@ -75,7 +75,7 @@
                                                     <button @click="editing = !editing"
                                                         class="text-primary hover:text-primary/70">Edit</button>
                                                     <form action="{{ route('admin.tags.destroy', $tag) }}" method="POST"
-                                                        onsubmit="return confirm('Are you sure?');">
+                                                        x-data @submit.prevent="$dispatch('confirm', { message: 'Are you sure?', form: $el })">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"

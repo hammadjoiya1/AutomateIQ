@@ -7,6 +7,16 @@
     $brandTitle = $isAdmin ? 'Admin Panel' : 'AutomateIQ';
     $brandHref = $isAdmin && Route::has('admin.dashboard') ? route('admin.dashboard') : route('home');
     $topbarLabel = $isAdmin ? 'Admin / Control Panel' : 'Dashboard / Overview';
+    $creditLink = route('pricing');
+    foreach (['starter', 'growth', 'scale'] as $packKey) {
+        $settingUrl = \App\Models\Setting::get("lemonsqueezy.topup_checkout_urls.{$packKey}", null);
+        $configUrls = config('lemonsqueezy.topup_checkout_urls', []);
+        $url = $settingUrl ?: ($configUrls[$packKey] ?? null);
+        if ($url) {
+            $creditLink = route('billing.topup', $packKey);
+            break;
+        }
+    }
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
@@ -74,14 +84,22 @@
                     </div>
 
                     <div
-                        class="flex grow flex-col gap-y-5 overflow-y-auto glass-panel border-r border-white/5 px-6 pb-4">
-                        <div class="flex h-16 shrink-0 items-center gap-2">
+                        class="flex grow flex-col gap-y-5 glass-panel border-r border-white/5 px-6 pb-4">
+                        <div class="flex h-16 shrink-0 items-center justify-between gap-2">
                             <a href="{{ $brandHref }}" class="flex items-center gap-2">
                                 <x-application-logo class="h-8 w-auto text-primary" />
                                 <span class="font-display font-bold text-xl text-text">{{ $brandTitle }}</span>
                             </a>
+                            <button type="button" @click="sidebarOpen = false"
+                                class="p-2 rounded-md text-text hover:text-primary hover:bg-surface/60 transition">
+                                <span class="sr-only">Close sidebar</span>
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
                         </div>
-                        <nav class="flex flex-1 flex-col">
+                        <nav class="flex flex-1 flex-col overflow-y-auto">
                             <ul role="list" class="flex flex-1 flex-col gap-y-7">
                                 <li>
                                     <ul role="list" class="-mx-2 space-y-1">
@@ -98,7 +116,7 @@
         <!-- Static sidebar for desktop -->
         <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col p-4">
             <div
-                class="flex grow flex-col gap-y-5 overflow-y-auto card h-full rounded-2xl px-6 pb-4 border border-white/5 shadow-2xl">
+                class="flex grow flex-col gap-y-5 card h-full rounded-2xl px-6 pb-4 border border-white/5 shadow-2xl">
                 <div class="flex h-16 shrink-0 items-center mt-2 gap-2">
                     <a href="{{ $brandHref }}" class="flex items-center gap-2 group">
                         <x-application-logo
@@ -107,7 +125,7 @@
                             class="font-display font-bold text-2xl tracking-tight text-gradient-primary group-hover:opacity-80 transition-opacity">{{ $brandTitle }}</span>
                     </a>
                 </div>
-                <nav class="flex flex-1 flex-col mt-4">
+                <nav class="flex flex-1 flex-col mt-4 overflow-y-auto">
                     <ul role="list" class="flex flex-1 flex-col gap-y-7">
                         <li>
                             <ul role="list" class="-mx-2 space-y-1">
@@ -141,7 +159,7 @@
                 <div class="flex items-center gap-x-4 lg:gap-x-6">
                     @if(!$isAdmin)
                         <!-- Credit Badge -->
-                        <a href="{{ route('pricing') }}"
+                        <a href="{{ $creditLink }}"
                             class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 text-primary border border-primary/30 font-bold hover:scale-105 transition-all shadow-lg shadow-primary/10 mr-2"
                             title="Buy more credits">
                             <svg class="w-4 h-4 animate-pulse" fill="none"
@@ -207,11 +225,13 @@
             <!-- Content Area -->
             <main class="py-10">
                 <div class="px-4 sm:px-6 lg:px-8">
+                    <x-flash-alerts />
                     {{ $slot }}
                 </div>
             </main>
         </div>
     </div>
+    <x-confirm-dialog />
 </body>
 
 </html>

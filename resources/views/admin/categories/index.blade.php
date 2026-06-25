@@ -19,7 +19,8 @@
                         <h3 class="font-bold text-lg text-text">{{ $category->name }}</h3>
                         <p class="text-xs text-text-muted">{{ $category->slug }}</p>
                     </div>
-                    <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Delete this category?');">
+                    <form action="{{ route('admin.categories.destroy', $category) }}" method="POST"
+                        x-data @submit.prevent="$dispatch('confirm', { message: 'Delete this category?', form: $el })">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="text-text-muted hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">

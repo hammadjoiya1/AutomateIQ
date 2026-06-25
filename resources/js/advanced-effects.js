@@ -127,12 +127,12 @@ export function initEnhancedCardReveal() {
                 entry.target.style.transform = 'translateY(0)';
             }
         });
-    }, { threshold: 0.2 });
+    }, { threshold: 0, rootMargin: '200px 0px' });
 
-    cards.forEach((card, index) => {
+    cards.forEach((card) => {
         card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = `all 0.6s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s`;
+        card.style.transform = 'translateY(10px)';
+        card.style.transition = 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s';
         observer.observe(card);
     });
 }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Workflow;
 use App\Models\ToolRun;
+use App\Models\WorkflowRun;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Services\UsageMeterService;
@@ -17,12 +18,20 @@ class WorkflowRunnerService
         $this->toolRunner = $toolRunner;
     }
 
-    public function run(Workflow $workflow, array $initialInput)
+    public function run(Workflow $workflow, array $initialInput, ?WorkflowRun $workflowRun = null)
     {
         $currentInput = $initialInput['input'] ?? '';
+        $initialText = $currentInput;
         $results = [];
         $userId = $workflow->user_id;
         $user = User::find($userId);
+
+        if ($workflowRun) {
+            $workflowRun->update([
+                'status' => 'running',
+                'input_data' => $initialInput,
+            ]);
+        }
 
         if ($user) {
             app(UsageMeterService::class)->recordWorkflowRun($user);
@@ -47,7 +56,20 @@ class WorkflowRunnerService
                 // If step > 1, prepend the previous output to the context or use it as input?
                 // For V1, let's just pass the 'currentInput' which updates after each step.
 
-                $runInput = ['input' => $currentInput];
+                $stepConfig = $step->config ?? [];
+                $stepInputTemplate = $stepConfig['input'] ?? null;
+
+                $resolvedInput = $this->resolveStepInput(
+                    $stepInputTemplate,
+                    $currentInput,
+                    $initialText
+                );
+
+                $runInput = array_merge($initialInput, $stepConfig);
+                $runInput['input'] = $resolvedInput !== null ? $resolvedInput : $currentInput;
+                $runInput['previous_output'] = $currentInput;
+                $runInput['initial_input'] = $initialText;
+                $runInput['topic'] = $initialText;
 
                 $toolRun = $this->toolRunner->run($tool, $runInput, $userId);
 
@@ -75,10 +97,37 @@ class WorkflowRunnerService
                     'error' => $e->getMessage(),
                     'status' => 'failed'
                 ];
+                if ($workflowRun) {
+                    $workflowRun->update([
+                        'status' => 'failed',
+                        'results' => $results,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
                 break; // Stop workflow on error
             }
         }
 
+        if ($workflowRun && $workflowRun->status !== 'failed') {
+            $workflowRun->update([
+                'status' => 'completed',
+                'results' => $results,
+            ]);
+        }
+
         return $results;
+    }
+
+    protected function resolveStepInput(?string $template, string $currentInput, string $initialInput): ?string
+    {
+        if ($template === null || $template === '') {
+            return null;
+        }
+
+        return str_replace(
+            ['{{input}}', '{{previous_output}}', '{{initial_input}}', '{{topic}}'],
+            [$currentInput, $currentInput, $initialInput, $initialInput],
+            $template
+        );
     }
 }

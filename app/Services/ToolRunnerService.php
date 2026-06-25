@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UsageMeterService;
+use App\Services\CreditPricingService;
 use App\Jobs\GenerateVideoJob;
 
 class ToolRunnerService
@@ -17,19 +18,19 @@ class ToolRunnerService
         $inputText = $input['input'] ?? '';
         $user = $userId ? \App\Models\User::find($userId) : null;
         $startTime = microtime(true);
-
-        // 1. Calculate Cost
-        $cost = $this->resolveToolCost($tool);
-
-        $this->enforceBudgetCaps($tool, $user, $cost);
-
-        // 2. Check Credits
-        if ($user && $user->credits < $cost) {
-            throw new \Exception("Insufficient credits. This tool requires {$cost} credits, but you have {$user->credits}.");
-        }
+        $pricing = app(CreditPricingService::class);
 
         // --- VIDEO GENERATION (Replicate) 🎥 ---
         if ($tool->tool_type === 'video') {
+            [$costCents, $creditsRequired] = $this->estimateVideoCosts($pricing);
+            $creditsRequired = max($creditsRequired, (int) ($tool->cost_credits ?? 0));
+
+            $this->enforceBudgetCaps($tool, $user, $creditsRequired);
+
+            if ($user && $user->credits < $creditsRequired) {
+                throw new \Exception("Insufficient credits. This tool requires {$creditsRequired} credits, but you have {$user->credits}.");
+            }
+
             try {
                 Log::info("Starting Video Generation for User {$userId}");
                 $run = ToolRun::create([
@@ -38,19 +39,21 @@ class ToolRunnerService
                     'input_data' => $input,
                     'output_text' => 'VIDEO_GENERATION_QUEUED',
                     'status' => 'queued',
-                    'cost_credits' => $cost,
+                    'cost_credits' => $creditsRequired,
+                    'cost_cents' => $costCents,
+                    'credits_charged' => $creditsRequired,
                 ]);
 
                 $run->update([
                     'output_text' => 'VIDEO_GENERATION_QUEUED: ' . $run->id,
                 ]);
 
-                GenerateVideoJob::dispatch($run->id);
+                GenerateVideoJob::dispatchSync($run->id);
 
                 // Deduct credits (Expensive!)
                 if ($user) {
-                    $user->decrement('credits', $cost);
-                    app(UsageMeterService::class)->recordToolRun($user, true);
+                    $user->debitCredits($creditsRequired);
+                    app(UsageMeterService::class)->recordToolRun($user, true, $costCents, $creditsRequired);
                 }
 
                 return $run;
@@ -63,7 +66,9 @@ class ToolRunnerService
                     'input_data' => $input,
                     'output_text' => "Error: " . $e->getMessage(),
                     'status' => 'failed',
-                    'cost_credits' => $cost,
+                    'cost_credits' => $creditsRequired,
+                    'cost_cents' => $costCents,
+                    'credits_charged' => 0,
                 ]);
                 return $run; // Return the error run instead of crashing
             }
@@ -75,11 +80,20 @@ class ToolRunnerService
             $prompt = $this->applySettingsToPrompt($prompt, $input, $tool);
             $systemPrompt = $this->getSystemPrompt($tool);
 
+            [$estimatedCostCents, $estimatedCredits] = $this->estimateOpenAICosts($pricing, $tool, $systemPrompt, $prompt);
+            $this->enforceBudgetCaps($tool, $user, $estimatedCredits);
+
+            if ($user && $user->credits < $estimatedCredits) {
+                throw new \Exception("Insufficient credits. This tool requires {$estimatedCredits} credits, but you have {$user->credits}.");
+            }
+
             Log::info('=== CALLING OPENAI VIA HTTP ===');
 
             $result = $this->callOpenAIWithRetry($tool, $systemPrompt, $prompt);
             $output = $result['output'];
             $tokensUsed = $result['tokens_used'];
+            $inputTokens = $result['input_tokens'];
+            $outputTokens = $result['output_tokens'];
             $modelUsed = $result['model_used'];
             $retryCount = $result['retry_count'];
 
@@ -90,12 +104,20 @@ class ToolRunnerService
             Log::error('Tool Run Error: ' . $e->getMessage());
             $output = "Error: " . $e->getMessage();
             $tokensUsed = 0;
+            $inputTokens = 0;
+            $outputTokens = 0;
             $modelUsed = null;
             $retryCount = 0;
         }
 
         $durationMs = (int) round((microtime(true) - $startTime) * 1000);
         $status = str_starts_with($output ?? '', 'Error') ? 'failed' : 'completed';
+
+        $costCents = $pricing->estimateOpenAICostCents($modelUsed ?? config('services.openai.model', 'gpt-4'), $inputTokens, $outputTokens);
+        $creditsRequired = max(
+            $pricing->creditsForCostCents($costCents),
+            (int) ($tool->cost_credits ?? 0)
+        );
 
         // Save run
         $run = ToolRun::create([
@@ -105,16 +127,24 @@ class ToolRunnerService
             'output_text' => $output,
             'tokens_used' => $tokensUsed,
             'status' => $status,
-            'cost_credits' => $cost,
+            'cost_credits' => $creditsRequired,
+            'cost_cents' => $costCents,
+            'credits_charged' => $status === 'completed' ? $creditsRequired : 0,
+            'input_tokens' => $inputTokens,
+            'output_tokens' => $outputTokens,
             'duration_ms' => $durationMs,
             'model_used' => $modelUsed,
             'retry_count' => $retryCount,
         ]);
 
-        // 3. Deduct Credits
+        // 3. Deduct Credits (non-fatal – must not affect the returned output)
         if ($user && isset($output) && !str_starts_with($output, 'Error')) {
-            $user->decrement('credits', $cost);
-            app(UsageMeterService::class)->recordToolRun($user, false);
+            try {
+                $user->debitCredits($creditsRequired);
+                app(UsageMeterService::class)->recordToolRun($user, false, $costCents, $creditsRequired);
+            } catch (\Throwable $e) {
+                Log::warning('Usage metering failed (non-fatal): ' . $e->getMessage());
+            }
         }
 
         $this->dispatchWebhooks($run, $user);
@@ -125,12 +155,18 @@ class ToolRunnerService
     public function startStreamRun(Tool $tool, array $input, ?int $userId = null): ToolRun
     {
         $user = $userId ? \App\Models\User::find($userId) : null;
-        $cost = $this->resolveToolCost($tool);
+        $pricing = app(CreditPricingService::class);
 
-        $this->enforceBudgetCaps($tool, $user, $cost);
+        $prompt = $this->buildPromptForTool($tool, $input);
+        $prompt = $this->applySettingsToPrompt($prompt, $input, $tool);
+        $systemPrompt = $this->getSystemPrompt($tool);
 
-        if ($user && $user->credits < $cost) {
-            throw new \Exception("Insufficient credits. This tool requires {$cost} credits, but you have {$user->credits}.");
+        [$estimatedCostCents, $estimatedCredits] = $this->estimateOpenAICosts($pricing, $tool, $systemPrompt, $prompt);
+
+        $this->enforceBudgetCaps($tool, $user, $estimatedCredits);
+
+        if ($user && $user->credits < $estimatedCredits) {
+            throw new \Exception("Insufficient credits. This tool requires {$estimatedCredits} credits, but you have {$user->credits}.");
         }
 
         return ToolRun::create([
@@ -139,7 +175,9 @@ class ToolRunnerService
             'input_data' => $input,
             'output_text' => '',
             'status' => 'streaming',
-            'cost_credits' => $cost,
+            'cost_credits' => $estimatedCredits,
+            'cost_cents' => $estimatedCostCents,
+            'credits_charged' => 0,
         ]);
     }
 
@@ -147,6 +185,7 @@ class ToolRunnerService
     {
         $startTime = microtime(true);
         $user = $run->user_id ? \App\Models\User::find($run->user_id) : null;
+        $pricing = app(CreditPricingService::class);
 
         try {
             $prompt = $this->buildPromptForTool($tool, $input);
@@ -161,20 +200,28 @@ class ToolRunnerService
 
             $durationMs = (int) round((microtime(true) - $startTime) * 1000);
 
+            $inputTokens = $pricing->estimateTokensFromText($systemPrompt) + $pricing->estimateTokensFromText($prompt);
+            $outputTokens = $pricing->estimateTokensFromText($output);
+            $costCents = $pricing->estimateOpenAICostCents($modelUsed, $inputTokens, $outputTokens);
+            $creditsRequired = max(
+                $pricing->creditsForCostCents($costCents),
+                (int) ($tool->cost_credits ?? 0)
+            );
+
             $run->update([
                 'output_text' => $output,
                 'status' => 'completed',
                 'duration_ms' => $durationMs,
                 'model_used' => $modelUsed,
                 'retry_count' => $retryCount,
+                'input_tokens' => $inputTokens,
+                'output_tokens' => $outputTokens,
+                'tokens_used' => $inputTokens + $outputTokens,
+                'cost_cents' => $costCents,
+                'cost_credits' => $creditsRequired,
+                'credits_charged' => $creditsRequired,
             ]);
 
-            if ($user) {
-                $user->decrement('credits', (int) $run->cost_credits);
-                app(UsageMeterService::class)->recordToolRun($user, false);
-            }
-
-            $this->dispatchWebhooks($run->refresh(), $user);
         } catch (\Throwable $e) {
             Log::error('Tool Stream Error: ' . $e->getMessage());
             $durationMs = (int) round((microtime(true) - $startTime) * 1000);
@@ -186,7 +233,21 @@ class ToolRunnerService
             ]);
 
             $this->dispatchWebhooks($run->refresh(), $user);
+            return;
         }
+
+        // Deduct credits & record usage AFTER closing the stream try-catch so
+        // a DB hiccup here never overwrites the successfully-streamed output.
+        if ($user) {
+            try {
+                $user->debitCredits((int) $creditsRequired);
+                app(UsageMeterService::class)->recordToolRun($user, false, $costCents, $creditsRequired);
+            } catch (\Throwable $e) {
+                Log::warning('Usage metering failed (non-fatal): ' . $e->getMessage());
+            }
+        }
+
+        $this->dispatchWebhooks($run->refresh(), $user);
     }
 
     protected function getSystemPrompt(Tool $tool): string
@@ -229,6 +290,8 @@ class ToolRunnerService
                 Log::info("Injected Brand Voice: {$voice->name}");
             }
         }
+
+        $prompt .= "\n\nIf any parameters are missing, assume sensible defaults and proceed. Do not ask follow-up questions.";
 
         return $prompt;
     }
@@ -299,6 +362,34 @@ class ToolRunnerService
         return $tool->cost_credits ?? $this->getToolCost($tool);
     }
 
+    protected function estimateOpenAICosts(CreditPricingService $pricing, Tool $tool, string $systemPrompt, string $prompt): array
+    {
+        $inputTokens = $pricing->estimateTokensFromText($systemPrompt) + $pricing->estimateTokensFromText($prompt);
+        $outputTokens = $pricing->estimateToolMaxOutputTokens($tool);
+        $model = config('services.openai.model', 'gpt-4');
+        $costCents = $pricing->estimateOpenAICostCents($model, $inputTokens, $outputTokens);
+        $creditsRequired = max(
+            $pricing->creditsForCostCents($costCents),
+            (int) ($tool->cost_credits ?? 0)
+        );
+
+        return [$costCents, $creditsRequired];
+    }
+
+    protected function estimateVideoCosts(CreditPricingService $pricing): array
+    {
+        $defaults = $pricing->getVideoDefaults();
+        $numFrames = (int) ($defaults['num_frames'] ?? 16);
+        $fps = (int) ($defaults['fps'] ?? 8);
+        $replicateModels = config('credits.replicate_models', []);
+        $modelName = (string) (array_key_first($replicateModels) ?? 'cjwbw/damo-text-to-video');
+
+        $costCents = $pricing->estimateVideoCostCents($modelName, $numFrames, $fps);
+        $creditsRequired = $pricing->creditsForCostCents($costCents);
+
+        return [$costCents, $creditsRequired];
+    }
+
     protected function enforceBudgetCaps(Tool $tool, ?\App\Models\User $user, int $cost): void
     {
         if (!$user || $user->role === 'admin') {
@@ -338,6 +429,8 @@ class ToolRunnerService
         return [
             'output' => $response['output'],
             'tokens_used' => $response['tokens_used'],
+            'input_tokens' => $response['input_tokens'],
+            'output_tokens' => $response['output_tokens'],
             'model_used' => $response['model_used'],
             'retry_count' => $response['retry_count'],
         ];
@@ -377,6 +470,8 @@ class ToolRunnerService
                     'success' => true,
                     'output' => $data['choices'][0]['message']['content'],
                     'tokens_used' => $data['usage']['total_tokens'] ?? 0,
+                    'input_tokens' => $data['usage']['prompt_tokens'] ?? 0,
+                    'output_tokens' => $data['usage']['completion_tokens'] ?? 0,
                     'model_used' => $model,
                     'retry_count' => $retryCount,
                 ];
@@ -552,11 +647,37 @@ class ToolRunnerService
 
         $prompt = $tool->prompt_template;
 
-        foreach ($input as $key => $value) {
+        $resolvedInput = $input;
+
+        if (str_contains($prompt, '{{count}}') && empty($resolvedInput['count'])) {
+            $resolvedInput['count'] = $this->inferCount($resolvedInput['input'] ?? '') ?? 10;
+        }
+        if (str_contains($prompt, '{{audience}}') && empty($resolvedInput['audience'])) {
+            $resolvedInput['audience'] = 'general audience';
+        }
+        if (str_contains($prompt, '{{angle}}') && empty($resolvedInput['angle'])) {
+            $resolvedInput['angle'] = 'practical/how-to';
+        }
+        if (str_contains($prompt, '{{series_style}}') && empty($resolvedInput['series_style'])) {
+            $resolvedInput['series_style'] = 'short-form';
+        }
+
+        foreach ($resolvedInput as $key => $value) {
             $prompt = str_replace('{{' . $key . '}}', (string) $value, $prompt);
         }
 
+        $prompt = preg_replace('/\{\{\s*[^}]+\s*\}\}/', '', $prompt);
+
         return $prompt;
+    }
+
+    protected function inferCount(string $inputText): ?int
+    {
+        if (preg_match('/\b(\d{1,3})\b/', $inputText, $match)) {
+            return (int) $match[1];
+        }
+
+        return null;
     }
 
     protected function appendExtraContext(string $prompt, array $input): string

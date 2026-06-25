@@ -1,3 +1,15 @@
+@php
+    $creditLink = route('pricing');
+    foreach (['starter', 'growth', 'scale'] as $packKey) {
+        $settingUrl = \App\Models\Setting::get("lemonsqueezy.topup_checkout_urls.{$packKey}", null);
+        $configUrls = config('lemonsqueezy.topup_checkout_urls', []);
+        $url = $settingUrl ?: ($configUrls[$packKey] ?? null);
+        if ($url) {
+            $creditLink = route('billing.topup', $packKey);
+            break;
+        }
+    }
+@endphp
 <nav x-data="{ open: false }"
     class="sticky top-0 z-50 glass-panel border-b border-primary/10 transition-all duration-300">
     <!-- Primary Navigation Menu -->
@@ -40,7 +52,7 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <!-- Credit Badge -->
-                <a href="{{ route('pricing') }}"
+                <a href="{{ $creditLink }}"
                     class="hidden sm:flex items-center gap-2 mr-4 px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group btn-shine"
                     title="Buy more credits">
                     <div
@@ -138,7 +150,7 @@
 
             <!-- Mobile Credits -->
             <div class="mt-3 px-4">
-                <a href="{{ route('pricing') }}"
+                <a href="{{ $creditLink }}"
                     class="flex items-center justify-between p-3 rounded-lg bg-primary/10 text-primary border border-primary/20">
                     <span class="text-sm font-medium">Available Credits</span>
                     <div class="flex items-center gap-1 font-bold">

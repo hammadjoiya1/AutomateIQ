@@ -7,6 +7,7 @@ use App\Models\Tool;
 use App\Models\ToolRun;
 use App\Models\ToolPreset;
 use App\Models\Tag;
+use App\Services\CreditPricingService;
 use App\Services\ToolRunnerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -58,6 +59,8 @@ class ToolController extends Controller
     public function show($slug)
     {
         $tool = Tool::with('tags')->where('slug', $slug)->where('status', true)->firstOrFail();
+        $pricing = app(CreditPricingService::class);
+        $estimatedCredits = $pricing->estimateToolCredits($tool);
 
         $presets = collect();
         $isFavorite = false;
@@ -82,7 +85,7 @@ class ToolController extends Controller
             $isFavorite = $user->favoriteTools()->where('tool_id', $tool->id)->exists();
         }
 
-        return view('tools.show', compact('tool', 'presets', 'isFavorite'));
+        return view('tools.show', compact('tool', 'presets', 'isFavorite', 'estimatedCredits'));
     }
 
     public function run(Request $request, $slug, ToolRunnerService $runner)

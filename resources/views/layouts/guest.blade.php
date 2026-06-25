@@ -41,6 +41,7 @@
 
         <div
             class="glass-panel p-8 rounded-2xl shadow-2xl ring-1 ring-white/10 relative overflow-hidden backdrop-blur-xl">
+            <x-flash-alerts class="mb-4" />
             {{ $slot }}
         </div>
 

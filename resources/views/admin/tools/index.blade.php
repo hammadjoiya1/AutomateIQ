@@ -44,7 +44,7 @@
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.tools.edit', $tool) }}" class="btn btn-sm btn-ghost">Edit</a>
                                     <form action="{{ route('admin.tools.destroy', $tool) }}" method="POST"
-                                        onsubmit="return confirm('Delete this tool?');">
+                                        x-data @submit.prevent="$dispatch('confirm', { message: 'Delete this tool?', form: $el })">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"

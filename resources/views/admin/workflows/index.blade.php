@@ -29,7 +29,7 @@
                             <td class="px-6 py-4 text-text-muted">{{ $workflow->created_at->format('M d, Y') }}</td>
                             <td class="px-6 py-4 text-right">
                                 <form action="{{ route('admin.workflows.destroy', $workflow) }}" method="POST"
-                                    onsubmit="return confirm('Delete this workflow?');">
+                                    x-data @submit.prevent="$dispatch('confirm', { message: 'Delete this workflow?', form: $el })">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"

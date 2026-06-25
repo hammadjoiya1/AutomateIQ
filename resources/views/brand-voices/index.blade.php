@@ -15,13 +15,6 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-background border border-primary/20 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-text">
-                    @if(session('success'))
-                        <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
-                            role="alert">
-                            <span class="block sm:inline">{{ session('success') }}</span>
-                        </div>
-                    @endif
-
                     @if($voices->isEmpty())
                         <div class="text-center py-10">
                             <svg class="mx-auto h-12 w-12 text-text/30" fill="none" stroke="currentColor"
@@ -71,7 +64,7 @@
                                         @endif
 
                                         <form action="{{ route('brand-voices.destroy', $voice) }}" method="POST" class="ml-auto"
-                                            onsubmit="return confirm('Delete this voice?');">
+                                            x-data @submit.prevent="$dispatch('confirm', { message: 'Delete this voice?', form: $el })">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-500 hover:text-red-700">

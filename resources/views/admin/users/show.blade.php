@@ -9,13 +9,13 @@
             @if($user->id !== Auth::id())
                 @if($user->is_banned)
                     <form action="{{ route('admin.users.unban', $user) }}" method="POST"
-                        onsubmit="return confirm('Unban this user?');">
+                        x-data @submit.prevent="$dispatch('confirm', { message: 'Unban this user?', form: $el })">
                         @csrf
                         <button type="submit" class="btn btn-success">Unban User</button>
                     </form>
                 @else
                     <form action="{{ route('admin.users.ban', $user) }}" method="POST"
-                        onsubmit="return confirm('Ban this user?');">
+                        x-data @submit.prevent="$dispatch('confirm', { message: 'Ban this user?', form: $el })">
                         @csrf
                         <button type="submit" class="btn btn-danger">Ban User</button>
                     </form>
@@ -54,15 +54,26 @@
                     <select name="plan" class="w-full bg-surface border border-border rounded-lg px-4 py-2 text-text">
                         <option value="free" {{ $user->plan === 'free' ? 'selected' : '' }}>Free</option>
                         <option value="pro" {{ $user->plan === 'pro' ? 'selected' : '' }}>Pro</option>
+                        <option value="team" {{ $user->plan === 'team' ? 'selected' : '' }}>Team</option>
                         <option value="enterprise" {{ $user->plan === 'enterprise' ? 'selected' : '' }}>Enterprise
                         </option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-text mb-1">Credits</label>
-                    <input type="number" name="credits" value="{{ $user->credits }}"
+                    <label class="block text-sm font-medium text-text mb-1">Subscription Credits</label>
+                    <input type="number" name="subscription_credits" value="{{ $user->subscription_credits }}"
                         class="w-full bg-surface border border-border rounded-lg px-4 py-2 text-text">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-text mb-1">Top-up Credits</label>
+                    <input type="number" name="topup_credits" value="{{ $user->topup_credits }}"
+                        class="w-full bg-surface border border-border rounded-lg px-4 py-2 text-text">
+                </div>
+
+                <div class="text-xs text-text-muted">
+                    Total credits: {{ number_format($user->credits) }}
                 </div>
 
                 <button type="submit" class="btn btn-primary w-full justify-center">Update User</button>

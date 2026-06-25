@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Workflow;
+use App\Models\WorkflowRun;
 use App\Services\WorkflowRunnerService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,16 +16,14 @@ class ExecuteWorkflow implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $workflow;
-    public $initialInput;
+    public int $runId;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(Workflow $workflow, array $initialInput = [])
+    public function __construct(int $runId)
     {
-        $this->workflow = $workflow;
-        $this->initialInput = $initialInput;
+        $this->runId = $runId;
     }
 
     /**
@@ -32,9 +31,22 @@ class ExecuteWorkflow implements ShouldQueue
      */
     public function handle(WorkflowRunnerService $runner): void
     {
-        Log::info("Starting workflow: " . $this->workflow->name);
-        $input = $this->initialInput ?: ['input' => 'Default Topic'];
-        $runner->run($this->workflow, $input);
+        $run = WorkflowRun::find($this->runId);
+
+        if (!$run) {
+            Log::warning('ExecuteWorkflow: WorkflowRun not found', ['run_id' => $this->runId]);
+            return;
+        }
+
+        $workflow = Workflow::find($run->workflow_id);
+        if (!$workflow) {
+            Log::warning('ExecuteWorkflow: Workflow not found', ['workflow_id' => $run->workflow_id]);
+            return;
+        }
+
+        Log::info("Starting workflow: " . $workflow->name);
+        $input = $run->input_data ?: ['input' => 'Default Topic'];
+        $runner->run($workflow, $input, $run);
         Log::info("Workflow completed.");
     }
 }

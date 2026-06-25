@@ -36,10 +36,16 @@ class UserController extends Controller
         $validated = $request->validate([
             'role' => 'required|in:admin,user',
             'plan' => 'required|string',
-            'credits' => 'required|integer',
+            'subscription_credits' => 'required|integer',
+            'topup_credits' => 'required|integer',
         ]);
 
-        $user->update($validated);
+        $user->role = $validated['role'];
+        $user->plan = $validated['plan'];
+        $user->subscription_credits = $validated['subscription_credits'];
+        $user->topup_credits = $validated['topup_credits'];
+        $user->recomputeCredits();
+        $user->save();
 
         return back()->with('success', 'User updated successfully.');
     }

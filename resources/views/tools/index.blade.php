@@ -19,14 +19,6 @@
                     Focused tools for faceless creators: hooks, ideas, short scripts, scene splitters, video prompts, and repurposing.
                 </p>
 
-                <div class="flex flex-wrap items-center justify-center gap-3 text-xs font-medium text-text-muted">
-                    <span class="px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary">Creator Packs</span>
-                    <span class="px-3 py-1 rounded-full border border-border bg-surface">Fitness</span>
-                    <span class="px-3 py-1 rounded-full border border-border bg-surface">Finance</span>
-                    <span class="px-3 py-1 rounded-full border border-border bg-surface">SaaS</span>
-                    <span class="px-3 py-1 rounded-full border border-border bg-surface">Free mini‑pack</span>
-                </div>
-
                 <!-- Modern Search Bar -->
                 <form method="GET" action="{{ route('tools.index') }}" class="relative max-w-xl mx-auto group">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
@@ -49,45 +41,6 @@
                         <input type="hidden" name="favorite" value="{{ request()->favorite }}">
                     @endif
                 </form>
-            </div>
-
-            <div class="mb-14 px-4">
-                <div class="card p-6 bg-surface/40 border border-primary/10">
-                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-text">Creator Packs (ready‑to‑use outputs)</h2>
-                            <p class="text-sm text-text-muted">Bundle your tools into sellable packs with templates + examples.</p>
-                        </div>
-                        <a href="{{ route('pricing') }}" class="btn btn-sm btn-secondary">See pack pricing</a>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                        <div class="rounded-xl border border-border bg-background/60 p-4">
-                            <div class="text-sm font-semibold text-text">Hook Pack</div>
-                            <div class="text-xs text-text-muted mt-1">YouTube Hook Generator</div>
-                        </div>
-                        <div class="rounded-xl border border-border bg-background/60 p-4">
-                            <div class="text-sm font-semibold text-text">Script Pack</div>
-                            <div class="text-xs text-text-muted mt-1">Script Generator (Short)</div>
-                        </div>
-                        <div class="rounded-xl border border-border bg-background/60 p-4">
-                            <div class="text-sm font-semibold text-text">Scene Splitter Pack</div>
-                            <div class="text-xs text-text-muted mt-1">Scene Splitter</div>
-                        </div>
-                        <div class="rounded-xl border border-border bg-background/60 p-4">
-                            <div class="text-sm font-semibold text-text">Repurpose Pack</div>
-                            <div class="text-xs text-text-muted mt-1">X / LinkedIn / Newsletter</div>
-                        </div>
-                        <div class="rounded-xl border border-border bg-background/60 p-4">
-                            <div class="text-sm font-semibold text-text">Idea Calendar</div>
-                            <div class="text-xs text-text-muted mt-1">Viral Video Ideas Generator</div>
-                        </div>
-                        <div class="rounded-xl border border-border bg-background/60 p-4">
-                            <div class="text-sm font-semibold text-text">Video Prompt Pack</div>
-                            <div class="text-xs text-text-muted mt-1">AI Video Generator</div>
-                        </div>
-                    </div>
-                    <div class="mt-6 text-xs text-text-muted">Includes niche versions for Fitness, Finance, and SaaS. Free mini‑pack available.</div>
-                </div>
             </div>
 
             <!-- Categories Filter -->

@@ -106,7 +106,16 @@
                                                         </button>
                                                     </form>
                                                     <div class="h-4 w-px bg-primary/20"></div>
-                                                    <a href="#" class="btn btn-sm btn-secondary hover:text-primary">Edit</a>
+                                                    <a href="{{ route('workflows.edit', $workflow) }}"
+                                                        class="btn btn-sm btn-secondary hover:text-primary">Edit</a>
+                                                    @if(!empty($hasWorkflowRuns))
+                                                        <a href="{{ route('workflows.runs.index', $workflow) }}"
+                                                            class="btn btn-sm btn-ghost">Runs</a>
+                                                        @if($workflow->runs()->exists())
+                                                            <a href="{{ route('workflows.runs.show', $workflow->runs()->latest()->first()) }}"
+                                                                class="btn btn-sm btn-ghost">View Results</a>
+                                                        @endif
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>

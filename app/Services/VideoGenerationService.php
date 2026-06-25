@@ -12,8 +12,8 @@ class VideoGenerationService
      * The Replicate models.
      * Use Damo Text-to-Video (Verified working version hash)
      */
-    protected string $modelId = '1e205ea73084bd17a0a3b43396e49ba0d6bc2e754e9283b2df49fad2dcf95755';
-    protected string $modelName = 'cjwbw/damo-text-to-video';
+    // MiniMax Hailuo (video-01) — 1080p cinematic text-to-video
+    protected string $modelName = 'minimax/video-01';
 
     /**
      * Create a video generation prediction via Replicate API.
@@ -27,29 +27,22 @@ class VideoGenerationService
             // Build the prompt with visual style
             $prompt = $this->buildPrompt($project);
 
-            $versionId = $this->modelId;
-
-            // Damo Input Parameters (Minimal to avoid 422)
-            $input = [
-                'prompt' => $prompt,
-                'num_frames' => 16,
-                'fps' => 8,
-            ];
-
             $response = Replicate::createPrediction([
-                'version' => $versionId,
-                'input' => $input,
+                'model'  => $this->modelName,
+                'input'  => [
+                    'prompt'           => $prompt,
+                    'prompt_optimizer' => true,
+                ],
             ]);
 
             $predictionId = $response['id'] ?? null;
 
             if ($predictionId) {
                 $project->update([
-                    'status' => 'generating',
+                    'status'   => 'generating',
                     'settings' => array_merge($project->settings ?? [], [
                         'replicate_prediction_id' => $predictionId,
-                        'model_version' => $versionId,
-                        'used_model' => $this->modelName,
+                        'used_model'              => $this->modelName,
                     ]),
                 ]);
             }
@@ -74,28 +67,21 @@ class VideoGenerationService
             $project = $scene->project;
 
             $prompt = $this->buildScenePrompt($scene, $project);
-            $versionId = $this->modelId;
-
-            // Damo Input Parameters
-            $input = [
-                'prompt' => $prompt,
-                'num_frames' => 16,
-                'fps' => 8,
-            ];
-
             $response = Replicate::createPrediction([
-                'version' => $versionId,
-                'input' => $input,
+                'model' => $this->modelName,
+                'input' => [
+                    'prompt'           => $prompt,
+                    'prompt_optimizer' => true,
+                ],
             ]);
 
             $predictionId = $response['id'] ?? null;
 
             if ($predictionId) {
                 $scene->update([
-                    'status' => 'generating',
+                    'status'                  => 'generating',
                     'replicate_prediction_id' => $predictionId,
-                    'settings' => array_merge($scene->settings ?? [], [
-                        'model_version' => $versionId,
+                    'settings'                => array_merge($scene->settings ?? [], [
                         'used_model' => $this->modelName,
                     ]),
                 ]);

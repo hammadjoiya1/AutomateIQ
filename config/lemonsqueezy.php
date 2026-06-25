@@ -15,5 +15,13 @@ return [
         'pro' => env('LEMONSQUEEZY_VARIANT_ID_PRO'),
         'team' => env('LEMONSQUEEZY_VARIANT_ID_TEAM'),
     ],
+    'topup_variants' => [
+        // Map one-time variant IDs to credit amounts.
+        // Example: '123456' => 1000,
+    ],
+    'topup_checkout_urls' => [
+        // Map pack keys to Lemon Squeezy checkout URLs.
+        // Example: 'starter' => env('LEMONSQUEEZY_TOPUP_URL_STARTER'),
+    ],
     'trial_days' => (int) env('LEMONSQUEEZY_TRIAL_DAYS', 7),
 ];

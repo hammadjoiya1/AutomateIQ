@@ -15,6 +15,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('billing.success');
     Route::get('/billing/cancel', [\App\Http\Controllers\BillingController::class, 'cancel'])
         ->name('billing.cancel');
+    Route::get('/billing/topup/{pack}', [\App\Http\Controllers\BillingController::class, 'topup'])
+        ->name('billing.topup');
 
     Route::get('/onboarding', [\App\Http\Controllers\OnboardingController::class, 'show'])
         ->name('onboarding.show');
@@ -27,6 +29,7 @@ Route::get('/', function () {
     $featuredTools = \App\Models\Tool::where('status', true)->where('is_featured', true)->take(3)->get();
     return view('home', compact('featuredTools'));
 })->name('home');
+
 
 Route::get('/tools', [\App\Http\Controllers\ToolController::class, 'index'])->name('tools.index');
 Route::get('/tools/{slug}', [\App\Http\Controllers\ToolController::class, 'show'])->name('tools.show');
@@ -110,6 +113,11 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.audit'])->prefix('admin')
     Route::get('/audit-logs', [\App\Http\Controllers\Admin\AuditLogController::class, 'index'])->name('audit-logs.index');
 
     Route::get('/profitability', [\App\Http\Controllers\Admin\ProfitabilityController::class, 'index'])->name('profitability.index');
+    Route::post('/profitability/apply', [\App\Http\Controllers\Admin\ProfitabilityController::class, 'applyRecommendations'])
+        ->name('profitability.apply');
+
+    Route::get('/credits', [\App\Http\Controllers\Admin\CreditPackController::class, 'index'])->name('credits.index');
+    Route::post('/credits', [\App\Http\Controllers\Admin\CreditPackController::class, 'update'])->name('credits.update');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -118,8 +126,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(\App\Http\Middleware\CheckPlanLimits::class . ':workflow')->group(function () {
         Route::get('/workflows', [\App\Http\Controllers\WorkflowController::class, 'index'])->name('workflows.index');
         Route::get('/workflows/create', [\App\Http\Controllers\WorkflowController::class, 'create'])->name('workflows.create');
+        Route::get('/workflows/{workflow}/edit', [\App\Http\Controllers\WorkflowController::class, 'edit'])->name('workflows.edit');
         Route::post('/workflows', [\App\Http\Controllers\WorkflowController::class, 'store'])->name('workflows.store');
+        Route::put('/workflows/{workflow}', [\App\Http\Controllers\WorkflowController::class, 'update'])->name('workflows.update');
         Route::post('/workflows/{workflow}/run', [\App\Http\Controllers\WorkflowController::class, 'run'])->name('workflows.run');
+        Route::get('/workflows/{workflow}/runs', [\App\Http\Controllers\WorkflowController::class, 'runs'])->name('workflows.runs.index');
+        Route::get('/workflows/runs/{run}', [\App\Http\Controllers\WorkflowController::class, 'showRun'])->name('workflows.runs.show');
+        Route::get('/workflows/runs/{run}/status', [\App\Http\Controllers\WorkflowController::class, 'runStatus'])->name('workflows.runs.status');
     });
 
     Route::get('/library', [\App\Http\Controllers\LibraryController::class, 'index'])->name('library.index');

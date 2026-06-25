@@ -4,14 +4,25 @@
         $trialActive = $user->trial_ends_at && now()->lt($user->trial_ends_at);
         $isPro = in_array($user->plan, ['pro', 'team']) || $trialActive;
         $plan = $isPro ? 'pro' : 'free';
-        $dailyLimit = $plan === 'pro' ? config('metrics.limits.tool_runs_pro') : config('metrics.limits.tool_runs_free');
-        $usedToday = $user->toolRuns()->whereDate('created_at', now())->count();
-        $usagePercent = min(100, $dailyLimit > 0 ? ($usedToday / $dailyLimit) * 100 : 0);
         $credits = $user->credits ?? 0;
-        $lowCredits = $credits < 20;
+        $subscriptionCredits = $user->subscription_credits ?? 0;
+        $topupCredits = $user->topup_credits ?? 0;
+        $monthlyCredits = (int) \App\Models\Setting::get("credits.monthly_credits.{$plan}", config("credits.monthly_credits.{$plan}"));
+        $subscriptionUsed = max(0, $monthlyCredits - $subscriptionCredits);
+        $usagePercent = min(100, $monthlyCredits > 0 ? ($subscriptionUsed / $monthlyCredits) * 100 : 0);
+        $lowCredits = $credits <= max(20, (int) round($monthlyCredits * 0.1));
         $upgradeUrl = $user->plan === 'pro' || $user->plan === 'team' ? route('billing.portal') : route('billing.checkout', 'pro');
         $trialEnds = $trialActive ? $user->trial_ends_at : null;
         $onboardingDone = !empty($user->onboarding_completed_at);
+        $topupPacks = [];
+        foreach (['starter', 'growth', 'scale'] as $packKey) {
+            $settingUrl = \App\Models\Setting::get("lemonsqueezy.topup_checkout_urls.{$packKey}", null);
+            $configUrls = config('lemonsqueezy.topup_checkout_urls', []);
+            $url = $settingUrl ?: ($configUrls[$packKey] ?? null);
+            if ($url) {
+                $topupPacks[$packKey] = $url;
+            }
+        }
     @endphp
 
     <div class="space-y-10 animate-fade-in">
@@ -60,9 +71,17 @@
                         <span class="font-bold text-yellow-500">Low credits:</span>
                         You have {{ number_format($credits) }} credits left. Upgrade to avoid interruptions.
                     </div>
-                    <a href="{{ $upgradeUrl }}" class="btn btn-sm btn-primary" data-analytics-event="cta_upgrade_low_credits">
-                        Upgrade Now
-                    </a>
+                    <div class="flex flex-wrap gap-2">
+                        @if(!empty($topupPacks))
+                            <a href="{{ route('billing.topup', array_key_first($topupPacks)) }}" class="btn btn-sm btn-primary"
+                                data-analytics-event="cta_topup_low_credits">
+                                Buy Credits
+                            </a>
+                        @endif
+                        <a href="{{ $upgradeUrl }}" class="btn btn-sm btn-secondary" data-analytics-event="cta_upgrade_low_credits">
+                            Upgrade
+                        </a>
+                    </div>
                 </div>
             </div>
         @endif
@@ -128,14 +147,14 @@
 
             <div class="space-y-6">
                 <div class="card p-6 border border-white/5 bg-surface/50">
-                    <div class="text-sm text-text-muted">Plan Usage</div>
+                    <div class="text-sm text-text-muted">Monthly Credits</div>
                     <div class="text-xl font-bold text-text mt-1">
-                        {{ strtoupper($plan) }} plan — {{ $usedToday }} / {{ $dailyLimit }} runs today
+                        {{ strtoupper($plan) }} plan — {{ number_format($subscriptionCredits) }} / {{ number_format($monthlyCredits) }} remaining
                     </div>
                     <div class="h-2 rounded-full bg-primary/10 overflow-hidden mt-4">
                         <div class="h-full bg-primary" style="width: {{ $usagePercent }}%"></div>
                     </div>
-                    <div class="text-xs text-text-muted mt-2">{{ round($usagePercent) }}% used</div>
+                    <div class="text-xs text-text-muted mt-2">{{ round($usagePercent) }}% of subscription credits used</div>
                     @if($plan !== 'pro')
                         <a href="{{ $upgradeUrl }}" class="btn btn-sm btn-secondary mt-4" data-analytics-event="cta_upgrade_usage_meter">
                             Upgrade
@@ -146,7 +165,14 @@
                 <div class="card p-6 border border-white/5 bg-surface/50">
                     <div class="text-sm text-text-muted">Credits</div>
                     <div class="text-3xl font-display font-bold text-text mt-2">{{ number_format($credits) }}</div>
-                    <a href="{{ route('pricing') }}" class="btn btn-sm btn-ghost mt-4">Buy more credits</a>
+                    <div class="text-xs text-text-muted mt-1">Top-up: {{ number_format($topupCredits) }} · Subscription: {{ number_format($subscriptionCredits) }}</div>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        @forelse($topupPacks as $pack => $url)
+                            <a href="{{ route('billing.topup', $pack) }}" class="btn btn-sm btn-primary">Buy {{ ucfirst($pack) }}</a>
+                        @empty
+                            <a href="{{ route('pricing') }}" class="btn btn-sm btn-ghost">Buy more credits</a>
+                        @endforelse
+                    </div>
                 </div>
 
                 @if(!$onboardingDone)

@@ -12,6 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
+            \App\Http\Middleware\EnsureMonthlyCredits::class,
             \App\Http\Middleware\SetTheme::class,
         ]);
         $middleware->alias([

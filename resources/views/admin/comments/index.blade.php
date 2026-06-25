@@ -69,7 +69,8 @@
                                                 </form>
                                             @endif
                                             
-                                            <form action="{{ route('admin.comments.destroy', $comment) }}" method="POST" onsubmit="return confirm('Delete this comment?');">
+                                            <form action="{{ route('admin.comments.destroy', $comment) }}" method="POST"
+                                                x-data @submit.prevent="$dispatch('confirm', { message: 'Delete this comment?', form: $el })">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-500 hover:text-red-700" title="Delete">

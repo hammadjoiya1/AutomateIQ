@@ -32,13 +32,10 @@ class CheckPlanLimits
             $plan = $isPro ? 'pro' : 'free';
 
         if ($feature === 'tool_run') {
-            $limit = $plan === 'pro' ? 200 : 5;
-            $todayUsage = $user->toolRuns()->whereDate('created_at', now())->count();
-
-            if ($todayUsage >= $limit) {
+            if ((int) $user->credits <= 0) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => "You have reached your daily limit of {$limit} generations. Upgrade to Pro for more."
+                    'message' => 'You are out of credits. Please top up or upgrade your plan.'
                 ], 403);
             }
         }
@@ -53,18 +50,15 @@ class CheckPlanLimits
         }
 
         if ($feature === 'video_generation') {
-                $limit = $isPro ? 50 : 1;
-            $todayUsage = $user->videoProjects()->whereDate('created_at', now())->count();
-
-            if ($todayUsage >= $limit) {
+                if ((int) $user->credits <= 0) {
                 if ($request->expectsJson()) {
                     return response()->json([
-                        'message' => "You have reached your daily video limit of {$limit}. Upgrade to Pro for more."
+                        'message' => 'You are out of credits. Please top up or upgrade your plan.'
                     ], 403);
                 }
 
                 return redirect()->route('pricing')
-                    ->with('error', "You have reached your daily video limit of {$limit}. Upgrade to Pro for more.");
+                    ->with('error', 'You are out of credits. Please top up or upgrade your plan.');
             }
         }
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'AutomateIQ') }}- Faceless AI Toolkit</title>
+    <title>{{ config('app.name', 'AutomateIQ') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -17,6 +17,12 @@
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body data-theme="{{ $activeTheme['slug'] ?? 'dark' }}"
@@ -31,13 +37,23 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-[0.03]"></div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar fixed w-full z-50 transition-all duration-300"
-        :class="{ 'bg-background/80 backdrop-blur-md border-b border-border': scrolled }" x-data="{ scrolled: false }"
-        @scroll.window="scrolled = (window.pageYOffset > 20)">
+    <div x-data="{ scrolled: false, open: false }" @scroll.window="scrolled = (window.pageYOffset > 20)">
+        <!-- Navigation -->
+        <nav class="navbar fixed w-full z-50 transition-all duration-300"
+            :class="{ 'bg-background/80 backdrop-blur-md border-b border-border': scrolled }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center md:hidden">
+                        <button type="button" @click="open = true"
+                            class="inline-flex items-center justify-center p-2 rounded-md text-text hover:text-primary hover:bg-surface/60 transition">
+                            <span class="sr-only">Open menu</span>
+                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
                     <x-application-logo class="h-8 w-auto text-primary" />
                     <span class="font-display font-bold text-xl tracking-tight">AutomateIQ</span>
                 </div>
@@ -63,7 +79,72 @@
                 </div>
             </div>
         </div>
-    </nav>
+        </nav>
+
+        <!-- Mobile Menu Overlay -->
+        <div x-show="open" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-50 md:hidden" x-cloak>
+        <div class="absolute inset-0 bg-black/60" @click="open = false"></div>
+        <div class="absolute inset-y-0 left-0 w-80 max-w-[85vw]">
+            <div x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
+                class="glass-panel h-full border-r border-white/10 p-5 overflow-y-auto">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <x-application-logo class="h-7 w-auto text-primary" />
+                        <span class="font-bold text-lg">AutomateIQ</span>
+                    </div>
+                    <button type="button" @click="open = false"
+                        class="p-2 rounded-md text-text hover:text-primary hover:bg-surface/60 transition">
+                        <span class="sr-only">Close menu</span>
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="mt-6 space-y-2">
+                    <a href="#features" @click="open = false"
+                        class="block rounded-lg px-3 py-2 text-sm font-medium text-text hover:bg-surface/60">Features</a>
+                    <a href="#pricing" @click="open = false"
+                        class="block rounded-lg px-3 py-2 text-sm font-medium text-text hover:bg-surface/60">Pricing</a>
+                </div>
+
+                <div class="mt-6 border-t border-white/10 pt-4">
+                    <div class="flex items-center justify-between text-sm text-text-muted">
+                        <span>Theme</span>
+                        <x-theme-switcher />
+                    </div>
+
+                    @if (Route::has('login'))
+                        @auth
+                            <div class="mt-4 space-y-2">
+                                <a href="{{ url('/dashboard') }}" @click="open = false" class="btn btn-primary w-full">Dashboard</a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-secondary w-full">Log Out</button>
+                                </form>
+                            </div>
+                        @else
+                            <div class="mt-4 space-y-2">
+                                <a href="{{ route('login') }}" @click="open = false" class="btn btn-ghost w-full">Log in</a>
+                                @if (Route::has('register'))
+                                    <a href="{{ route('register') }}" @click="open = false" class="btn btn-primary w-full">Get Started</a>
+                                @endif
+                            </div>
+                        @endauth
+                    @endif
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">

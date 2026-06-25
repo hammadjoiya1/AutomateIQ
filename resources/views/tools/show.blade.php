@@ -37,7 +37,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                 <!-- Left: Input Form -->
                 <div class="lg:col-span-1">
-                    <div class="card p-6 sticky top-24">
+                    <div class="card p-6 lg:sticky lg:top-24">
                         <div class="flex items-center gap-4 mb-6">
                             <div
                                 class="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-sm border border-primary/20">
@@ -56,7 +56,12 @@
                             @endauth
                         </div>
 
-                        <p class="text-text-muted mb-8 text-sm leading-relaxed">{{ $tool->description }}</p>
+                        <p class="text-text-muted mb-4 text-sm leading-relaxed">{{ $tool->description }}</p>
+
+                        <div class="inline-flex items-center gap-2 text-xs text-text-muted mb-6">
+                            <span class="px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">Estimated</span>
+                            <span>{{ number_format($estimatedCredits ?? 0) }} credits per run</span>
+                        </div>
 
                         @if($tool->tags->isNotEmpty())
                             <div class="flex flex-wrap gap-2 mb-6">
@@ -303,8 +308,19 @@
                                 </div>
                             </template>
 
+                            <!-- Video Output -->
+                            <template x-if="output && isVideoUrl(output)">
+                                <div class="animate-fade-in">
+                                    <video class="w-full rounded-xl border border-white/10 bg-black/40" controls playsinline>
+                                        <source :src="output" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <a class="inline-flex mt-3 text-xs text-primary hover:underline" :href="output" target="_blank" rel="noopener">Open video in new tab</a>
+                                </div>
+                            </template>
+
                             <!-- Actual Output -->
-                            <div x-show="output && !isJson(output) && !output.includes('VIDEO_GENERATION_STARTED') && !output.includes('VIDEO_GENERATION_QUEUED')"
+                            <div x-show="output && !isVideoUrl(output) && !isJson(output) && !output.includes('VIDEO_GENERATION_STARTED') && !output.includes('VIDEO_GENERATION_QUEUED')"
                                 x-text="output" class="whitespace-pre-wrap animate-fade-in focus:outline-none"
                                 tabindex="0"></div>
 
@@ -319,7 +335,15 @@
                                 <p class="text-text font-medium">Video job queued...</p>
                                 <p class="text-text/60 text-sm mt-2">Run ID: <span
                                         x-text="output.replace('VIDEO_GENERATION_QUEUED: ', '')"></span></p>
-                                <p class="text-xs text-text/40 mt-4">We’ll start rendering shortly.</p>
+                                <template x-if="videoStatus">
+                                    <p class="text-xs text-text/50 mt-4" x-text="'Status: ' + videoStatus"></p>
+                                </template>
+                                <div x-show="videoProgress > 0" class="mt-4 max-w-sm mx-auto">
+                                    <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                        <div class="h-2 bg-primary" :style="'width: ' + videoProgress + '%'" aria-hidden="true"></div>
+                                    </div>
+                                    <div class="text-xs text-text/50 mt-2" x-text="videoProgress + '%'"></div>
+                                </div>
                             </div>
 
                             <!-- VIDEO GENERATOR STATUS -->
@@ -330,7 +354,16 @@
                                 <p class="text-text font-medium">Video is generating...</p>
                                 <p class="text-text/60 text-sm mt-2">Prediction ID: <span
                                         x-text="output.replace('VIDEO_GENERATION_STARTED: ', '')"></span></p>
-                                <p class="text-xs text-text/40 mt-4">Refresh page in 2 minutes.</p>
+                                <template x-if="videoStatus">
+                                    <p class="text-xs text-text/50 mt-4" x-text="'Status: ' + videoStatus"></p>
+                                </template>
+                                <div x-show="videoProgress > 0" class="mt-4 max-w-sm mx-auto">
+                                    <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                        <div class="h-2 bg-primary" :style="'width: ' + videoProgress + '%'" aria-hidden="true"></div>
+                                    </div>
+                                    <div class="text-xs text-text/50 mt-2" x-text="videoProgress + '%'"></div>
+                                </div>
+                                <div x-show="videoLogs" class="mt-4 text-left text-xs text-text/50 max-w-lg mx-auto whitespace-pre-wrap bg-white/5 border border-white/10 rounded-lg p-3" x-text="videoLogs"></div>
                             </div>
 
                             <!-- PRODUCTION BOARD (JSON Output) 🏭 -->
@@ -443,6 +476,9 @@
                     output: '',
                     loading: false,
                     saveMessage: '',
+                    videoStatus: '',
+                    videoProgress: 0,
+                    videoLogs: '',
 
                     getOptions(field) {
                         if (!field || !field.options) return [];
@@ -460,6 +496,9 @@
                         if (!this.form.input) return;
                         this.loading = true;
                         this.output = ''; // Clear previous
+                        this.videoStatus = '';
+                        this.videoProgress = 0;
+                        this.videoLogs = '';
 
                         try {
                             if (this.toolType === 'video') {
@@ -484,9 +523,11 @@
                                     this.output = data.output;
                                     if (this.output.includes('VIDEO_GENERATION_QUEUED')) {
                                         const runId = this.output.replace('VIDEO_GENERATION_QUEUED: ', '');
+                                        this.videoStatus = 'queued';
                                         this.pollStatus(`RUN:${runId}`);
                                     }
                                     if (this.output.includes('VIDEO_GENERATION_STARTED')) {
+                                        this.videoStatus = 'starting';
                                         this.pollStatus(this.output.replace('VIDEO_GENERATION_STARTED: ', ''));
                                     }
                                 } else {
@@ -495,7 +536,7 @@
                                 return;
                             }
 
-                            const response = await fetch("{{ route('tools.stream', $tool->slug) }}", {
+                            const response = await fetch("{{ route('tools.run', $tool->slug) }}", {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -511,17 +552,11 @@
                                 return;
                             }
 
-                            const reader = response.body?.getReader();
-                            if (!reader) {
-                                this.output = "Error: Streaming not available.";
-                                return;
-                            }
-
-                            const decoder = new TextDecoder();
-                            while (true) {
-                                const { value, done } = await reader.read();
-                                if (done) break;
-                                this.output += decoder.decode(value, { stream: true });
+                            const data = await response.json();
+                            if (data.status === 'success') {
+                                this.output = data.output;
+                            } else {
+                                this.output = "Error: " + (data.message || "Something went wrong.");
                             }
                         } catch (e) {
                             this.output = "Error: Network error or server failed. " + (e.message || e);
@@ -607,11 +642,30 @@
                                 const data = await response.json();
 
                                 if (data.status === 'queued') {
+                                    this.videoStatus = 'queued';
                                     return;
                                 }
 
                                 if (data.status === 'success') {
                                     const prediction = data.data;
+
+                                    if (prediction?.status) {
+                                        this.videoStatus = prediction.status;
+                                    }
+
+                                    if (prediction?.logs) {
+                                        this.videoLogs = prediction.logs;
+                                        const percentMatch = prediction.logs.match(/(\d{1,3})%/);
+                                        if (percentMatch) {
+                                            const percent = Math.min(100, parseInt(percentMatch[1], 10));
+                                            if (!Number.isNaN(percent)) this.videoProgress = percent;
+                                        }
+                                    }
+
+                                    if (typeof prediction?.progress === 'number') {
+                                        const percent = Math.round(Math.min(1, Math.max(0, prediction.progress)) * 100);
+                                        this.videoProgress = percent;
+                                    }
 
                                     if (prediction.status === 'completed' && prediction.output) {
                                         this.output = prediction.output;
@@ -632,6 +686,32 @@
                                 console.error("Polling error", e);
                             }
                         }, 4000); // Check every 4 seconds
+                    },
+
+                    async copyToClipboard() {
+                        if (!this.output) return;
+                        this.saveMessage = '';
+                        const text = this.output;
+
+                        try {
+                            if (navigator.clipboard && window.isSecureContext) {
+                                await navigator.clipboard.writeText(text);
+                            } else {
+                                const textarea = document.createElement('textarea');
+                                textarea.value = text;
+                                textarea.style.position = 'fixed';
+                                textarea.style.opacity = '0';
+                                document.body.appendChild(textarea);
+                                textarea.focus();
+                                textarea.select();
+                                document.execCommand('copy');
+                                document.body.removeChild(textarea);
+                            }
+                            this.saveMessage = 'Copied to clipboard.';
+                        } catch (e) {
+                            console.error(e);
+                            this.saveMessage = 'Copy failed.';
+                        }
                     },
 
                     async saveToLibrary() {
@@ -672,6 +752,12 @@
                         } catch (e) {
                             return false;
                         }
+                    },
+
+                    isVideoUrl(str) {
+                        if (typeof str !== 'string') return false;
+                        const value = str.trim();
+                        return /^https?:\/\//i.test(value) && /\.mp4($|\?)/i.test(value);
                     }
                 }
             }

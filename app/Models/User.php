@@ -56,6 +56,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'trial_ends_at' => 'datetime',
             'onboarding_completed_at' => 'datetime',
+            'last_credit_grant_at' => 'datetime',
         ];
     }
     public function toolRuns()
@@ -66,6 +67,11 @@ class User extends Authenticatable
     public function workflows()
     {
         return $this->hasMany(Workflow::class);
+    }
+
+    public function workflowRuns()
+    {
+        return $this->hasMany(WorkflowRun::class);
     }
 
     public function collections()
@@ -106,5 +112,64 @@ class User extends Authenticatable
     public function favoriteTools()
     {
         return $this->belongsToMany(Tool::class, 'tool_favorites')->withTimestamps();
+    }
+
+    public function totalCredits(): int
+    {
+        return (int) $this->credits;
+    }
+
+    public function recomputeCredits(): void
+    {
+        $this->credits = (int) $this->subscription_credits + (int) $this->topup_credits;
+    }
+
+    public function grantSubscriptionCredits(int $amount): void
+    {
+        $this->subscription_credits = max(0, $amount);
+        $this->last_credit_grant_at = now();
+        $this->recomputeCredits();
+        $this->save();
+    }
+
+    public function addTopupCredits(int $amount): void
+    {
+        if ($amount <= 0) {
+            return;
+        }
+
+        $this->topup_credits = (int) $this->topup_credits + $amount;
+        $this->recomputeCredits();
+        $this->save();
+    }
+
+    public function removeTopupCredits(int $amount): void
+    {
+        if ($amount <= 0) {
+            return;
+        }
+
+        $this->topup_credits = max(0, (int) $this->topup_credits - $amount);
+        $this->recomputeCredits();
+        $this->save();
+    }
+
+    public function debitCredits(int $amount): void
+    {
+        $amount = max(0, $amount);
+        if ($amount === 0) {
+            return;
+        }
+
+        $fromSubscription = min((int) $this->subscription_credits, $amount);
+        $this->subscription_credits -= $fromSubscription;
+        $remaining = $amount - $fromSubscription;
+
+        if ($remaining > 0) {
+            $this->topup_credits = max(0, (int) $this->topup_credits - $remaining);
+        }
+
+        $this->recomputeCredits();
+        $this->save();
     }
 }
