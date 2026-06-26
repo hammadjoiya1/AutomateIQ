@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
+use Illuminate\Support\Facades\Mail;
+use Symfony\Component\Mailer\Bridge\Sendinblue\Transport\SendinblueApiTransport;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -22,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Mail::extend('sendinblue', function (array $config) {
+            return new SendinblueApiTransport($config['key']);
+        });
+
         RateLimiter::for('tool-runs', function (Request $request) {
             $user = $request->user();
             $trialActive = $user && $user->trial_ends_at && now()->lt($user->trial_ends_at);
