@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('tool_runs', function (Blueprint $table) {
-            $table->string('model_used')->nullable()->after('cost_credits');
+            $table->string('model_used')->nullable()->after('status');
             $table->unsignedTinyInteger('retry_count')->default(0)->after('model_used');
         });
     }
