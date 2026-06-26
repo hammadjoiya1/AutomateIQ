@@ -1,0 +1,61 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-CDb5DzDH.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/js/advanced-effects.js": {
+    "file": "assets/advanced-effects-JzCJ1lMi.js",
+    "name": "advanced-effects",
+    "src": "resources/js/advanced-effects.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-B_51cDSd.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/spotlight.js",
+      "resources/js/interactions.js",
+      "resources/js/advanced-effects.js",
+      "resources/js/light-theme-effects.js",
+      "resources/js/effects-3d.js",
+      "resources/js/wow-effects.js"
+    ]
+  },
+  "resources/js/effects-3d.js": {
+    "file": "assets/effects-3d-oQ3uWpMm.js",
+    "name": "effects-3d",
+    "src": "resources/js/effects-3d.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/interactions.js": {
+    "file": "assets/interactions-BIWuurKW.js",
+    "name": "interactions",
+    "src": "resources/js/interactions.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/light-theme-effects.js": {
+    "file": "assets/light-theme-effects-Cip7YC_x.js",
+    "name": "light-theme-effects",
+    "src": "resources/js/light-theme-effects.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/spotlight.js": {
+    "file": "assets/spotlight-BvAeEt2T.js",
+    "name": "spotlight",
+    "src": "resources/js/spotlight.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/wow-effects.js": {
+    "file": "assets/wow-effects-CplfvncA.js",
+    "name": "wow-effects",
+    "src": "resources/js/wow-effects.js",
+    "isDynamicEntry": true
+  }
+}

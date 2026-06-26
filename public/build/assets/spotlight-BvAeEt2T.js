@@ -1,0 +1,1 @@
+function l(){console.log("Spotlight initialized");const n=document.querySelectorAll(".card");document.addEventListener("mousemove",e=>{n.forEach(t=>{const o=t.getBoundingClientRect(),c=e.clientX-o.left,i=e.clientY-o.top;t.style.setProperty("--mouse-x",`${c}px`),t.style.setProperty("--mouse-y",`${i}px`)})})}export{l as initSpotlight};
