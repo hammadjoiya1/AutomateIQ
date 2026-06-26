@@ -59,6 +59,12 @@ class User extends Authenticatable implements MustVerifyEmail
             'last_credit_grant_at' => 'datetime',
         ];
     }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new \App\Notifications\QueuedVerifyEmail);
+    }
+
     public function toolRuns()
     {
         return $this->hasMany(ToolRun::class);
