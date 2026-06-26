@@ -6,7 +6,7 @@ Route::post('/lemonsqueezy/webhook', [\App\Http\Controllers\LemonSqueezyWebhookC
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('lemonsqueezy.webhook');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/billing/checkout/{plan}', [\App\Http\Controllers\BillingController::class, 'checkout'])
         ->name('billing.checkout');
     Route::get('/billing/portal', [\App\Http\Controllers\BillingController::class, 'portal'])
@@ -34,19 +34,19 @@ Route::get('/', function () {
 Route::get('/tools', [\App\Http\Controllers\ToolController::class, 'index'])->name('tools.index');
 Route::get('/tools/{slug}', [\App\Http\Controllers\ToolController::class, 'show'])->name('tools.show');
 Route::post('/tools/{slug}/run', [\App\Http\Controllers\ToolController::class, 'run'])
-    ->middleware(['auth', 'throttle:tool-runs', \App\Http\Middleware\CheckPlanLimits::class . ':tool_run'])
+    ->middleware(['auth', 'verified', 'throttle:tool-runs', \App\Http\Middleware\CheckPlanLimits::class . ':tool_run'])
     ->name('tools.run');
 Route::post('/tools/{slug}/stream', [\App\Http\Controllers\ToolController::class, 'stream'])
-    ->middleware(['auth', 'throttle:tool-runs', \App\Http\Middleware\CheckPlanLimits::class . ':tool_run'])
+    ->middleware(['auth', 'verified', 'throttle:tool-runs', \App\Http\Middleware\CheckPlanLimits::class . ':tool_run'])
     ->name('tools.stream');
 Route::post('/tools/{slug}/favorite', [\App\Http\Controllers\ToolController::class, 'toggleFavorite'])
-    ->middleware(['auth'])
+    ->middleware(['auth', 'verified'])
     ->name('tools.favorite');
 Route::post('/tools/{slug}/presets', [\App\Http\Controllers\ToolController::class, 'storePreset'])
-    ->middleware(['auth'])
+    ->middleware(['auth', 'verified'])
     ->name('tools.presets.store');
 Route::delete('/tools/presets/{preset}', [\App\Http\Controllers\ToolController::class, 'deletePreset'])
-    ->middleware(['auth'])
+    ->middleware(['auth', 'verified'])
     ->name('tools.presets.delete');
 
 Route::get('/blog', [\App\Http\Controllers\BlogPostController::class, 'index'])->name('blog.index');
@@ -54,7 +54,7 @@ Route::get('/blog/{slug}', [\App\Http\Controllers\BlogPostController::class, 'sh
 Route::get('/blog/tag/{tag:slug}', [\App\Http\Controllers\BlogPostController::class, 'tag'])->name('blog.tag');
 Route::post('/blog/{post}/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/comments', [\App\Http\Controllers\CommentController::class, 'index'])->name('dashboard.comments');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
