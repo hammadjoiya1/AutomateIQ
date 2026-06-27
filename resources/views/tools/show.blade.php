@@ -60,7 +60,7 @@
 
                         <div class="inline-flex items-center gap-2 text-xs text-text-muted mb-6">
                             <span class="px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">Estimated</span>
-                            <span>{{ number_format($estimatedCredits ?? 0) }} credits per run</span>
+                            <span x-text="getCreditCost() + ' credits per run'">{{ number_format($estimatedCredits ?? 0) }} credits per run</span>
                         </div>
 
                         @if($tool->tags->isNotEmpty())
@@ -107,7 +107,7 @@
                                                     x-model="form[field.name]">
                                                     <option value="">Select...</option>
                                                     <template x-for="option in getOptions(field)" :key="option">
-                                                        <option :value="option" x-text="option"></option>
+                                                        <option :value="option" x-text="getOptionLabel(field.name, option)"></option>
                                                     </template>
                                                 </select>
                                             </template>
@@ -487,6 +487,25 @@
                             .split(',')
                             .map(option => option.trim())
                             .filter(Boolean);
+                    },
+
+                    getCreditCost() {
+                        if (this.toolType === 'video') {
+                            const q = this.form.quality || 'hd';
+                            if (q === 'standard') return 2;
+                            if (q === 'premium') return 25;
+                            return 20; // hd
+                        }
+                        return {{ $estimatedCredits ?? 0 }};
+                    },
+
+                    getOptionLabel(fieldName, option) {
+                        if (fieldName === 'quality') {
+                            if (option === 'standard') return 'Standard (2 credits)';
+                            if (option === 'hd') return 'HD (20 credits)';
+                            if (option === 'premium') return 'Premium (25 credits)';
+                        }
+                        return option.charAt(0).toUpperCase() + option.slice(1);
                     },
 
                     async generate() {
