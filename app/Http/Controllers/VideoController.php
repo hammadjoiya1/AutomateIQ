@@ -82,9 +82,12 @@ class VideoController extends Controller
                     'image_prompt' => $line, // Use script line as prompt for now
                     'status' => 'pending',
                 ]);
-
-                // Fire generation immediately (Replicate handles concurrency well)
-                $this->videoService->generateScene($scene);
+            }
+            
+            // Fire the first scene immediately
+            $firstScene = $project->scenes()->orderBy('sequence_order')->first();
+            if ($firstScene) {
+                $this->videoService->generateScene($firstScene);
             }
         }
 
@@ -123,7 +126,7 @@ class VideoController extends Controller
         $isStillGenerating = false;
 
         foreach ($scenes as $scene) {
-            if ($scene->status === 'generating' || $scene->status === 'pending') {
+            if ($scene->status === 'generating') {
                 // Check Replicate
                 app(VideoGenerationService::class)->checkSceneStatus($scene);
                 $scene->refresh();
@@ -135,6 +138,16 @@ class VideoController extends Controller
 
             if ($scene->status === 'failed') {
                 $hasFailures = true;
+            }
+        }
+
+        // Process scenes sequentially to avoid Replicate rate limits (6 req/min)
+        $generatingCount = $scenes->where('status', 'generating')->count();
+        if ($generatingCount === 0) {
+            $nextPending = $scenes->where('status', 'pending')->sortBy('sequence_order')->first();
+            if ($nextPending) {
+                app(VideoGenerationService::class)->generateScene($nextPending);
+                $isStillGenerating = true; // We just started one
             }
         }
 
