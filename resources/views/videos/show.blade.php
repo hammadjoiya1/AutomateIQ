@@ -197,7 +197,7 @@
 
     @if($project->status === 'generating' || $project->status === 'scripting')
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            function initPolling() {
                 const pollInterval = setInterval(checkStatus, 5000); // Poll every 5 seconds
                 const progressBar = document.getElementById('progress-bar');
                 const progressText = document.getElementById('progress-text');
@@ -221,18 +221,33 @@
                         .then(data => {
                             // Check for percentage in logs (e.g "30%")
                             let logPercent = 0;
-                            if (data.logs) {
-                                const match = data.logs.match(/(\d+)%/);
-                                if (match) {
-                                    logPercent = parseInt(match[1]); // Changed intval to parseInt
-                                    if (logPercent > simulatedProgress) {
-                                        simulatedProgress = logPercent; // Sync simulation to real data
+                            const logs = data.result?.logs || data.logs;
+                            if (logs) {
+                                // 1. Try to find the LAST percentage in logs
+                                const matches = [...logs.matchAll(/(\d{1,3})%/g)];
+                                if (matches.length > 0) {
+                                    const lastMatch = matches[matches.length - 1];
+                                    logPercent = Math.min(100, parseInt(lastMatch[1], 10));
+                                } else {
+                                    // 2. Try to find step outputs e.g. "15/50" or "15 / 50"
+                                    const stepMatches = [...logs.matchAll(/(\d+)\s*\/\s*(\d+)/g)];
+                                    if (stepMatches.length > 0) {
+                                        const lastStep = stepMatches[stepMatches.length - 1];
+                                        const currentStep = parseInt(lastStep[1], 10);
+                                        const totalSteps = parseInt(lastStep[2], 10);
+                                        if (totalSteps > 0 && currentStep <= totalSteps) {
+                                            logPercent = Math.round((currentStep / totalSteps) * 100);
+                                        }
                                     }
+                                }
+
+                                if (logPercent > simulatedProgress) {
+                                    simulatedProgress = logPercent; // Sync simulation to real data
                                 }
                             }
                             
                             // Update UI with best guess
-                            updateUI(Math.floor(simulatedProgress), data.logs ? "Processing..." : "Generating frames...");
+                            updateUI(Math.floor(simulatedProgress), (logs || data.status === 'generating') ? "Processing..." : "Generating frames...");
 
                             if (data.status === 'completed') {
                                 updateUI(100, "Finalizing...");
@@ -251,7 +266,16 @@
                     if (progressPercent) progressPercent.innerText = percent + '%';
                     if (progressText && text) progressText.innerText = text;
                 }
-            });
+
+                // Run once immediately
+                checkStatus();
+            }
+
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                initPolling();
+            } else {
+                document.addEventListener('DOMContentLoaded', initPolling);
+            }
         </script>
     @endif
 </x-public-layout>
