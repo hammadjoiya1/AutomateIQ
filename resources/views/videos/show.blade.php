@@ -1,5 +1,5 @@
 <x-public-layout :meta-title="$project->title ?? 'Video Project'">
-    <div class="py-12 lg:py-20 animate-fade-in">
+    <div class="py-12 lg:py-20 animate-fade-in" id="project-container">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 px-4">
             <div class="flex justify-between items-center mb-8">
                 <div>
@@ -252,7 +252,26 @@
                             if (data.status === 'completed') {
                                 updateUI(100, "Finalizing...");
                                 clearInterval(pollInterval);
-                                setTimeout(() => window.location.reload(), 1000);
+                                
+                                // Fetch the updated HTML dynamically to avoid a flashing hard refresh
+                                fetch(window.location.href)
+                                    .then(res => res.text())
+                                    .then(html => {
+                                        const parser = new DOMParser();
+                                        const doc = parser.parseFromString(html, 'text/html');
+                                        const newContainer = doc.getElementById('project-container');
+                                        const oldContainer = document.getElementById('project-container');
+                                        if (newContainer && oldContainer) {
+                                            oldContainer.innerHTML = newContainer.innerHTML;
+                                            
+                                            // Re-initialize any components if necessary (like Alpine.js)
+                                            if (window.Alpine) {
+                                                window.Alpine.initTree(oldContainer);
+                                            }
+                                        } else {
+                                            window.location.reload(); // Fallback
+                                        }
+                                    });
                             } else if (data.status === 'failed') {
                                 clearInterval(pollInterval);
                                 window.location.reload();
