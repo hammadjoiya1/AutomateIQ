@@ -435,7 +435,7 @@ class ToolRunnerService
     {
         do {
             try {
-                $baseUrl = rtrim(config('openai.base_uri', 'https://api.openai.com/v1'), '/');
+                $baseUrl = rtrim(config('openai.base_uri') ?: 'https://api.openai.com/v1', '/');
 
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . config('openai.api_key'),

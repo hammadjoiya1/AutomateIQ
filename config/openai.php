@@ -34,7 +34,7 @@ return [
     | Here you may specify your OpenAI API base URL used to make requests. This
     | is needed if using a custom API endpoint. Defaults to: api.openai.com/v1
     */
-    'base_uri' => env('OPENAI_BASE_URL'),
+    'base_uri' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
 
     /*
     |--------------------------------------------------------------------------
