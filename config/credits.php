@@ -28,10 +28,35 @@ return [
         ],
     ],
 
-    // Replicate pricing by model in cents per second of video.
+    // Replicate pricing by model in cents per second of video (legacy fallback).
     'replicate_models' => [
         'cjwbw/damo-text-to-video' => [
             'cents_per_second' => (float) env('REPLICATE_DAMO_CENTS_PER_SECOND', 6.00),
+        ],
+    ],
+
+    // Tiered video generation — each tier maps to a Replicate model with its own cost.
+    'video_tiers' => [
+        'standard' => [
+            'model'       => env('VIDEO_TIER_STANDARD_MODEL', 'lightricks/ltx-video'),
+            'label'       => 'Standard',
+            'cost_cents'  => (int) env('VIDEO_TIER_STANDARD_COST_CENTS', 4),
+            'credits'     => (int) env('VIDEO_TIER_STANDARD_CREDITS', 2),
+            'description' => 'Fast drafts & testing. Good quality.',
+        ],
+        'hd' => [
+            'model'       => env('VIDEO_TIER_HD_MODEL', 'minimax/video-01'),
+            'label'       => 'HD',
+            'cost_cents'  => (int) env('VIDEO_TIER_HD_COST_CENTS', 50),
+            'credits'     => (int) env('VIDEO_TIER_HD_CREDITS', 20),
+            'description' => '1080p cinematic quality.',
+        ],
+        'premium' => [
+            'model'       => env('VIDEO_TIER_PREMIUM_MODEL', 'tencent/hunyuan-video'),
+            'label'       => 'Premium',
+            'cost_cents'  => (int) env('VIDEO_TIER_PREMIUM_COST_CENTS', 65),
+            'credits'     => (int) env('VIDEO_TIER_PREMIUM_CREDITS', 25),
+            'description' => 'Highest fidelity. Hollywood-grade.',
         ],
     ],
 

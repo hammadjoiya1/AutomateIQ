@@ -22,7 +22,8 @@ class ToolRunnerService
 
         // --- VIDEO GENERATION (Replicate) 🎥 ---
         if ($tool->tool_type === 'video') {
-            [$costCents, $creditsRequired] = $this->estimateVideoCosts($pricing);
+            $quality = $input['quality'] ?? 'hd';
+            [$costCents, $creditsRequired] = $this->estimateVideoCosts($pricing, $quality);
             $creditsRequired = max($creditsRequired, (int) ($tool->cost_credits ?? 0));
 
             $this->enforceBudgetCaps($tool, $user, $creditsRequired);
@@ -376,16 +377,10 @@ class ToolRunnerService
         return [$costCents, $creditsRequired];
     }
 
-    protected function estimateVideoCosts(CreditPricingService $pricing): array
+    protected function estimateVideoCosts(CreditPricingService $pricing, string $quality = 'hd'): array
     {
-        $defaults = $pricing->getVideoDefaults();
-        $numFrames = (int) ($defaults['num_frames'] ?? 16);
-        $fps = (int) ($defaults['fps'] ?? 8);
-        $replicateModels = config('credits.replicate_models', []);
-        $modelName = (string) (array_key_first($replicateModels) ?? 'cjwbw/damo-text-to-video');
-
-        $costCents = $pricing->estimateVideoCostCents($modelName, $numFrames, $fps);
-        $creditsRequired = $pricing->creditsForCostCents($costCents);
+        $costCents = $pricing->getVideoTierCostCents($quality);
+        $creditsRequired = $pricing->estimateVideoRunCreditsByTier($quality);
 
         return [$costCents, $creditsRequired];
     }
@@ -440,13 +435,15 @@ class ToolRunnerService
     {
         do {
             try {
+                $baseUrl = rtrim(config('openai.base_uri', 'https://api.openai.com/v1'), '/');
+
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . config('openai.api_key'),
                     'Content-Type' => 'application/json',
                 ])
                     ->connectTimeout(10)
                     ->timeout((int) config('openai.request_timeout', 30))
-                    ->post('https://api.openai.com/v1/chat/completions', [
+                    ->post("{$baseUrl}/chat/completions", [
                             'model' => $model,
                             'messages' => [
                                 ['role' => 'system', 'content' => $systemPrompt],

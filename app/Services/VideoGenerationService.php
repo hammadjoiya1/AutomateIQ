@@ -9,11 +9,19 @@ use Illuminate\Support\Facades\Log;
 class VideoGenerationService
 {
     /**
-     * The Replicate models.
-     * Use Damo Text-to-Video (Verified working version hash)
+     * Resolve the Replicate model name from the quality tier.
      */
-    // MiniMax Hailuo (video-01) — 1080p cinematic text-to-video
-    protected string $modelName = 'minimax/video-01';
+    protected function resolveModel(string $quality): string
+    {
+        $tiers = config('credits.video_tiers', []);
+
+        if (isset($tiers[$quality]['model'])) {
+            return $tiers[$quality]['model'];
+        }
+
+        // Fallback to HD tier or hardcoded default
+        return $tiers['hd']['model'] ?? 'minimax/video-01';
+    }
 
     /**
      * Create a video generation prediction via Replicate API.
@@ -24,11 +32,14 @@ class VideoGenerationService
     public function generate(VideoProject $project): ?string
     {
         try {
+            $quality = $project->settings['quality'] ?? 'hd';
+            $modelName = $this->resolveModel($quality);
+
             // Build the prompt with visual style
             $prompt = $this->buildPrompt($project);
 
             $response = Replicate::createPrediction([
-                'model'  => $this->modelName,
+                'model'  => $modelName,
                 'input'  => [
                     'prompt'           => $prompt,
                     'prompt_optimizer' => true,
@@ -42,7 +53,7 @@ class VideoGenerationService
                     'status'   => 'generating',
                     'settings' => array_merge($project->settings ?? [], [
                         'replicate_prediction_id' => $predictionId,
-                        'used_model'              => $this->modelName,
+                        'used_model'              => $modelName,
                     ]),
                 ]);
             }
@@ -65,10 +76,12 @@ class VideoGenerationService
     {
         try {
             $project = $scene->project;
+            $quality = $project->settings['quality'] ?? 'hd';
+            $modelName = $this->resolveModel($quality);
 
             $prompt = $this->buildScenePrompt($scene, $project);
             $response = Replicate::createPrediction([
-                'model' => $this->modelName,
+                'model' => $modelName,
                 'input' => [
                     'prompt'           => $prompt,
                     'prompt_optimizer' => true,
@@ -82,7 +95,7 @@ class VideoGenerationService
                     'status'                  => 'generating',
                     'replicate_prediction_id' => $predictionId,
                     'settings'                => array_merge($scene->settings ?? [], [
-                        'used_model' => $this->modelName,
+                        'used_model' => $modelName,
                     ]),
                 ]);
             }

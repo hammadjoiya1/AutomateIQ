@@ -31,7 +31,7 @@ class VideoController extends Controller
             'prompt' => 'nullable|required_if:mode,simple|string|min:10',
             'script' => 'nullable|required_if:mode,script|string|min:20',
             'visual_style' => 'required|string',
-            'quality' => 'required|in:premium,standard',
+            'quality' => 'required|in:standard,hd,premium',
             'mode' => 'required|in:simple,script',
         ]);
 

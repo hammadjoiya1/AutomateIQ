@@ -15,14 +15,13 @@ class ReplicateService
         $this->token = config('services.replicate.api_token');
     }
 
-    public function generateVideo($prompt)
+    public function generateVideo($prompt, string $model = 'minimax/video-01')
     {
         if (!$this->token) {
             throw new \Exception('Replicate API Token is missing.');
         }
 
-        // MiniMax Hailuo (video-01) — 1080p, ~6s, cinematic quality
-        $response = Http::withToken($this->token)->post("{$this->baseUrl}/models/minimax/video-01/predictions", [
+        $response = Http::withToken($this->token)->post("{$this->baseUrl}/models/{$model}/predictions", [
             'input' => [
                 'prompt'           => $prompt,
                 'prompt_optimizer' => true,

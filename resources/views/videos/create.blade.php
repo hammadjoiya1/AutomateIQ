@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="card p-8 shadow-2xl border-primary/5">
-                <form action="{{ route('videos.store') }}" method="POST" x-data="{ selectedStyle: 'realistic', quality: 'premium', mode: 'simple' }">
+                <form action="{{ route('videos.store') }}" method="POST" x-data="{ selectedStyle: 'realistic', quality: 'hd', mode: 'simple' }">
                     @csrf
                     <input type="hidden" name="mode" :value="mode">
 
@@ -90,7 +90,7 @@ Scene 3: Close up of the cowboy's face, determined."
                             @enderror
                         </div>
                         
-                        {{-- Quality Selector --}}
+                        {{-- Quality Selector — 3 Tiers --}}
                         <div class="bg-bg-2/30 p-5 rounded-2xl border border-border/50 h-fit">
                             <h3 class="text-lg font-bold font-display text-text mb-4 flex items-center gap-2">
                                 <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -99,59 +99,85 @@ Scene 3: Close up of the cowboy's face, determined."
                             <input type="hidden" name="quality" :value="quality">
                             
                             <div class="space-y-3">
-                                {{-- Premium Option --}}
+                                @php $tiers = config('credits.video_tiers', []); @endphp
+
+                                {{-- Standard Option --}}
                                 <div 
-                                    @click="quality = 'premium'"
+                                    @click="quality = 'standard'"
                                     class="cursor-pointer border-2 rounded-xl p-4 transition-all duration-300 relative overflow-hidden group"
-                                    :class="quality === 'premium' ? 'border-primary bg-surface shadow-lg shadow-primary/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
+                                    :class="quality === 'standard' ? 'border-green-500 bg-surface shadow-lg shadow-green-500/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
                                 >
                                     <div class="flex justify-between items-start mb-2 relative z-10">
                                         <div>
-                                            <span class="font-bold text-text block text-lg">Premium</span>
-                                            <span class="text-xs text-muted-text">Kling AI v2.6</span>
+                                            <span class="font-bold text-text block text-lg">Standard</span>
+                                            <span class="text-xs text-muted-text">LTX Video</span>
                                         </div>
                                         <div class="text-right">
-                                            <span class="block font-bold text-text text-lg">~$0.75</span>
+                                            <span class="block font-bold text-green-500 text-lg">{{ $tiers['standard']['credits'] ?? 2 }} credits</span>
                                             <span class="text-[10px] text-muted-text uppercase tracking-wide">Per Video</span>
                                         </div>
                                     </div>
                                     <div class="w-full bg-bg-2 h-1.5 rounded-full overflow-hidden mb-2">
-                                        <div class="bg-gradient-to-r from-primary to-accent h-full w-[95%]"></div>
+                                        <div class="bg-green-500/60 h-full w-[35%]"></div>
                                     </div>
-                                    <p class="text-xs text-muted-text">Hollywood-grade consistency & lighting.</p>
-                                    
-                                    {{-- Active Checkmark --}}
-                                    <div x-show="quality === 'premium'" class="absolute -top-1 -right-1" x-transition>
+                                    <p class="text-xs text-muted-text">{{ $tiers['standard']['description'] ?? 'Fast drafts & testing.' }}</p>
+                                    <div x-show="quality === 'standard'" class="absolute -top-1 -right-1" x-transition>
+                                        <div class="bg-green-500 text-white p-1 rounded-bl-lg shadow-sm">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- HD Option (Default) --}}
+                                <div 
+                                    @click="quality = 'hd'"
+                                    class="cursor-pointer border-2 rounded-xl p-4 transition-all duration-300 relative overflow-hidden group"
+                                    :class="quality === 'hd' ? 'border-primary bg-surface shadow-lg shadow-primary/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
+                                >
+                                    <div class="flex justify-between items-start mb-2 relative z-10">
+                                        <div>
+                                            <span class="font-bold text-text block text-lg">HD</span>
+                                            <span class="text-xs text-muted-text">MiniMax Hailuo</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="block font-bold text-text text-lg">{{ $tiers['hd']['credits'] ?? 20 }} credits</span>
+                                            <span class="text-[10px] text-muted-text uppercase tracking-wide">Per Video</span>
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-bg-2 h-1.5 rounded-full overflow-hidden mb-2">
+                                        <div class="bg-gradient-to-r from-primary to-accent h-full w-[70%]"></div>
+                                    </div>
+                                    <p class="text-xs text-muted-text">{{ $tiers['hd']['description'] ?? '1080p cinematic quality.' }}</p>
+                                    <span class="absolute top-2 left-2 bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full">POPULAR</span>
+                                    <div x-show="quality === 'hd'" class="absolute -top-1 -right-1" x-transition>
                                         <div class="bg-primary text-white p-1 rounded-bl-lg shadow-sm">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         </div>
                                     </div>
                                 </div>
 
-                                {{-- Standard Option --}}
+                                {{-- Premium Option --}}
                                 <div 
-                                    @click="quality = 'standard'"
+                                    @click="quality = 'premium'"
                                     class="cursor-pointer border-2 rounded-xl p-4 transition-all duration-300 relative overflow-hidden group"
-                                    :class="quality === 'standard' ? 'border-success bg-surface shadow-lg shadow-success/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
+                                    :class="quality === 'premium' ? 'border-amber-500 bg-surface shadow-lg shadow-amber-500/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
                                 >
                                     <div class="flex justify-between items-start mb-2 relative z-10">
                                         <div>
-                                            <span class="font-bold text-text block text-lg">Standard</span>
-                                            <span class="text-xs text-muted-text">Zeroscope XL</span>
+                                            <span class="font-bold text-text block text-lg">Premium</span>
+                                            <span class="text-xs text-muted-text">HunyuanVideo</span>
                                         </div>
                                         <div class="text-right">
-                                            <span class="block font-bold text-green-500 text-lg">~$0.05</span>
+                                            <span class="block font-bold text-amber-500 text-lg">{{ $tiers['premium']['credits'] ?? 25 }} credits</span>
                                             <span class="text-[10px] text-muted-text uppercase tracking-wide">Per Video</span>
                                         </div>
                                     </div>
                                     <div class="w-full bg-bg-2 h-1.5 rounded-full overflow-hidden mb-2">
-                                        <div class="bg-green-500/50 h-full w-[40%]"></div>
+                                        <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-full w-[95%]"></div>
                                     </div>
-                                    <p class="text-xs text-muted-text">Great for quick drafts & testing.</p>
-
-                                    {{-- Active Checkmark --}}
-                                    <div x-show="quality === 'standard'" class="absolute -top-1 -right-1" x-transition>
-                                        <div class="bg-success text-white p-1 rounded-bl-lg shadow-sm">
+                                    <p class="text-xs text-muted-text">{{ $tiers['premium']['description'] ?? 'Highest fidelity. Hollywood-grade.' }}</p>
+                                    <div x-show="quality === 'premium'" class="absolute -top-1 -right-1" x-transition>
+                                        <div class="bg-amber-500 text-white p-1 rounded-bl-lg shadow-sm">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         </div>
                                     </div>

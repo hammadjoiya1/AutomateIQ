@@ -72,15 +72,48 @@ class CreditPricingService
 
     public function estimateVideoRunCredits(): int
     {
+        return $this->estimateVideoRunCreditsByTier('hd');
+    }
+
+    /**
+     * Estimate credits for a video run based on quality tier.
+     */
+    public function estimateVideoRunCreditsByTier(string $quality): int
+    {
+        $tiers = config('credits.video_tiers', []);
+
+        if (isset($tiers[$quality])) {
+            return (int) $tiers[$quality]['credits'];
+        }
+
+        // Fallback to HD tier or legacy estimation
+        if (isset($tiers['hd'])) {
+            return (int) $tiers['hd']['credits'];
+        }
+
+        // Legacy fallback
         $defaults = $this->getVideoDefaults();
         $numFrames = (int) ($defaults['num_frames'] ?? 16);
         $fps = (int) ($defaults['fps'] ?? 8);
         $replicateModels = config('credits.replicate_models', []);
         $modelName = (string) (array_key_first($replicateModels) ?? 'cjwbw/damo-text-to-video');
-
         $costCents = $this->estimateVideoCostCents($modelName, $numFrames, $fps);
 
         return $this->creditsForCostCents($costCents);
+    }
+
+    /**
+     * Get the cost in cents for a video quality tier.
+     */
+    public function getVideoTierCostCents(string $quality): int
+    {
+        $tiers = config('credits.video_tiers', []);
+
+        if (isset($tiers[$quality])) {
+            return (int) $tiers[$quality]['cost_cents'];
+        }
+
+        return (int) ($tiers['hd']['cost_cents'] ?? 50);
     }
 
     public function estimateToolCredits(Tool $tool): int
