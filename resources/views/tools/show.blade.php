@@ -123,46 +123,48 @@
                             </template>
 
                             <!-- Dynamic Settings Placeholder -->
-                            <div x-data="{ expanded: false }" class="border-t border-border pt-4">
-                                <button type="button" @click="expanded = !expanded"
-                                    class="flex items-center justify-between w-full text-sm font-medium text-text-muted hover:text-text transition-colors">
-                                    <span>Advanced Settings</span>
-                                    <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': expanded }"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </button>
-                                <div x-show="expanded" x-collapse class="mt-4 space-y-4">
-                                    <div>
-                                        <label class="label">Tone</label>
-                                        <select class="input" x-model="form.tone">
-                                            <option>Professional</option>
-                                            <option>Casual</option>
-                                            <option>Humorous</option>
-                                            <option>Friendly</option>
-                                            <option>Direct</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="label">Length</label>
-                                        <select class="input" x-model="form.length">
-                                            <option>Short</option>
-                                            <option>Medium</option>
-                                            <option>Long</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="label">Format</label>
-                                        <select class="input" x-model="form.format">
-                                            <option>Paragraph</option>
-                                            <option>Bullet Points</option>
-                                            <option>Numbered Steps</option>
-                                            <option>JSON</option>
-                                        </select>
+                            @if($tool->tool_type !== 'video')
+                                <div x-data="{ expanded: false }" class="border-t border-border pt-4">
+                                    <button type="button" @click="expanded = !expanded"
+                                        class="flex items-center justify-between w-full text-sm font-medium text-text-muted hover:text-text transition-colors">
+                                        <span>Advanced Settings</span>
+                                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': expanded }"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+                                    <div x-show="expanded" x-collapse class="mt-4 space-y-4">
+                                        <div>
+                                            <label class="label">Tone</label>
+                                            <select class="input" x-model="form.tone">
+                                                <option>Professional</option>
+                                                <option>Casual</option>
+                                                <option>Humorous</option>
+                                                <option>Friendly</option>
+                                                <option>Direct</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="label">Length</label>
+                                            <select class="input" x-model="form.length">
+                                                <option>Short</option>
+                                                <option>Medium</option>
+                                                <option>Long</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="label">Format</label>
+                                            <select class="input" x-model="form.format">
+                                                <option>Paragraph</option>
+                                                <option>Bullet Points</option>
+                                                <option>Numbered Steps</option>
+                                                <option>JSON</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
 
                             @auth
                                 <div class="border-t border-border pt-4">
