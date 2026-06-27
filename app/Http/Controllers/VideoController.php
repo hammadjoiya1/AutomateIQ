@@ -55,6 +55,21 @@ class VideoController extends Controller
         } else {
             // SCRIPT TO SERIES GENERATION
             $lines = array_filter(array_map('trim', explode("\n", $validated['script'])));
+            
+            // If the user pasted a massive block of text without newlines, split it intelligently
+            if (count($lines) === 1) {
+                $text = $validated['script'];
+                // Check if there are timecodes like 0:00-0:10
+                if (preg_match('/\d+:\d+-\d+:\d+/', $text)) {
+                    // Split before each timecode
+                    $lines = preg_split('/(?=\d+:\d+-\d+:\d+)/', $text, -1, PREG_SPLIT_NO_EMPTY);
+                } else {
+                    // Split by sentences (period, question mark, or exclamation mark followed by space)
+                    $lines = preg_split('/(?<=[.?!])\s+/', $text, -1, PREG_SPLIT_NO_EMPTY);
+                }
+                $lines = array_filter(array_map('trim', $lines));
+            }
+
             $sequence = 1;
 
             foreach ($lines as $line) {
@@ -104,8 +119,8 @@ class VideoController extends Controller
 
         // Multi-scene status check
         $scenes = $project->scenes;
-        $allCompleted = true;
         $hasFailures = false;
+        $isStillGenerating = false;
 
         foreach ($scenes as $scene) {
             if ($scene->status === 'generating' || $scene->status === 'pending') {
@@ -114,27 +129,33 @@ class VideoController extends Controller
                 $scene->refresh();
             }
 
-            if ($scene->status !== 'completed') {
-                $allCompleted = false;
+            if ($scene->status === 'generating' || $scene->status === 'pending') {
+                $isStillGenerating = true;
             }
+
             if ($scene->status === 'failed') {
                 $hasFailures = true;
             }
         }
 
-        // Check if we need to stitch
-        if ($allCompleted && !$hasFailures && !$project->video_url) {
-            // All scenes done, stitch them!
-            $finalUrl = app(\App\Services\VideoStitchingService::class)->stitch($project);
-            if ($finalUrl) {
-                $project->update([
-                    'status' => 'completed',
-                    'video_url' => $finalUrl,
-                    'completed_at' => now(),
-                ]);
+        // Only aggregate status if all scenes have finished processing
+        if (!$isStillGenerating) {
+            if (!$hasFailures && !$project->video_url) {
+                // All scenes done successfully, stitch them!
+                $finalUrl = app(\App\Services\VideoStitchingService::class)->stitch($project);
+                if ($finalUrl) {
+                    $project->update([
+                        'status' => 'completed',
+                        'video_url' => $finalUrl,
+                        'completed_at' => now(),
+                    ]);
+                } else {
+                    $project->update(['status' => 'failed']);
+                }
+            } elseif ($hasFailures) {
+                // Some or all scenes failed
+                $project->update(['status' => 'failed']);
             }
-        } elseif ($allCompleted && $hasFailures) {
-            $project->update(['status' => 'failed']); // Or 'partially_completed'
         }
 
         return response()->json([
