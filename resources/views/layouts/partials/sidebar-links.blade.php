@@ -48,6 +48,17 @@
         Workflows
     </a>
 </li>
+<li>
+    <a href="{{ route('videos.index') }}"
+        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold {{ request()->routeIs('videos.*') ? 'bg-gray-50 text-primary' : 'text-gray-700 hover:text-primary hover:bg-gray-50' }}">
+        <svg class="h-6 w-6 shrink-0 {{ request()->routeIs('videos.*') ? 'text-primary' : 'text-gray-400 group-hover:text-primary' }}"
+            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+        </svg>
+        AI Videos
+    </a>
+</li>
 <li class="text-xs font-semibold leading-6 text-text-muted uppercase tracking-wider mt-6 mb-2">History</li>
 <li>
     <a href="{{ route('tools.history') }}"
