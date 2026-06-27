@@ -338,11 +338,11 @@
                                 <template x-if="videoStatus">
                                     <p class="text-xs text-text/50 mt-4" x-text="'Status: ' + videoStatus"></p>
                                 </template>
-                                <div x-show="videoProgress > 0" class="mt-4 max-w-sm mx-auto">
+                                <div x-show="videoStatus === 'processing' || videoProgress > 0" class="mt-4 max-w-sm mx-auto">
                                     <div class="h-2 rounded-full bg-white/10 overflow-hidden">
-                                        <div class="h-2 bg-primary" :style="'width: ' + videoProgress + '%'" aria-hidden="true"></div>
+                                        <div class="h-2 bg-primary transition-all duration-500" :style="'width: ' + Math.max(5, videoProgress) + '%'" aria-hidden="true"></div>
                                     </div>
-                                    <div class="text-xs text-text/50 mt-2" x-text="videoProgress + '%'"></div>
+                                    <div class="text-xs text-text/50 mt-2" x-text="videoProgress > 0 ? videoProgress + '%' : 'Warming up AI model...'"></div>
                                 </div>
                             </div>
 
@@ -357,11 +357,11 @@
                                 <template x-if="videoStatus">
                                     <p class="text-xs text-text/50 mt-4" x-text="'Status: ' + videoStatus"></p>
                                 </template>
-                                <div x-show="videoProgress > 0" class="mt-4 max-w-sm mx-auto">
+                                <div x-show="videoStatus === 'processing' || videoProgress > 0" class="mt-4 max-w-sm mx-auto">
                                     <div class="h-2 rounded-full bg-white/10 overflow-hidden">
-                                        <div class="h-2 bg-primary" :style="'width: ' + videoProgress + '%'" aria-hidden="true"></div>
+                                        <div class="h-2 bg-primary transition-all duration-500" :style="'width: ' + Math.max(5, videoProgress) + '%'" aria-hidden="true"></div>
                                     </div>
-                                    <div class="text-xs text-text/50 mt-2" x-text="videoProgress + '%'"></div>
+                                    <div class="text-xs text-text/50 mt-2" x-text="videoProgress > 0 ? videoProgress + '%' : 'Warming up AI model...'"></div>
                                 </div>
                                 <div x-show="videoLogs" class="mt-4 text-left text-xs text-text/50 max-w-lg mx-auto whitespace-pre-wrap bg-white/5 border border-white/10 rounded-lg p-3" x-text="videoLogs"></div>
                             </div>
@@ -674,10 +674,25 @@
 
                                     if (prediction?.logs) {
                                         this.videoLogs = prediction.logs;
-                                        const percentMatch = prediction.logs.match(/(\d{1,3})%/);
-                                        if (percentMatch) {
-                                            const percent = Math.min(100, parseInt(percentMatch[1], 10));
+                                        
+                                        // 1. Try to find the LAST percentage in logs
+                                        const matches = [...prediction.logs.matchAll(/(\d{1,3})%/g)];
+                                        if (matches.length > 0) {
+                                            const lastMatch = matches[matches.length - 1];
+                                            const percent = Math.min(100, parseInt(lastMatch[1], 10));
                                             if (!Number.isNaN(percent)) this.videoProgress = percent;
+                                        } else {
+                                            // 2. Try to find step outputs e.g. "15/50" or "15 / 50"
+                                            const stepMatches = [...prediction.logs.matchAll(/(\d+)\s*\/\s*(\d+)/g)];
+                                            if (stepMatches.length > 0) {
+                                                const lastStep = stepMatches[stepMatches.length - 1];
+                                                const currentStep = parseInt(lastStep[1], 10);
+                                                const totalSteps = parseInt(lastStep[2], 10);
+                                                if (totalSteps > 0 && currentStep <= totalSteps) {
+                                                    const percent = Math.round((currentStep / totalSteps) * 100);
+                                                    this.videoProgress = percent;
+                                                }
+                                            }
                                         }
                                     }
 
