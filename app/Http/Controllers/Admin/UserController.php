@@ -61,4 +61,52 @@ class UserController extends Controller
         $user->update(['is_banned' => false]);
         return back()->with('success', 'User has been unbanned.');
     }
+
+    public function destroy(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'You cannot delete yourself.');
+        }
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($user) {
+            foreach ($user->subscriptions as $subscription) {
+                $subscription->items()->delete();
+                $subscription->delete();
+            }
+            $user->delete();
+        });
+
+        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
+    }
+
+    public function impersonate(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'You cannot impersonate yourself.');
+        }
+
+        if ($user->role === 'admin') {
+            return back()->with('error', 'You cannot impersonate other administrators.');
+        }
+
+        session(['impersonated_by' => auth()->id()]);
+        auth()->login($user);
+
+        return redirect()->route('dashboard')->with('success', 'You are now logged in as ' . $user->name);
+    }
+
+    public function leaveImpersonation()
+    {
+        $adminId = session()->pull('impersonated_by');
+
+        if ($adminId) {
+            $admin = User::find($adminId);
+            if ($admin) {
+                auth()->login($admin);
+                return redirect()->route('admin.users.index')->with('success', 'Returned to Admin Panel.');
+            }
+        }
+
+        return redirect()->route('home');
+    }
 }

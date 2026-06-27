@@ -27,6 +27,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'AutomateIQ') }}{{ $isAdmin ? ' - Admin' : '' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -49,6 +50,15 @@
 
 <body data-theme="{{ $activeTheme['slug'] ?? 'dark' }}"
     class="h-full font-sans antialiased text-text transition-colors duration-500 bg-background">
+    @if(session()->has('impersonated_by'))
+        <div class="bg-primary text-white text-center py-2 px-4 text-sm font-semibold flex items-center justify-center gap-4 relative z-50 shadow-md">
+            <span>You are currently impersonating <strong>{{ Auth::user()->name }}</strong>.</span>
+            <form action="{{ route('impersonate.leave') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="underline hover:text-white/80 transition-colors">Leave Impersonation</button>
+            </form>
+        </div>
+    @endif
     <!-- Background Elements -->
     <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] opacity-40">
@@ -232,6 +242,7 @@
         </div>
     </div>
     <x-confirm-dialog />
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    @stack('scripts')
 </body>
-
 </html>

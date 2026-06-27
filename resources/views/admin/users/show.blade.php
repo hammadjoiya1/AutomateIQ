@@ -20,6 +20,19 @@
                         <button type="submit" class="btn btn-danger">Ban User</button>
                     </form>
                 @endif
+                <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
+                    x-data @submit.prevent="$dispatch('confirm', { message: 'Delete this user permanently?', form: $el })">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete User</button>
+                </form>
+                @if($user->role !== 'admin')
+                    <form action="{{ route('admin.users.impersonate', $user) }}" method="POST"
+                        x-data @submit.prevent="$dispatch('confirm', { message: 'Log in and impersonate this user account?', form: $el })">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">Impersonate User</button>
+                    </form>
+                @endif
             @endif
         </div>
     </div>

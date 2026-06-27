@@ -91,6 +91,29 @@
             </div>
         </div>
 
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Usage Trend Chart -->
+            <div class="lg:col-span-2 card p-6 bg-surface/50 border border-white/5">
+                <div class="mb-4">
+                    <h3 class="font-display font-semibold text-lg text-text">SaaS Performance Trends</h3>
+                    <p class="text-xs text-text-muted">Daily generations and user signups over the last 14 days.</p>
+                </div>
+                <div id="usage-chart" class="w-full h-80"></div>
+            </div>
+
+            <!-- Tool Share Donut Chart -->
+            <div class="card p-6 bg-surface/50 border border-white/5 flex flex-col">
+                <div class="mb-4">
+                    <h3 class="font-display font-semibold text-lg text-text">Tool Distribution</h3>
+                    <p class="text-xs text-text-muted">Share of generation runs by tool type.</p>
+                </div>
+                <div class="flex-1 flex items-center justify-center">
+                    <div id="distribution-chart" class="w-full"></div>
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 card p-6 bg-surface/50">
                 <div class="flex items-center justify-between mb-4">
@@ -166,4 +189,156 @@
                 </div>
             </div>
         </div>
+
+@push('scripts')
+<script>
+    function initDashboardCharts() {
+        if (typeof ApexCharts === 'undefined') {
+            return;
+        }
+
+        const usageEl = document.querySelector("#usage-chart");
+        const distEl = document.querySelector("#distribution-chart");
+
+        if (!usageEl || !distEl) return;
+
+        // Prevent double rendering on Turbo page restoration
+        if (usageEl.querySelector('.apexcharts-canvas') || distEl.querySelector('.apexcharts-canvas')) {
+            return;
+        }
+
+        // Timeline Data from PHP
+        const timeline = @json($timeline);
+        const labels = timeline.map(t => t.label);
+        const completedRuns = timeline.map(t => t.completed_runs);
+        const failedRuns = timeline.map(t => t.failed_runs);
+        const newUsers = timeline.map(t => t.new_users);
+
+        // Tool Usage Data from PHP
+        const toolUsage = @json($toolUsage);
+        const toolLabels = toolUsage.map(tu => tu.tool ? tu.tool.name : 'Unknown');
+        const toolTotals = toolUsage.map(tu => tu.total);
+
+        // Dark/Light Mode Colors Configuration
+        const isDark = document.body.getAttribute('data-theme') !== 'light';
+        const textColor = isDark ? '#9ca3af' : '#4b5563';
+        const borderColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+
+        // 1. System Usage Trend Chart (Area/Line)
+        const usageOptions = {
+            series: [{
+                name: 'Successful Runs',
+                type: 'area',
+                data: completedRuns
+            }, {
+                name: 'Failed Runs',
+                type: 'area',
+                data: failedRuns
+            }, {
+                name: 'New Signups',
+                type: 'line',
+                data: newUsers
+            }],
+            chart: {
+                height: 320,
+                type: 'line',
+                toolbar: { show: false },
+                background: 'transparent'
+            },
+            colors: ['#6366f1', '#ef4444', '#10b981'],
+            stroke: {
+                width: [2, 2, 3],
+                curve: 'smooth'
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: [0.15, 0.1, 0],
+                    opacityTo: [0.05, 0.01, 0],
+                    stops: [0, 90, 100]
+                }
+            },
+            grid: {
+                borderColor: borderColor,
+                strokeDashArray: 4,
+                padding: { top: 10, right: 0, bottom: 0, left: 10 }
+            },
+            xaxis: {
+                categories: labels,
+                labels: { style: { colors: textColor } },
+                axisBorder: { show: false },
+                axisTicks: { show: false }
+            },
+            yaxis: [{
+                title: { text: 'Generations', style: { color: textColor } },
+                labels: { style: { colors: textColor } }
+            }, {
+                opposite: true,
+                title: { text: 'New Users', style: { color: textColor } },
+                labels: { style: { colors: textColor } }
+            }],
+            legend: {
+                position: 'top',
+                horizontalAlign: 'right',
+                labels: { colors: textColor }
+            },
+            theme: { mode: isDark ? 'dark' : 'light' },
+            tooltip: { shared: true, intersect: false }
+        };
+
+        const usageChart = new ApexCharts(usageEl, usageOptions);
+        usageChart.render();
+
+        // 2. Tool Distribution Chart (Donut)
+        const distOptions = {
+            series: toolTotals.length > 0 ? toolTotals : [1],
+            chart: {
+                type: 'donut',
+                height: 280,
+                background: 'transparent'
+            },
+            labels: toolLabels.length > 0 ? toolLabels : ['No Runs'],
+            colors: ['#6366f1', '#3b82f6', '#10b981', '#f59e0b', '#ec4899'],
+            stroke: { show: false },
+            legend: {
+                position: 'bottom',
+                labels: { colors: textColor }
+            },
+            dataLabels: { enabled: false },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '75%',
+                        labels: {
+                            show: true,
+                            name: { show: true, color: textColor },
+                            value: {
+                                show: true,
+                                color: isDark ? '#ffffff' : '#111827',
+                                formatter: function (val) { return val; }
+                            },
+                            total: {
+                                show: true,
+                                label: 'Total Runs',
+                                color: textColor,
+                                formatter: function (w) {
+                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            theme: { mode: isDark ? 'dark' : 'light' }
+        };
+
+        const distChart = new ApexCharts(distEl, distOptions);
+        distChart.render();
+    }
+
+    document.addEventListener("DOMContentLoaded", initDashboardCharts);
+    document.addEventListener("turbo:load", initDashboardCharts);
+</script>
+@endpush
 </x-admin-layout>

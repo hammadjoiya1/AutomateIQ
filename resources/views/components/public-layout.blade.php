@@ -22,6 +22,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $metaTitle ?? \App\Models\Setting::get('site_name', config('app.name')) }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     @if ($metaDescription)
         <meta name="description" content="{{ $metaDescription }}">
     @endif
@@ -44,6 +45,15 @@
 
 <body data-theme="{{ $activeTheme['slug'] ?? 'dark' }}"
     class="antialiased min-h-screen flex flex-col relative transition-colors duration-500 bg-background text-text">
+    @if(session()->has('impersonated_by'))
+        <div class="bg-primary text-white text-center py-2 px-4 text-sm font-semibold flex items-center justify-center gap-4 relative z-50 shadow-md">
+            <span>You are currently impersonating <strong>{{ Auth::user()->name }}</strong>.</span>
+            <form action="{{ route('impersonate.leave') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="underline hover:text-white/80 transition-colors">Leave Impersonation</button>
+            </form>
+        </div>
+    @endif
     <!-- Background removed -->
 
     <div x-data="{ open: false }" class="sticky top-0 z-50">
@@ -65,25 +75,9 @@
                         <div class="shrink-0 flex items-center">
                             <a href="{{ route('home') }}" class="flex items-center gap-2 group">
                                 @if ($logo = \App\Models\Setting::get('site_logo'))
-                                    <img src="{{ Storage::url($logo) }}" class="h-8 w-auto" alt="Logo">
+                                    <img src="{{ Storage::url($logo) }}" class="h-8 w-auto rounded-full object-cover" alt="Logo">
                                 @else
-                                    {{-- Modern AI Logo Icon --}}
-                                    <div class="relative w-10 h-10 group-hover:scale-105 transition-transform">
-                                        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                            class="w-full h-full">
-                                            <defs>
-                                                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                    <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
-                                                    <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
-                                                </linearGradient>
-                                            </defs>
-                                            {{-- Geometric AI Symbol --}}
-                                            <circle cx="20" cy="20" r="18" fill="url(#logoGradient)" opacity="0.1" />
-                                            <path d="M20 8 L28 14 L28 26 L20 32 L12 26 L12 14 Z" fill="url(#logoGradient)"
-                                                stroke="white" stroke-width="1" opacity="0.9" />
-                                            <circle cx="20" cy="20" r="4" fill="white" />
-                                        </svg>
-                                    </div>
+                                    <img src="{{ asset('images/favicon.png') }}" class="w-10 h-10 rounded-full object-cover border border-primary/20 group-hover:scale-105 transition-transform" alt="Logo">
                                 @endif
                                 <span class="font-bold text-xl tracking-tight">
                                     {{ \App\Models\Setting::get('site_name', 'AutomateIQ') }}
@@ -274,23 +268,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-12">
                 <div class="col-span-1 md:col-span-1 space-y-6">
                     <div class="flex items-center gap-2">
-                        {{-- Modern AI Logo Icon --}}
-                        <div class="relative w-8 h-8">
-                            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                class="w-full h-full">
-                                <defs>
-                                    <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                {{-- Geometric AI Symbol --}}
-                                <circle cx="20" cy="20" r="18" fill="url(#footerLogoGradient)" opacity="0.1" />
-                                <path d="M20 8 L28 14 L28 26 L20 32 L12 26 L12 14 Z" fill="url(#footerLogoGradient)"
-                                    stroke="currentColor" stroke-width="1" opacity="0.9" />
-                                <circle cx="20" cy="20" r="4" fill="currentColor" />
-                            </svg>
-                        </div>
+                        <img src="{{ asset('images/favicon.png') }}" class="w-8 h-8 rounded-full object-cover border border-primary/20" alt="Logo">
                         <span class="font-bold text-xl font-display text-text">AutomateIQ</span>
                     </div>
                     <p class="text-sm text-text-muted leading-relaxed max-w-xs">

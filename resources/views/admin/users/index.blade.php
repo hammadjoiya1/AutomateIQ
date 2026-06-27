@@ -60,18 +60,33 @@
                                     <a href="{{ route('admin.users.show', $user) }}" class="btn btn-sm btn-ghost">View</a>
                                     @if($user->id !== Auth::id())
                                         @if($user->is_banned)
-                                                <form action="{{ route('admin.users.unban', $user) }}" method="POST"
-                                                    x-data @submit.prevent="$dispatch('confirm', { message: 'Unban this user?', form: $el })">
+                                            <form action="{{ route('admin.users.unban', $user) }}" method="POST"
+                                                x-data @submit.prevent="$dispatch('confirm', { message: 'Unban this user?', form: $el })">
                                                 @csrf
                                                 <button type="submit"
                                                     class="text-green-500 hover:text-green-400 text-xs font-bold">Unban</button>
                                             </form>
                                         @else
-                                                <form action="{{ route('admin.users.ban', $user) }}" method="POST"
-                                                    x-data @submit.prevent="$dispatch('confirm', { message: 'Ban this user?', form: $el })">
+                                            <form action="{{ route('admin.users.ban', $user) }}" method="POST"
+                                                x-data @submit.prevent="$dispatch('confirm', { message: 'Ban this user?', form: $el })">
                                                 @csrf
                                                 <button type="submit"
                                                     class="text-red-500 hover:text-red-400 text-xs font-bold">Ban</button>
+                                            </form>
+                                        @endif
+                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
+                                            x-data @submit.prevent="$dispatch('confirm', { message: 'Delete this user permanently?', form: $el })" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="text-red-500 hover:text-red-400 text-xs font-bold">Delete</button>
+                                        </form>
+                                        @if($user->role !== 'admin')
+                                            <form action="{{ route('admin.users.impersonate', $user) }}" method="POST"
+                                                x-data @submit.prevent="$dispatch('confirm', { message: 'Log in and impersonate this user account?', form: $el })" class="inline">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="text-primary hover:opacity-80 text-xs font-bold">Impersonate</button>
                                             </form>
                                         @endif
                                     @endif

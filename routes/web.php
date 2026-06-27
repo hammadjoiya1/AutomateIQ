@@ -60,6 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/impersonate/leave', [\App\Http\Controllers\Admin\UserController::class, 'leaveImpersonation'])->name('impersonate.leave');
 
     // Script Writer Tool
     Route::get('/tools/script-writer', [\App\Http\Controllers\ScriptController::class, 'create'])->name('tools.script-writer');
@@ -83,12 +84,17 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.audit'])->prefix('admin')
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     Route::post('/users/{user}/ban', [\App\Http\Controllers\Admin\UserController::class, 'ban'])->name('users.ban');
     Route::post('/users/{user}/unban', [\App\Http\Controllers\Admin\UserController::class, 'unban'])->name('users.unban');
+    Route::post('/users/{user}/impersonate', [\App\Http\Controllers\Admin\UserController::class, 'impersonate'])->name('users.impersonate');
 
     // 3. Tool Management
-    Route::resource('tools', \App\Http\Controllers\Admin\ToolController::class);
     Route::post('/tools/reorder', [\App\Http\Controllers\Admin\ToolController::class, 'reorder'])->name('tools.reorder');
     Route::get('/tools/analytics', [\App\Http\Controllers\Admin\ToolAnalyticsController::class, 'index'])->name('tools.analytics');
+    Route::resource('tools', \App\Http\Controllers\Admin\ToolController::class);
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+
+    // Comments Moderation
+    Route::get('/comments/pending', [\App\Http\Controllers\Admin\CommentController::class, 'pending'])->name('comments.pending');
+    Route::resource('comments', \App\Http\Controllers\Admin\CommentController::class)->except(['create', 'store', 'show', 'edit']);
 
     // 4. Tool Runs / Logs
     Route::get('/logs', [\App\Http\Controllers\Admin\RunController::class, 'index'])->name('logs.index');
