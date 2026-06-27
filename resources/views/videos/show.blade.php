@@ -1,16 +1,15 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-text leading-tight">
-                {{ $project->title ?? 'Video Project' }}
-            </h2>
-            <a href="{{ route('videos.index') }}" class="btn-secondary px-4 py-2">
-                ← Back to Videos
-            </a>
-        </div>
-    </x-slot>
-
-    <div class="py-12">
+<x-public-layout :meta-title="$project->title ?? 'Video Project'">
+    <div class="py-12 lg:py-20 animate-fade-in">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 px-4">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-extrabold font-display text-text">{{ $project->title ?? 'Video Project' }}</h1>
+                    <p class="text-sm text-text-muted mt-1">Status and rendered results for this video generation project.</p>
+                </div>
+                <a href="{{ route('videos.index') }}" class="btn px-4 py-2 bg-surface hover:bg-surface-2 border border-border text-text rounded-lg text-sm transition-colors">
+                    ← Back to Videos
+                </a>
+            </div>
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="card p-6">
                 {{-- Status Banner --}}
@@ -255,4 +254,4 @@
             });
         </script>
     @endif
-</x-app-layout>
+</x-public-layout>

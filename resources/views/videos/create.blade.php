@@ -1,12 +1,25 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-text leading-tight">
-            {{ __('Create Video') }}
-        </h2>
-    </x-slot>
+<x-public-layout :meta-title="'Create AI Video — AutomateIQ'">
+    <div class="py-12 lg:py-20 animate-fade-in">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-4">
+            <!-- Breadcrumbs -->
+            <div class="mb-8">
+                <nav class="flex mb-2" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-3 text-xs">
+                        <li class="inline-flex items-center">
+                            <a href="{{ route('tools.index') }}" class="text-text-muted hover:text-text">Tools</a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="w-3 h-3 text-text-muted mx-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                                <span class="text-text-muted font-semibold">AI Video Generator</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+                <h1 class="text-3xl font-extrabold font-display text-text">AI Video Generator</h1>
+                <p class="text-sm text-text-muted mt-1">Generate high-fidelity AI video clips or full stitched scenes from scripts.</p>
+            </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="card p-8 shadow-2xl border-primary/5">
                 <form action="{{ route('videos.store') }}" method="POST" x-data="{ selectedStyle: 'realistic', quality: 'hd', mode: 'simple' }">
                     @csrf
@@ -254,4 +267,4 @@ Scene 3: Close up of the cowboy's face, determined."
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-public-layout>

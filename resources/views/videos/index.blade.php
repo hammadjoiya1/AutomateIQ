@@ -1,16 +1,15 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-text leading-tight">
-                {{ __('My Videos') }}
-            </h2>
-            <a href="{{ route('videos.create') }}" class="btn-primary px-4 py-2">
-                + Create New Video
-            </a>
-        </div>
-    </x-slot>
-
-    <div class="py-12">
+<x-public-layout :meta-title="'My AI Videos — AutomateIQ'">
+    <div class="py-12 lg:py-20 animate-fade-in">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-4">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-extrabold font-display text-text">My AI Videos</h1>
+                    <p class="text-sm text-text-muted mt-1 font-medium">History and downloads of your stitched video projects.</p>
+                </div>
+                <a href="{{ route('videos.create') }}" class="btn px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-sm font-semibold transition-colors">
+                    + Create New Video
+                </a>
+            </div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if($projects->isEmpty())
                 <div class="card p-12 text-center">
@@ -75,4 +74,4 @@
             @endif
         </div>
     </div>
-</x-app-layout>
+</x-public-layout>
