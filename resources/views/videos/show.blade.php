@@ -268,6 +268,12 @@
                                             if (window.Alpine) {
                                                 window.Alpine.initTree(oldContainer);
                                             }
+
+                                            // Force the video player to load the new source
+                                            const videoElement = oldContainer.querySelector('video');
+                                            if (videoElement) {
+                                                videoElement.load();
+                                            }
                                         } else {
                                             window.location.reload(); // Fallback
                                         }
