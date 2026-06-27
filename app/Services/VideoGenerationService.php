@@ -38,13 +38,8 @@ class VideoGenerationService
             // Build the prompt with visual style
             $prompt = $this->buildPrompt($project);
 
-            $response = Replicate::createPrediction([
-                'model'  => $modelName,
-                'input'  => [
-                    'prompt'           => $prompt,
-                    'prompt_optimizer' => true,
-                ],
-            ]);
+            $replicateService = app(ReplicateService::class);
+            $response = $replicateService->generateVideo($prompt, $modelName);
 
             $predictionId = $response['id'] ?? null;
 
@@ -80,13 +75,8 @@ class VideoGenerationService
             $modelName = $this->resolveModel($quality);
 
             $prompt = $this->buildScenePrompt($scene, $project);
-            $response = Replicate::createPrediction([
-                'model' => $modelName,
-                'input' => [
-                    'prompt'           => $prompt,
-                    'prompt_optimizer' => true,
-                ],
-            ]);
+            $replicateService = app(ReplicateService::class);
+            $response = $replicateService->generateVideo($prompt, $modelName);
 
             $predictionId = $response['id'] ?? null;
 
@@ -123,7 +113,8 @@ class VideoGenerationService
         }
 
         try {
-            $response = Replicate::getPrediction($predictionId);
+            $replicateService = app(ReplicateService::class);
+            $response = $replicateService->checkStatus($predictionId);
 
             $status = $response['status'] ?? 'unknown';
             $output = $response['output'] ?? null;
@@ -165,7 +156,8 @@ class VideoGenerationService
             return ['status' => 'failed', 'error' => 'No ID'];
 
         try {
-            $response = Replicate::getPrediction($predictionId);
+            $replicateService = app(ReplicateService::class);
+            $response = $replicateService->checkStatus($predictionId);
             $status = $response['status'] ?? 'unknown';
             $output = $response['output'] ?? null;
 
