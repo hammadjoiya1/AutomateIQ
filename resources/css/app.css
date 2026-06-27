@@ -133,6 +133,20 @@
         opacity: 1;
     }
 
+    /* Global Disabled Button Styling — Overrides browser default disabled rendering */
+    .btn:disabled,
+    button:disabled,
+    [disabled] {
+        opacity: 0.6 !important;
+        cursor: not-allowed !important;
+        background: rgba(91, 33, 182, 0.4) !important; /* Muted primary background */
+        color: rgba(255, 255, 255, 0.7) !important; /* Muted text */
+        border-color: transparent !important;
+        box-shadow: none !important;
+        transform: none !important;
+        animation: none !important;
+    }
+
     .btn-primary {
         background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%);
         color: white;
