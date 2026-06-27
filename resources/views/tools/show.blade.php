@@ -206,13 +206,11 @@
 
                             <div class="pt-2">
                                 <button type="submit"
-                                    class="btn btn-primary btn-lg w-full group relative overflow-hidden"
-                                    :disabled="loading || !form.input">
-                                    <span class="relative z-10 flex items-center justify-center gap-2"
-                                        x-show="!loading">
+                                    :disabled="loading || !form.input"
+                                    class="w-full px-8 py-4 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center justify-center gap-2">
+                                    <span class="flex items-center justify-center gap-2" x-show="!loading">
                                         Generate Content
-                                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                         </svg>
