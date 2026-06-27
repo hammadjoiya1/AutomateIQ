@@ -58,6 +58,10 @@ class ToolController extends Controller
 
     public function show($slug)
     {
+        if ($slug === 'ai-video-generator') {
+            return redirect()->route('videos.create');
+        }
+
         $tool = Tool::with('tags')->where('slug', $slug)->where('status', true)->firstOrFail();
         $pricing = app(CreditPricingService::class);
         $estimatedCredits = $pricing->estimateToolCredits($tool);
