@@ -53,34 +53,32 @@ class VideoController extends Controller
             // SINGLE VIDEO GENERATION
             $this->videoService->generate($project);
         } else {
-            // SCRIPT TO SERIES GENERATION
-            $lines = array_filter(array_map('trim', explode("\n", $validated['script'])));
+            // SCRIPT TO SERIES GENERATION — Intelligent Parsing
+            $parser = app(\App\Services\ScriptParserService::class);
+            $parsedScenes = $parser->parseScript($validated['script']);
             
-            // If the user pasted a massive block of text without newlines, split it intelligently
-            if (count($lines) === 1) {
-                $text = $validated['script'];
-                // Check if there are timecodes like 0:00-0:10
-                if (preg_match('/\d+:\d+-\d+:\d+/', $text)) {
-                    // Split before each timecode
-                    $lines = preg_split('/(?=\d+:\d+-\d+:\d+)/', $text, -1, PREG_SPLIT_NO_EMPTY);
-                } else {
-                    // Split by sentences (period, question mark, or exclamation mark followed by space)
-                    $lines = preg_split('/(?<=[.?!])\s+/', $text, -1, PREG_SPLIT_NO_EMPTY);
-                }
-                $lines = array_filter(array_map('trim', $lines));
-            }
-
             $sequence = 1;
 
-            foreach ($lines as $line) {
-                if (strlen($line) < 5)
-                    continue; // Skip very short lines
+            foreach ($parsedScenes as $parsed) {
+                // Only the VISUAL description goes to the video AI
+                $visualPrompt = $parsed['visual'];
+                if (strlen($visualPrompt) < 5) {
+                    continue; // Skip scenes with no meaningful visual
+                }
 
                 $scene = $project->scenes()->create([
                     'sequence_order' => $sequence++,
-                    'script_text' => $line,
-                    'image_prompt' => $line, // Use script line as prompt for now
-                    'status' => 'pending',
+                    'script_text'    => $parsed['raw'],       // Full original line for reference
+                    'image_prompt'   => $visualPrompt,         // Clean visual-only prompt for video AI
+                    'status'         => 'pending',
+                    'settings'       => [
+                        'timecode'   => $parsed['timecode'],
+                        'dialogue'   => $parsed['dialogue'],
+                        'sound_cues' => $parsed['sound_cues'],
+                        'tone'       => $parsed['tone'],
+                        'voice'      => $parsed['voice'],
+                        'speed'      => $parsed['speed'],
+                    ],
                 ]);
             }
             

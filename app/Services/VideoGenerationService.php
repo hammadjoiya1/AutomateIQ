@@ -81,14 +81,23 @@ class VideoGenerationService
             $predictionId = $response['id'] ?? null;
 
             if ($predictionId) {
-                // Generate audio track synchronously (it's fast)
-                $audioUrl = app(\App\Services\AudioGenerationService::class)->generateVoiceover($scene->script_text, $project->id);
+                // Generate audio track using pre-parsed dialogue and tone
+                $audioUrl = null;
+                $settings = $scene->settings ?? [];
+                $dialogue = $settings['dialogue'] ?? '';
+                
+                if (!empty($dialogue)) {
+                    $voice = $settings['voice'] ?? 'alloy';
+                    $speed = $settings['speed'] ?? 1.0;
+                    $audioUrl = app(\App\Services\AudioGenerationService::class)
+                        ->generateVoiceover($dialogue, $project->id, $voice, $speed);
+                }
 
                 $scene->update([
                     'status'                  => 'generating',
                     'replicate_prediction_id' => $predictionId,
                     'audio_url'               => $audioUrl,
-                    'settings'                => array_merge($scene->settings ?? [], [
+                    'settings'                => array_merge($settings, [
                         'used_model' => $modelName,
                     ]),
                 ]);
