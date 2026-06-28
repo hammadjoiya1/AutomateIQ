@@ -137,10 +137,51 @@ class ScriptParserService
                 if (!empty($scenesData)) {
                     $scenes = [];
                     foreach ($scenesData as $sceneItem) {
-                        $timecode = $sceneItem['timecode'] ?? $sceneItem['time'] ?? null;
-                        $visual = $sceneItem['visual'] ?? $sceneItem['image_prompt'] ?? $sceneItem['prompt'] ?? $sceneItem['visual_description'] ?? '';
-                        $soundCues = $sceneItem['sound_cues'] ?? $sceneItem['sound_effects'] ?? $sceneItem['sound'] ?? $sceneItem['sfx'] ?? '';
-                        $dialogue = $sceneItem['dialogue'] ?? $sceneItem['voiceover'] ?? $sceneItem['audio'] ?? $sceneItem['speech'] ?? '';
+                        // 1. Timecode synonyms
+                        $timecode = $sceneItem['timecode'] 
+                            ?? $sceneItem['time'] 
+                            ?? $sceneItem['time_interval'] 
+                            ?? $sceneItem['timestamp'] 
+                            ?? $sceneItem['duration'] 
+                            ?? $sceneItem['interval'] 
+                            ?? null;
+                        
+                        // 2. Visual / Prompt synonyms
+                        $visual = $sceneItem['visual'] 
+                            ?? $sceneItem['visuals'] 
+                            ?? $sceneItem['visual_description'] 
+                            ?? $sceneItem['image_prompt'] 
+                            ?? $sceneItem['prompt'] 
+                            ?? $sceneItem['scene_description'] 
+                            ?? $sceneItem['description'] 
+                            ?? $sceneItem['video_prompt'] 
+                            ?? $sceneItem['video'] 
+                            ?? '';
+                        
+                        // 3. Sound cue synonyms
+                        $soundCues = $sceneItem['sound_cues'] 
+                            ?? $sceneItem['sound_effects'] 
+                            ?? $sceneItem['sound'] 
+                            ?? $sceneItem['sfx'] 
+                            ?? $sceneItem['audio_effects'] 
+                            ?? $sceneItem['sound_cue'] 
+                            ?? $sceneItem['sound_effect'] 
+                            ?? $sceneItem['bg_sound'] 
+                            ?? $sceneItem['background_sound'] 
+                            ?? '';
+                        
+                        // 4. Dialogue / Voiceover synonyms
+                        $dialogue = $sceneItem['dialogue'] 
+                            ?? $sceneItem['dialog'] 
+                            ?? $sceneItem['narration'] 
+                            ?? $sceneItem['voiceover'] 
+                            ?? $sceneItem['voice_over'] 
+                            ?? $sceneItem['audio'] 
+                            ?? $sceneItem['speech'] 
+                            ?? $sceneItem['spoken'] 
+                            ?? $sceneItem['text'] 
+                            ?? $sceneItem['script'] 
+                            ?? '';
 
                         $visual = trim($visual);
                         $soundCues = trim($soundCues);
