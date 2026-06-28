@@ -51,11 +51,34 @@ class VideoController extends Controller
 
         if ($mode === 'simple') {
             // SINGLE VIDEO GENERATION
+            $videoTiers = config('credits.video_tiers', []);
+            $creditsRequired = $videoTiers[$quality]['credits'] ?? 20;
+
+            if (auth()->user()->credits < $creditsRequired) {
+                return back()->with('error', "Insufficient credits. You need {$creditsRequired} credits for this video.");
+            }
+            auth()->user()->debitCredits($creditsRequired);
+            app(\App\Services\UsageMeterService::class)->recordToolRun(auth()->user(), true, $videoTiers[$quality]['cost_cents'] ?? 50, $creditsRequired);
+
             $this->videoService->generate($project);
         } else {
             // SCRIPT TO SERIES GENERATION — Intelligent Parsing
             $parser = app(\App\Services\ScriptParserService::class);
             $parsedScenes = $parser->parseScript($validated['script']);
+            
+            $validScenesCount = collect($parsedScenes)->filter(fn($s) => strlen($s['visual']) >= 5)->count();
+            if ($validScenesCount === 0) {
+                return back()->with('error', "Could not extract any valid scenes from the script.");
+            }
+
+            $videoTiers = config('credits.video_tiers', []);
+            $creditsRequired = ($videoTiers[$quality]['credits'] ?? 20) * $validScenesCount;
+
+            if (auth()->user()->credits < $creditsRequired) {
+                return back()->with('error', "Insufficient credits. You need {$creditsRequired} credits for {$validScenesCount} scenes.");
+            }
+            auth()->user()->debitCredits($creditsRequired);
+            app(\App\Services\UsageMeterService::class)->recordToolRun(auth()->user(), true, ($videoTiers[$quality]['cost_cents'] ?? 50) * $validScenesCount, $creditsRequired);
             
             $sequence = 1;
 
