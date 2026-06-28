@@ -22,7 +22,36 @@
 
             <div class="card p-8 shadow-2xl border-primary/5">
 
-                <form action="{{ route('videos.store') }}" method="POST" x-data="{ selectedStyle: 'realistic', quality: 'hd', mode: 'simple' }">
+                <form action="{{ route('videos.store') }}" method="POST" x-data="{ 
+                    selectedStyle: 'realistic', 
+                    quality: 'hd', 
+                    mode: 'simple',
+                    isEnhancing: false,
+                    async enhancePrompt() {
+                        const promptInput = this.$refs.simplePrompt;
+                        if (!promptInput.value || promptInput.value.trim().length < 5) return;
+                        
+                        this.isEnhancing = true;
+                        try {
+                            const res = await fetch('{{ route('videos.enhance-prompt') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+                                },
+                                body: JSON.stringify({ prompt: promptInput.value })
+                            });
+                            const data = await res.json();
+                            if (data.enhanced_prompt) {
+                                promptInput.value = data.enhanced_prompt;
+                            }
+                        } catch (e) {
+                            console.error('Enhancement failed', e);
+                        } finally {
+                            this.isEnhancing = false;
+                        }
+                    }
+                }">
                     @csrf
                     <input type="hidden" name="mode" :value="mode">
 
@@ -62,14 +91,18 @@
                             <div x-show="mode === 'simple'" class="relative group" x-transition>
                                 <div class="absolute -inset-0.5 bg-gradient-to-r from-primary to-accent rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
                                 <textarea
+                                    x-ref="simplePrompt"
                                     name="prompt"
                                     rows="6"
                                     class="relative w-full rounded-xl border border-border bg-surface/50 text-text p-5 focus:ring-0 focus:border-primary/50 transition-all placeholder:text-muted-text/50 resize-none z-10"
                                     placeholder="Describe your video in detail... Example: A futuristic drone flying through a neon-lit cyberpunk city at night as rain falls gently..."
+                                    :disabled="isEnhancing"
                                 >{{ old('prompt') }}</textarea>
-                                <button type="button" class="absolute bottom-3 right-3 text-xs bg-bg-2 hover:bg-primary hover:text-white border border-border text-muted-text px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 z-20 shadow-sm">
-                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                    Enhance Prompt
+                                
+                                <button type="button" @click="enhancePrompt()" :disabled="isEnhancing" class="absolute bottom-3 right-3 text-xs bg-bg-2 hover:bg-primary hover:text-white border border-border text-muted-text px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 z-20 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg x-show="!isEnhancing" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    <svg x-show="isEnhancing" class="w-3 h-3 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                    <span x-text="isEnhancing ? 'Enhancing...' : 'Enhance Prompt'"></span>
                                 </button>
                             </div>
 

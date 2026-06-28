@@ -107,12 +107,6 @@ class OpenAIService
         };
     }
 
-    /**
-     * Get estimated duration in seconds
-     *
-     * @param string $length
-     * @return int
-     */
     protected function getDuration(string $length): int
     {
         return match ($length) {
@@ -121,5 +115,41 @@ class OpenAIService
             'long' => 180,
             default => 60,
         };
+    }
+
+    /**
+     * Enhance a short video prompt into a highly detailed cinematic prompt.
+     *
+     * @param string $prompt
+     * @return string
+     * @throws Exception
+     */
+    public function enhancePrompt(string $prompt): string
+    {
+        try {
+            $response = OpenAI::chat()->create([
+                'model' => config('services.openai.model', 'gpt-4'),
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => 'You are an expert AI Video Prompt Engineer. Your job is to take a short, basic description of a video scene and expand it into a highly detailed, cinematic, and descriptive prompt optimized for AI video generators (like Sora, MiniMax, or Runway). 
+                        Focus on: lighting, camera angle, subject details, atmosphere, motion, and lens type (e.g., 35mm, cinematic depth of field). 
+                        Do NOT output any conversational filler or introductions. Just output the raw enhanced prompt.'
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => "Enhance this video prompt: {$prompt}"
+                    ]
+                ],
+                'max_tokens' => 300,
+                'temperature' => 0.7,
+            ]);
+
+            return trim($response->choices[0]->message->content);
+
+        } catch (Exception $e) {
+            Log::error('OpenAI Prompt Enhancement Error: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

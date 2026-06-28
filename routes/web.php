@@ -7,6 +7,16 @@ Route::post('/lemonsqueezy/webhook', [\App\Http\Controllers\LemonSqueezyWebhookC
     ->name('lemonsqueezy.webhook');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/videos/enhance-prompt', function(Illuminate\Http\Request $request, \App\Services\OpenAIService $openai) {
+        $request->validate(['prompt' => 'required|string|max:1000']);
+        try {
+            $enhanced = $openai->enhancePrompt($request->prompt);
+            return response()->json(['enhanced_prompt' => $enhanced]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Enhancement failed: ' . $e->getMessage()], 500);
+        }
+    })->name('videos.enhance-prompt');
+
     Route::get('/billing/checkout/{plan}', [\App\Http\Controllers\BillingController::class, 'checkout'])
         ->name('billing.checkout');
     Route::get('/billing/portal', [\App\Http\Controllers\BillingController::class, 'portal'])
