@@ -416,11 +416,9 @@
                 checkStatus();
             }
 
-            if (document.readyState === 'complete' || document.readyState === 'interactive') {
-                initPolling();
-            } else {
-                document.addEventListener('DOMContentLoaded', initPolling);
-            }
+            // Execute immediately since the script is at the bottom of the body
+            // This prevents the UI from freezing if external scripts (like Vite's app.js) take too long to load or time out.
+            initPolling();
         </script>
     @endif
 @if($project->status === 'generating' || $project->status === 'scripting')
