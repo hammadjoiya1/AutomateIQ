@@ -256,7 +256,11 @@
                 
                 // Persistent simulated progress state
                 const storageKey = 'progress_project_{{ $project->id }}';
-                let simulatedProgress = parseFloat(localStorage.getItem(storageKey)) || 5;
+                let simulatedProgress = 5;
+                try {
+                    simulatedProgress = parseFloat(localStorage.getItem(storageKey)) || 5;
+                } catch (e) {}
+                
                 const maxSimulated = 90;
                 const duration = 120; // Approx 2 minutes per scene
                 const increment = (maxSimulated - 5) / (duration / 5); // Increment per 5s
@@ -266,8 +270,13 @@
                         // Update simulated progress locally first
                         if (simulatedProgress < maxSimulated) {
                             simulatedProgress += increment;
-                            localStorage.setItem(storageKey, simulatedProgress);
+                            try {
+                                localStorage.setItem(storageKey, simulatedProgress);
+                            } catch (e) {} // Ignore localStorage errors
                         }
+                        
+                        // Immediately update UI with simulated progress so it doesn't freeze while waiting for the server
+                        updateUI(Math.floor(simulatedProgress), "Processing...");
 
                         fetch('{{ route('videos.check-status', $project) }}')
                             .then(response => response.json())
