@@ -252,6 +252,37 @@
                                 displayPercent = highestProgress;
                             }
 
+                            // Dynamic DOM Replacement on scene completion
+                            if (window.lastCompletedScenes === undefined) {
+                                window.lastCompletedScenes = data.completed_scenes;
+                            } else if (data.completed_scenes > window.lastCompletedScenes) {
+                                window.lastCompletedScenes = data.completed_scenes;
+                                
+                                // A scene finished! Reset simulation for next scene
+                                simulatedProgress = 5;
+                                localStorage.setItem(storageKey, simulatedProgress);
+                                
+                                // Fetch updated HTML dynamically to show the new scene video
+                                fetch(window.location.href)
+                                    .then(res => res.text())
+                                    .then(html => {
+                                        const parser = new DOMParser();
+                                        const doc = parser.parseFromString(html, 'text/html');
+                                        const newContainer = doc.getElementById('project-container');
+                                        const oldContainer = document.getElementById('project-container');
+                                        if (newContainer && oldContainer) {
+                                            oldContainer.innerHTML = newContainer.innerHTML;
+                                            
+                                            // Re-initialize any components if necessary
+                                            if (window.Alpine) window.Alpine.initTree(oldContainer);
+
+                                            // Force video players to load
+                                            const videoElements = oldContainer.querySelectorAll('video');
+                                            videoElements.forEach(video => video.load());
+                                        }
+                                    });
+                            }
+
                             // Update UI
                             updateUI(displayPercent, displayStatus);
 
@@ -261,7 +292,7 @@
                                 localStorage.removeItem(highestProgressKey);
                                 clearInterval(pollInterval);
                                 
-                                // Fetch the updated HTML dynamically to avoid a flashing hard refresh
+                                // Final dynamic load for the completed stitched video
                                 fetch(window.location.href)
                                     .then(res => res.text())
                                     .then(html => {
@@ -295,9 +326,13 @@
                 }
                 
                 function updateUI(percent, text) {
-                    if (progressBar) progressBar.style.width = percent + '%';
-                    if (progressPercent) progressPercent.innerText = percent + '%';
-                    if (progressText && text) progressText.innerText = text;
+                    const bar = document.getElementById('progress-bar');
+                    const percentText = document.getElementById('progress-percent');
+                    const statusText = document.getElementById('progress-text');
+                    
+                    if (bar) bar.style.width = percent + '%';
+                    if (percentText) percentText.innerText = percent + '%';
+                    if (statusText && text) statusText.innerText = text;
                 }
 
                 // Run once immediately
