@@ -248,6 +248,13 @@
 
     @if($project->status === 'generating' || $project->status === 'scripting')
         <script>
+            // IMMEDIATE DEBUG EXECUTION
+            const debugText = document.getElementById('hero-progress-text');
+            if (debugText) {
+                debugText.innerText = "JS STARTED";
+                debugText.style.color = "red";
+            }
+
             function initPolling() {
                 const pollInterval = setInterval(checkStatus, 5000); // Poll every 5 seconds
                 const progressBar = document.getElementById('progress-bar');
