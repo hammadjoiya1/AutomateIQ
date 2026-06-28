@@ -172,7 +172,8 @@ class VideoController extends Controller
         return response()->json([
             'status' => $project->fresh()->status,
             'video_url' => $project->fresh()->video_url,
-            // 'logs' => ... (aggregate logs?)
+            'completed_scenes' => $scenes->where('status', 'completed')->count(),
+            'total_scenes' => $scenes->count(),
         ]);
     }
 }

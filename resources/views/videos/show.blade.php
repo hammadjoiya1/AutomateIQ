@@ -203,54 +203,62 @@
                 const progressText = document.getElementById('progress-text');
                 const progressPercent = document.getElementById('progress-percent');
                 
-                // Simulated progress state
-                let simulatedProgress = 5;
+                // Persistent simulated progress state
+                const storageKey = 'progress_project_{{ $project->id }}';
+                let simulatedProgress = parseFloat(localStorage.getItem(storageKey)) || 5;
                 const maxSimulated = 90;
-                const duration = 120; // Approx 2 minutes total
-                const increment = (maxSimulated - simulatedProgress) / (duration / 5); // Increment per 5s
+                const duration = 120; // Approx 2 minutes per scene
+                const increment = (maxSimulated - 5) / (duration / 5); // Increment per 5s
 
                 function checkStatus() {
                     // Update simulated progress locally first
                     if (simulatedProgress < maxSimulated) {
                         simulatedProgress += increment;
-                        updateUI(Math.floor(simulatedProgress), "Generating frames...");
+                        localStorage.setItem(storageKey, simulatedProgress);
                     }
 
                     fetch('{{ route('videos.check-status', $project) }}')
                         .then(response => response.json())
                         .then(data => {
-                            // Check for percentage in logs (e.g "30%")
-                            let logPercent = 0;
-                            const logs = data.result?.logs || data.logs;
-                            if (logs) {
-                                // 1. Try to find the LAST percentage in logs
-                                const matches = [...logs.matchAll(/(\d{1,3})%/g)];
-                                if (matches.length > 0) {
-                                    const lastMatch = matches[matches.length - 1];
-                                    logPercent = Math.min(100, parseInt(lastMatch[1], 10));
-                                } else {
-                                    // 2. Try to find step outputs e.g. "15/50" or "15 / 50"
-                                    const stepMatches = [...logs.matchAll(/(\d+)\s*\/\s*(\d+)/g)];
-                                    if (stepMatches.length > 0) {
-                                        const lastStep = stepMatches[stepMatches.length - 1];
-                                        const currentStep = parseInt(lastStep[1], 10);
-                                        const totalSteps = parseInt(lastStep[2], 10);
-                                        if (totalSteps > 0 && currentStep <= totalSteps) {
-                                            logPercent = Math.round((currentStep / totalSteps) * 100);
-                                        }
-                                    }
-                                }
+                            let displayPercent = Math.floor(simulatedProgress);
+                            let displayStatus = "Processing...";
 
-                                if (logPercent > simulatedProgress) {
-                                    simulatedProgress = logPercent; // Sync simulation to real data
+                            // If we have multiple scenes, calculate real mathematical progress
+                            if (data.total_scenes && data.total_scenes > 0) {
+                                const chunkPerScene = 100 / data.total_scenes;
+                                const baseProgress = data.completed_scenes * chunkPerScene;
+                                
+                                // Add the simulated progress of the *current* scene
+                                const currentSceneProgress = (simulatedProgress / 100) * chunkPerScene;
+                                
+                                displayPercent = Math.floor(baseProgress + currentSceneProgress);
+                                displayStatus = `Rendering Scene ${data.completed_scenes + 1} of ${data.total_scenes}...`;
+                                
+                                if (data.completed_scenes >= data.total_scenes) {
+                                    displayPercent = 95;
+                                    displayStatus = "Stitching final video...";
                                 }
+                            } else {
+                                displayStatus = data.status === 'generating' ? "Generating frames..." : "Processing...";
                             }
                             
-                            // Update UI with best guess
-                            updateUI(Math.floor(simulatedProgress), (logs || data.status === 'generating') ? "Processing..." : "Generating frames...");
+                            // Prevent progress from going backwards
+                            const highestProgressKey = 'highest_progress_{{ $project->id }}';
+                            let highestProgress = parseInt(localStorage.getItem(highestProgressKey)) || 0;
+                            if (displayPercent > highestProgress) {
+                                highestProgress = displayPercent;
+                                localStorage.setItem(highestProgressKey, highestProgress);
+                            } else {
+                                displayPercent = highestProgress;
+                            }
+
+                            // Update UI
+                            updateUI(displayPercent, displayStatus);
 
                             if (data.status === 'completed') {
                                 updateUI(100, "Finalizing...");
+                                localStorage.removeItem(storageKey);
+                                localStorage.removeItem(highestProgressKey);
                                 clearInterval(pollInterval);
                                 
                                 // Fetch the updated HTML dynamically to avoid a flashing hard refresh
