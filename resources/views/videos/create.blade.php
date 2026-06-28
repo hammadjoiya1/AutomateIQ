@@ -66,8 +66,6 @@
                                     rows="6"
                                     class="relative w-full rounded-xl border border-border bg-surface/50 text-text p-5 focus:ring-0 focus:border-primary/50 transition-all placeholder:text-muted-text/50 resize-none z-10"
                                     placeholder="Describe your video in detail... Example: A futuristic drone flying through a neon-lit cyberpunk city at night as rain falls gently..."
-                                    :required="mode === 'simple'"
-                                    minlength="10"
                                 >{{ old('prompt') }}</textarea>
                                 <button type="button" class="absolute bottom-3 right-3 text-xs bg-bg-2 hover:bg-primary hover:text-white border border-border text-muted-text px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 z-20 shadow-sm">
                                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -88,8 +86,6 @@ Example:
 Scene 1: The sun rises over the mountains.
 Scene 2: A cowboy rides his horse into the valley.
 Scene 3: Close up of the cowboy's face, determined."
-                                    :required="mode === 'script'"
-                                    minlength="20"
                                 >{{ old('script') }}</textarea>
                                 <div class="absolute bottom-3 right-3 z-20 text-xs text-muted-text bg-surface/80 px-2 py-1 rounded">
                                     Each line will happen sequentially
@@ -269,7 +265,7 @@ Scene 3: Close up of the cowboy's face, determined."
         </div>
     </div>
     
-    @if(session('error'))
+    @if(session('error') || $errors->any())
         <!-- Inbuilt Website Popup Alert -->
         <div x-data="{ show: true }" 
              x-show="show" 
@@ -295,18 +291,24 @@ Scene 3: Close up of the cowboy's face, determined."
                 </div>
                 
                 <!-- Text -->
-                <h3 class="text-2xl font-bold font-display text-text mb-3">Insufficient Credits</h3>
-                <p class="text-muted-text mb-8 text-lg">{{ session('error') }}</p>
+                <h3 class="text-2xl font-bold font-display text-text mb-3">
+                    {{ session('error') ? 'Insufficient Credits' : 'Invalid Input' }}
+                </h3>
+                <p class="text-muted-text mb-8 text-lg">
+                    {{ session('error') ?? $errors->first() }}
+                </p>
                 
                 <!-- Action Buttons -->
                 <div class="flex gap-4 w-full relative z-20">
                     <button type="button" @click="show = false" class="btn-secondary flex-1 py-4 rounded-xl font-bold transition-all hover:bg-bg-2 cursor-pointer">
-                        Close
+                        {{ session('error') ? 'Close' : 'Got it' }}
                     </button>
-                    <a href="{{ route('pricing') }}" class="btn-primary flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1 cursor-pointer">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        Get Credits
-                    </a>
+                    @if(session('error'))
+                        <a href="{{ route('pricing') }}" class="btn-primary flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1 cursor-pointer">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            Get Credits
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
