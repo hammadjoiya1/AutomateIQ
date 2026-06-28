@@ -25,7 +25,7 @@ class AudioGenerationService
             return null;
         }
 
-        $apiKey = env('FACELESS_OPENAI_KEY') ?? env('OPENAI_API_KEY');
+        $apiKey = config('services.openai.api_key') ?? config('openai.api_key') ?? env('OPENAI_API_KEY');
         if (!$apiKey) {
             Log::warning('AudioGenerationService: No OpenAI API Key found for TTS.');
             return null;
