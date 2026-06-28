@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Creation in progress</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body style="background-color: #050505; color: white; margin: 0; overflow: hidden; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; background-color: rgba(167, 139, 250, 0.2); filter: blur(120px); border-radius: 50%; pointer-events: none;"></div>
