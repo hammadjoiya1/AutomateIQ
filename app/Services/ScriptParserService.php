@@ -132,11 +132,19 @@ class ScriptParserService
             $data = json_decode($cleanScript, true);
             if (json_last_error() === JSON_ERROR_NONE && is_array($data)) {
                 $scenesData = [];
+                
+                // Find the array of scenes in the JSON object
                 if (isset($data['scenes']) && is_array($data['scenes'])) {
                     $scenesData = $data['scenes'];
+                } elseif (isset($data['script_timeline']) && is_array($data['script_timeline'])) {
+                    $scenesData = $data['script_timeline'];
+                } elseif (isset($data['timeline']) && is_array($data['timeline'])) {
+                    $scenesData = $data['timeline'];
+                } elseif (isset($data['shots']) && is_array($data['shots'])) {
+                    $scenesData = $data['shots'];
                 } elseif (isset($data[0]) && is_array($data[0])) {
                     $scenesData = $data;
-                } elseif (isset($data['visual']) || isset($data['prompt']) || isset($data['description']) || isset($data['dialogue'])) {
+                } elseif (isset($data['visual']) || isset($data['prompt']) || isset($data['description']) || isset($data['visual_description'])) {
                     // Handle a single flat JSON object
                     $scenesData = [$data];
                 }
@@ -146,6 +154,7 @@ class ScriptParserService
                     foreach ($scenesData as $sceneItem) {
                         // 1. Timecode synonyms
                         $timecode = $sceneItem['timecode'] 
+                            ?? $sceneItem['time_code'] 
                             ?? $sceneItem['time'] 
                             ?? $sceneItem['time_interval'] 
                             ?? $sceneItem['timestamp'] 
@@ -167,6 +176,7 @@ class ScriptParserService
                         
                         // 3. Sound cue synonyms
                         $soundCues = $sceneItem['sound_cues'] 
+                            ?? $sceneItem['audio_sfx'] 
                             ?? $sceneItem['sound_effects'] 
                             ?? $sceneItem['sound'] 
                             ?? $sceneItem['sfx'] 
@@ -178,7 +188,7 @@ class ScriptParserService
                             ?? '';
                         
                         // 4. Dialogue / Voiceover synonyms
-                        $dialogue = $sceneItem['dialogue'] 
+                        $dialogueRaw = $sceneItem['dialogue'] 
                             ?? $sceneItem['dialog'] 
                             ?? $sceneItem['narration'] 
                             ?? $sceneItem['voiceover'] 
@@ -190,9 +200,19 @@ class ScriptParserService
                             ?? $sceneItem['script'] 
                             ?? '';
 
-                        $visual = trim($visual);
-                        $soundCues = trim($soundCues);
-                        $dialogue = trim($dialogue);
+                        // If dialogue is an object/array (e.g., {"speaker": "Sidney", "line": "..."})
+                        $dialogue = '';
+                        if (is_array($dialogueRaw)) {
+                            $dialogue = $dialogueRaw['line'] ?? $dialogueRaw['text'] ?? $dialogueRaw['dialogue'] ?? $dialogueRaw['quote'] ?? '';
+                        } elseif (is_string($dialogueRaw)) {
+                            $dialogue = $dialogueRaw;
+                        }
+
+                        // Ensure strings
+                        $visual = is_string($visual) ? trim($visual) : '';
+                        $soundCues = is_string($soundCues) ? trim($soundCues) : '';
+                        $dialogue = is_string($dialogue) ? trim($dialogue) : '';
+                        $timecode = is_string($timecode) ? trim($timecode) : '';
 
                         $fullContext = trim("{$visual} {$soundCues} {$dialogue}");
                         
