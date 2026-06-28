@@ -1,50 +1,55 @@
-<x-public-layout :meta-title="$project->title ?? 'Video Project'">
-    @if($project->status === 'generating' || $project->status === 'scripting')
-        {{-- Full-screen Premium Loading UI --}}
-        <div class="fixed inset-0 z-[100] bg-[#0a0a0a] flex flex-col items-center justify-center font-sans overflow-hidden" id="project-container">
-            {{-- Background ambient glow --}}
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/20 blur-[120px] rounded-full opacity-50 pointer-events-none"></div>
+@if($project->status === 'generating' || $project->status === 'scripting')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Creation in progress</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body style="background-color: #050505; color: white; margin: 0; overflow: hidden; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; background-color: rgba(167, 139, 250, 0.2); filter: blur(120px); border-radius: 50%; pointer-events: none;"></div>
 
-            <div class="relative z-10 w-full max-w-3xl px-8 flex flex-col items-center text-center">
-                
-                {{-- Spinner --}}
-                <div class="mb-8 relative w-12 h-12">
-                    <svg class="animate-spin w-full h-full text-[#333]" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
-                        <path d="M12 2a10 10 0 0 1 10 10" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"></path>
-                    </svg>
-                </div>
+    <div style="position: relative; z-index: 10; width: 100%; max-width: 48rem; padding: 0 2rem; display: flex; flex-direction: column; align-items: center; text-align: center;">
+        
+        {{-- Spinner --}}
+        <div style="margin-bottom: 2rem; width: 3rem; height: 3rem; position: relative;">
+            <svg style="animation: spin 1s linear infinite; width: 100%; height: 100%; color: #333;" viewBox="0 0 24 24" fill="none">
+                <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                <path d="M12 2a10 10 0 0 1 10 10" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"></path>
+            </svg>
+        </div>
 
-                {{-- Title --}}
-                <h1 class="text-5xl md:text-7xl mb-4 text-white" style="font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif; font-style: italic; letter-spacing: -1px;">Creation in progress</h1>
+        {{-- Title --}}
+        <h1 style="font-size: 3rem; margin-bottom: 1rem; color: white; font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif; font-style: italic; letter-spacing: -1px;">Creation in progress</h1>
 
-                {{-- Progress Text --}}
-                <h2 class="text-3xl font-extrabold text-white mb-2 tracking-wide" id="hero-progress-percent">0%</h2>
-                <p class="text-text-muted mb-12 font-bold uppercase tracking-wider text-sm" id="hero-progress-text">Initializing...</p>
+        {{-- Progress Text --}}
+        <h2 style="font-size: 1.875rem; font-weight: 800; color: white; margin-bottom: 0.5rem; letter-spacing: 0.025em;" id="hero-progress-percent">0%</h2>
+        <p style="color: #9ca3af; margin-bottom: 3rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem;" id="hero-progress-text">Initializing...</p>
 
-                {{-- Steps Cards --}}
-                <div class="grid grid-cols-3 gap-6 w-full mb-12">
-                    <div id="step-script" class="bg-primary/10 border border-primary/50 rounded-2xl py-8 px-4 transition-all duration-500 shadow-[0_0_15px_rgba(var(--color-primary),0.2)]">
-                        <h3 class="text-white font-bold text-lg tracking-wide">Script</h3>
-                    </div>
-                    <div id="step-assets" class="bg-[#1a1a1a] border border-[#333] rounded-2xl py-8 px-4 transition-all duration-500 text-muted-text">
-                        <h3 class="font-bold text-lg tracking-wide">Assets</h3>
-                    </div>
-                    <div id="step-editing" class="bg-[#1a1a1a] border border-[#333] rounded-2xl py-8 px-4 transition-all duration-500 text-muted-text">
-                        <h3 class="font-bold text-lg tracking-wide">Editing</h3>
-                    </div>
-                </div>
-
-                {{-- Progress Bar --}}
-                <div class="w-full max-w-2xl bg-[#1a1a1a] rounded-full h-3 overflow-hidden border border-[#333] relative">
-                    <div id="hero-progress-bar" class="h-full rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-purple-600 via-pink-500 to-amber-200" style="width: 5%">
-                        <div class="absolute inset-0 bg-white/20 animate-shimmer" style="background-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent); background-size: 200% 100%;"></div>
-                    </div>
-                </div>
+        {{-- Steps Cards --}}
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; width: 100%; margin-bottom: 3rem;">
+            <div id="step-script" style="background-color: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.5); border-radius: 1rem; padding: 2rem 1rem; box-shadow: 0 0 15px rgba(167, 139, 250, 0.2); transition: all 0.5s;">
+                <h3 style="color: white; font-weight: 700; font-size: 1.125rem; letter-spacing: 0.025em; margin: 0;">Script</h3>
+            </div>
+            <div id="step-assets" style="background-color: #111; border: 1px solid #333; border-radius: 1rem; padding: 2rem 1rem; transition: all 0.5s;">
+                <h3 style="color: #6b7280; font-weight: 700; font-size: 1.125rem; letter-spacing: 0.025em; margin: 0;">Assets</h3>
+            </div>
+            <div id="step-editing" style="background-color: #111; border: 1px solid #333; border-radius: 1rem; padding: 2rem 1rem; transition: all 0.5s;">
+                <h3 style="color: #6b7280; font-weight: 700; font-size: 1.125rem; letter-spacing: 0.025em; margin: 0;">Editing</h3>
             </div>
         </div>
-    @else
-        <div class="py-12 lg:py-20 animate-fade-in" id="project-container">
+
+        {{-- Progress Bar --}}
+        <div style="width: 100%; max-width: 42rem; background-color: #111; border-radius: 9999px; height: 0.75rem; overflow: hidden; border: 1px solid #333; position: relative;">
+            <div id="hero-progress-bar" style="height: 100%; border-radius: 9999px; transition: width 0.3s ease-out; background-image: linear-gradient(to right, #9333ea, #ec4899, #fcd34d); width: 5%;">
+            </div>
+        </div>
+    </div>
+@else
+<x-public-layout :meta-title="$project->title ?? 'Video Project'">
+    <div class="py-12 lg:py-20 animate-fade-in" id="project-container">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 px-4">
             <div class="flex justify-between items-center mb-8">
                 <div>
@@ -307,26 +312,7 @@
                                 // A scene finished! Reset simulation for next scene
                                 simulatedProgress = 5;
                                 localStorage.setItem(storageKey, simulatedProgress);
-                                
-                                // Fetch updated HTML dynamically to show the new scene video
-                                fetch(window.location.href)
-                                    .then(res => res.text())
-                                    .then(html => {
-                                        const parser = new DOMParser();
-                                        const doc = parser.parseFromString(html, 'text/html');
-                                        const newContainer = doc.getElementById('project-container');
-                                        const oldContainer = document.getElementById('project-container');
-                                        if (newContainer && oldContainer) {
-                                            oldContainer.innerHTML = newContainer.innerHTML;
-                                            
-                                            // Re-initialize any components if necessary
-                                            if (window.Alpine) window.Alpine.initTree(oldContainer);
 
-                                            // Force video players to load
-                                            const videoElements = oldContainer.querySelectorAll('video');
-                                            videoElements.forEach(video => video.load());
-                                        }
-                                    });
                             }
 
                             // Update UI
@@ -339,30 +325,7 @@
                                 clearInterval(pollInterval);
                                 
                                 // Final dynamic load for the completed stitched video
-                                fetch(window.location.href)
-                                    .then(res => res.text())
-                                    .then(html => {
-                                        const parser = new DOMParser();
-                                        const doc = parser.parseFromString(html, 'text/html');
-                                        const newContainer = doc.getElementById('project-container');
-                                        const oldContainer = document.getElementById('project-container');
-                                        if (newContainer && oldContainer) {
-                                            oldContainer.innerHTML = newContainer.innerHTML;
-                                            
-                                            // Re-initialize any components if necessary (like Alpine.js)
-                                            if (window.Alpine) {
-                                                window.Alpine.initTree(oldContainer);
-                                            }
-
-                                            // Force the video player to load the new source
-                                            const videoElement = oldContainer.querySelector('video');
-                                            if (videoElement) {
-                                                videoElement.load();
-                                            }
-                                        } else {
-                                            window.location.reload(); // Fallback
-                                        }
-                                    });
+                                window.location.reload();
                             } else if (data.status === 'failed') {
                                 clearInterval(pollInterval);
                                 window.location.reload();
@@ -440,4 +403,9 @@
             }
         </script>
     @endif
+@if($project->status === 'generating' || $project->status === 'scripting')
+</body>
+</html>
+@else
 </x-public-layout>
+@endif
