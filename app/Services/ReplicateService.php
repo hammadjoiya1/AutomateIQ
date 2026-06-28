@@ -36,15 +36,31 @@ class ReplicateService
             throw new \Exception('Replicate API Token is missing.');
         }
 
-        $version = $this->getLatestVersion($model);
+        // Try to get the version first; if the model doesn't expose versions,
+        // use the official model predictions endpoint instead.
+        try {
+            $version = $this->getLatestVersion($model);
 
-        $response = Http::withToken($this->token)->post("{$this->baseUrl}/predictions", [
-            'version' => $version,
-            'input' => [
-                'prompt'           => $prompt,
-                'prompt_optimizer' => true,
-            ],
-        ]);
+            $response = Http::withToken($this->token)->post("{$this->baseUrl}/predictions", [
+                'version' => $version,
+                'input' => [
+                    'prompt'           => $prompt,
+                    'prompt_optimizer' => true,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            // Model doesn't expose versions — use the model endpoint
+            Log::info("ReplicateService: Model {$model} has no versions, using model endpoint.", [
+                'reason' => $e->getMessage(),
+            ]);
+
+            $response = Http::withToken($this->token)->post("{$this->baseUrl}/models/{$model}/predictions", [
+                'input' => [
+                    'prompt'           => $prompt,
+                    'prompt_optimizer' => true,
+                ],
+            ]);
+        }
 
         if ($response->failed()) {
             Log::error('Replicate API Error: ' . $response->body());
