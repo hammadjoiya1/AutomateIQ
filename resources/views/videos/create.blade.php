@@ -21,47 +21,6 @@
             </div>
 
             <div class="card p-8 shadow-2xl border-primary/5">
-                @if(session('error'))
-                    <!-- Inbuilt Website Popup Alert -->
-                    <div x-data="{ show: true }" 
-                         x-show="show" 
-                         x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 transform scale-90 translate-y-4"
-                         x-transition:enter-end="opacity-100 transform scale-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-200"
-                         x-transition:leave-start="opacity-100 transform scale-100 translate-y-0"
-                         x-transition:leave-end="opacity-0 transform scale-90 translate-y-4"
-                         class="fixed inset-0 z-[100] flex items-center justify-center px-4 pointer-events-none">
-                        
-                        <!-- Backdrop -->
-                        <div class="fixed inset-0 bg-black/40 backdrop-blur-sm pointer-events-auto" @click="show = false"></div>
-                        
-                        <!-- Modal Content -->
-                        <div class="bg-surface border border-red-500/30 rounded-2xl shadow-2xl p-6 max-w-md w-full relative z-10 pointer-events-auto flex flex-col items-center text-center">
-                            <!-- Icon -->
-                            <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-4 ring-8 ring-red-500/5">
-                                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                            </div>
-                            
-                            <!-- Text -->
-                            <h3 class="text-xl font-bold font-display text-text mb-2">Insufficient Credits</h3>
-                            <p class="text-muted-text mb-6">{{ session('error') }}</p>
-                            
-                            <!-- Action Buttons -->
-                            <div class="flex gap-3 w-full">
-                                <button type="button" @click="show = false" class="btn-secondary flex-1 py-3 rounded-xl font-medium">
-                                    Close
-                                </button>
-                                <a href="{{ route('pricing') }}" class="btn-primary flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                    Get Credits
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endif
 
                 <form action="{{ route('videos.store') }}" method="POST" x-data="{ selectedStyle: 'realistic', quality: 'hd', mode: 'simple' }">
                     @csrf
@@ -309,4 +268,46 @@ Scene 3: Close up of the cowboy's face, determined."
             </div>
         </div>
     </div>
+    
+    @if(session('error'))
+        <!-- Inbuilt Website Popup Alert -->
+        <div x-data="{ show: true }" 
+             x-show="show" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform scale-90 translate-y-4"
+             x-transition:enter-end="opacity-100 transform scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 transform scale-100 translate-y-0"
+             x-transition:leave-end="opacity-0 transform scale-90 translate-y-4"
+             class="fixed inset-0 z-[9999] flex items-center justify-center px-4 pointer-events-none">
+            
+            <!-- Backdrop -->
+            <div class="fixed inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto" @click="show = false"></div>
+            
+            <!-- Modal Content -->
+            <div class="bg-surface border border-red-500/30 rounded-3xl shadow-[0_0_50px_-12px_rgba(239,68,68,0.25)] p-8 max-w-md w-full relative z-10 pointer-events-auto flex flex-col items-center text-center">
+                <!-- Icon -->
+                <div class="w-20 h-20 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-6 ring-8 ring-red-500/5 shadow-inner">
+                    <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                
+                <!-- Text -->
+                <h3 class="text-2xl font-bold font-display text-text mb-3">Insufficient Credits</h3>
+                <p class="text-muted-text mb-8 text-lg">{{ session('error') }}</p>
+                
+                <!-- Action Buttons -->
+                <div class="flex gap-4 w-full">
+                    <button type="button" @click="show = false" class="btn-secondary flex-1 py-4 rounded-xl font-bold transition-all hover:bg-bg-2">
+                        Close
+                    </button>
+                    <a href="{{ route('pricing') }}" class="btn-primary flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        Get Credits
+                    </a>
+                </div>
+            </div>
+        </div>
+    @endif
 </x-public-layout>
