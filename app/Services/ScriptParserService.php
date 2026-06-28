@@ -121,6 +121,65 @@ class ScriptParserService
      */
     public function parseScript(string $script): array
     {
+        $script = trim($script);
+        
+        // 1. Detect and handle JSON inputs
+        if (str_starts_with($script, '{') || str_starts_with($script, '[')) {
+            $data = json_decode($script, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($data)) {
+                $scenesData = [];
+                if (isset($data['scenes']) && is_array($data['scenes'])) {
+                    $scenesData = $data['scenes'];
+                } elseif (isset($data[0]) && is_array($data[0])) {
+                    $scenesData = $data;
+                }
+
+                if (!empty($scenesData)) {
+                    $scenes = [];
+                    foreach ($scenesData as $sceneItem) {
+                        $timecode = $sceneItem['timecode'] ?? $sceneItem['time'] ?? null;
+                        $visual = $sceneItem['visual'] ?? $sceneItem['image_prompt'] ?? $sceneItem['prompt'] ?? $sceneItem['visual_description'] ?? '';
+                        $soundCues = $sceneItem['sound_cues'] ?? $sceneItem['sound_effects'] ?? $sceneItem['sound'] ?? $sceneItem['sfx'] ?? '';
+                        $dialogue = $sceneItem['dialogue'] ?? $sceneItem['voiceover'] ?? $sceneItem['audio'] ?? $sceneItem['speech'] ?? '';
+
+                        $visual = trim($visual);
+                        $soundCues = trim($soundCues);
+                        $dialogue = trim($dialogue);
+
+                        $fullContext = trim("{$visual} {$soundCues} {$dialogue}");
+                        
+                        $detectedTone = $sceneItem['tone'] ?? null;
+                        if (!$detectedTone || !isset($this->toneProfiles[strtolower($detectedTone)])) {
+                            $detectedTone = $this->detectTone(strtolower($fullContext));
+                        } else {
+                            $detectedTone = strtolower($detectedTone);
+                        }
+
+                        $profile = $this->toneProfiles[$detectedTone];
+
+                        $rawParts = [];
+                        if ($timecode) $rawParts[] = $timecode;
+                        if ($visual) $rawParts[] = $visual;
+                        if ($soundCues) $rawParts[] = "({$soundCues})";
+                        if ($dialogue) $rawParts[] = "\"{$dialogue}\"";
+
+                        $scenes[] = [
+                            'timecode'   => $timecode,
+                            'visual'     => $visual,
+                            'sound_cues' => $soundCues,
+                            'dialogue'   => $dialogue,
+                            'tone'       => $detectedTone,
+                            'voice'      => $sceneItem['voice'] ?? $profile['voice'],
+                            'speed'      => isset($sceneItem['speed']) ? (float)$sceneItem['speed'] : $profile['speed'],
+                            'raw'        => implode(' ', $rawParts),
+                        ];
+                    }
+                    return $scenes;
+                }
+            }
+        }
+
+        // 2. Fallback to traditional parsing
         // First, try splitting by newlines
         $lines = array_filter(array_map('trim', explode("\n", $script)));
 
