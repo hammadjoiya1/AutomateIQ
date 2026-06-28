@@ -262,15 +262,16 @@
                 const increment = (maxSimulated - 5) / (duration / 5); // Increment per 5s
 
                 function checkStatus() {
-                    // Update simulated progress locally first
-                    if (simulatedProgress < maxSimulated) {
-                        simulatedProgress += increment;
-                        localStorage.setItem(storageKey, simulatedProgress);
-                    }
+                    try {
+                        // Update simulated progress locally first
+                        if (simulatedProgress < maxSimulated) {
+                            simulatedProgress += increment;
+                            localStorage.setItem(storageKey, simulatedProgress);
+                        }
 
-                    fetch('{{ route('videos.check-status', $project) }}')
-                        .then(response => response.json())
-                        .then(data => {
+                        fetch('{{ route('videos.check-status', $project) }}')
+                            .then(response => response.json())
+                            .then(data => {
                             let displayPercent = Math.floor(simulatedProgress);
                             let displayStatus = "Processing...";
 
@@ -304,9 +305,10 @@
                             }
 
                             // Dynamic DOM Replacement on scene completion
+                            // Dynamic DOM Replacement on scene completion
                             if (window.lastCompletedScenes === undefined) {
                                 window.lastCompletedScenes = data.completed_scenes;
-                            } else if (data.completed_scenes > window.lastCompletedScenes) {
+                            } else if (data.completed_scenes !== undefined && data.completed_scenes > window.lastCompletedScenes) {
                                 window.lastCompletedScenes = data.completed_scenes;
                                 
                                 // A scene finished! Reset simulation for next scene
@@ -331,7 +333,16 @@
                                 window.location.reload();
                             }
                         })
-                        .catch(error => console.error('Error polling status:', error));
+                        .catch(error => {
+                            console.error('Error polling status:', error);
+                            const statusText = document.getElementById('hero-progress-text');
+                            if (statusText) statusText.innerText = 'Network error... Retrying...';
+                        });
+                    } catch (e) {
+                        console.error('JS Error in checkStatus:', e);
+                        const statusText = document.getElementById('hero-progress-text');
+                        if (statusText) statusText.innerText = 'JS Error: ' + e.message;
+                    }
                 }
                 
                 function updateUI(percent, text) {
@@ -358,36 +369,36 @@
                     const stepEditing = document.getElementById('step-editing');
 
                     if (stepScript && stepAssets && stepEditing) {
-                        const activeClass = "bg-primary/10 border border-primary/50 rounded-2xl py-8 px-4 transition-all duration-500 shadow-[0_0_15px_rgba(var(--color-primary),0.2)]";
-                        const activeTextClass = "text-white font-bold text-lg tracking-wide";
+                        const activeStyle = "background-color: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.5); border-radius: 1rem; padding: 2rem 1rem; box-shadow: 0 0 15px rgba(167, 139, 250, 0.2); transition: all 0.5s;";
+                        const activeTextStyle = "color: white; font-weight: 700; font-size: 1.125rem; letter-spacing: 0.025em; margin: 0;";
                         
-                        const inactiveClass = "bg-[#1a1a1a] border border-[#333] rounded-2xl py-8 px-4 transition-all duration-500 text-muted-text";
-                        const inactiveTextClass = "font-bold text-lg tracking-wide";
+                        const inactiveStyle = "background-color: #111; border: 1px solid #333; border-radius: 1rem; padding: 2rem 1rem; transition: all 0.5s;";
+                        const inactiveTextStyle = "color: #6b7280; font-weight: 700; font-size: 1.125rem; letter-spacing: 0.025em; margin: 0;";
 
                         if (percent < 30) {
-                            stepScript.className = activeClass;
-                            stepScript.querySelector('h3').className = activeTextClass;
-                            stepAssets.className = inactiveClass;
-                            stepAssets.querySelector('h3').className = inactiveTextClass;
-                            stepEditing.className = inactiveClass;
-                            stepEditing.querySelector('h3').className = inactiveTextClass;
+                            stepScript.style.cssText = activeStyle;
+                            stepScript.querySelector('h3').style.cssText = activeTextStyle;
+                            stepAssets.style.cssText = inactiveStyle;
+                            stepAssets.querySelector('h3').style.cssText = inactiveTextStyle;
+                            stepEditing.style.cssText = inactiveStyle;
+                            stepEditing.querySelector('h3').style.cssText = inactiveTextStyle;
                         } else if (percent < 90) {
-                            stepScript.className = inactiveClass;
-                            stepScript.querySelector('h3').className = inactiveTextClass;
+                            stepScript.style.cssText = inactiveStyle;
+                            stepScript.querySelector('h3').style.cssText = inactiveTextStyle;
                             
-                            stepAssets.className = "bg-amber-500/10 border border-amber-500/50 rounded-2xl py-8 px-4 transition-all duration-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]";
-                            stepAssets.querySelector('h3').className = activeTextClass;
+                            stepAssets.style.cssText = "background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.5); border-radius: 1rem; padding: 2rem 1rem; box-shadow: 0 0 15px rgba(245, 158, 11, 0.2); transition: all 0.5s;";
+                            stepAssets.querySelector('h3').style.cssText = activeTextStyle;
 
-                            stepEditing.className = inactiveClass;
-                            stepEditing.querySelector('h3').className = inactiveTextClass;
+                            stepEditing.style.cssText = inactiveStyle;
+                            stepEditing.querySelector('h3').style.cssText = inactiveTextStyle;
                         } else {
-                            stepScript.className = inactiveClass;
-                            stepScript.querySelector('h3').className = inactiveTextClass;
-                            stepAssets.className = inactiveClass;
-                            stepAssets.querySelector('h3').className = inactiveTextClass;
+                            stepScript.style.cssText = inactiveStyle;
+                            stepScript.querySelector('h3').style.cssText = inactiveTextStyle;
+                            stepAssets.style.cssText = inactiveStyle;
+                            stepAssets.querySelector('h3').style.cssText = inactiveTextStyle;
 
-                            stepEditing.className = "bg-green-500/10 border border-green-500/50 rounded-2xl py-8 px-4 transition-all duration-500 shadow-[0_0_15px_rgba(16,185,129,0.2)]";
-                            stepEditing.querySelector('h3').className = activeTextClass;
+                            stepEditing.style.cssText = "background-color: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: 1rem; padding: 2rem 1rem; box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); transition: all 0.5s;";
+                            stepEditing.querySelector('h3').style.cssText = activeTextStyle;
                         }
                     }
                 }
