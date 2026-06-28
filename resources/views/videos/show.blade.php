@@ -1,5 +1,50 @@
 <x-public-layout :meta-title="$project->title ?? 'Video Project'">
-    <div class="py-12 lg:py-20 animate-fade-in" id="project-container">
+    @if($project->status === 'generating' || $project->status === 'scripting')
+        {{-- Full-screen Premium Loading UI --}}
+        <div class="fixed inset-0 z-[100] bg-[#0a0a0a] flex flex-col items-center justify-center font-sans overflow-hidden" id="project-container">
+            {{-- Background ambient glow --}}
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/20 blur-[120px] rounded-full opacity-50 pointer-events-none"></div>
+
+            <div class="relative z-10 w-full max-w-3xl px-8 flex flex-col items-center text-center">
+                
+                {{-- Spinner --}}
+                <div class="mb-8 relative w-12 h-12">
+                    <svg class="animate-spin w-full h-full text-[#333]" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                        <path d="M12 2a10 10 0 0 1 10 10" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"></path>
+                    </svg>
+                </div>
+
+                {{-- Title --}}
+                <h1 class="text-5xl md:text-7xl mb-4 text-white" style="font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif; font-style: italic; letter-spacing: -1px;">Creation in progress</h1>
+
+                {{-- Progress Text --}}
+                <h2 class="text-3xl font-extrabold text-white mb-2 tracking-wide" id="hero-progress-percent">0%</h2>
+                <p class="text-text-muted mb-12 font-bold uppercase tracking-wider text-sm" id="hero-progress-text">Initializing...</p>
+
+                {{-- Steps Cards --}}
+                <div class="grid grid-cols-3 gap-6 w-full mb-12">
+                    <div id="step-script" class="bg-primary/10 border border-primary/50 rounded-2xl py-8 px-4 transition-all duration-500 shadow-[0_0_15px_rgba(var(--color-primary),0.2)]">
+                        <h3 class="text-white font-bold text-lg tracking-wide">Script</h3>
+                    </div>
+                    <div id="step-assets" class="bg-[#1a1a1a] border border-[#333] rounded-2xl py-8 px-4 transition-all duration-500 text-muted-text">
+                        <h3 class="font-bold text-lg tracking-wide">Assets</h3>
+                    </div>
+                    <div id="step-editing" class="bg-[#1a1a1a] border border-[#333] rounded-2xl py-8 px-4 transition-all duration-500 text-muted-text">
+                        <h3 class="font-bold text-lg tracking-wide">Editing</h3>
+                    </div>
+                </div>
+
+                {{-- Progress Bar --}}
+                <div class="w-full max-w-2xl bg-[#1a1a1a] rounded-full h-3 overflow-hidden border border-[#333] relative">
+                    <div id="hero-progress-bar" class="h-full rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-purple-600 via-pink-500 to-amber-200" style="width: 5%">
+                        <div class="absolute inset-0 bg-white/20 animate-shimmer" style="background-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent); background-size: 200% 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+        <div class="py-12 lg:py-20 animate-fade-in" id="project-container">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 px-4">
             <div class="flex justify-between items-center mb-8">
                 <div>
@@ -193,7 +238,8 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
+    @endif
 
     @if($project->status === 'generating' || $project->status === 'scripting')
         <script>
@@ -333,6 +379,54 @@
                     if (bar) bar.style.width = percent + '%';
                     if (percentText) percentText.innerText = percent + '%';
                     if (statusText && text) statusText.innerText = text;
+
+                    // Hero UI Elements
+                    const heroBar = document.getElementById('hero-progress-bar');
+                    const heroPercentText = document.getElementById('hero-progress-percent');
+                    const heroStatusText = document.getElementById('hero-progress-text');
+                    
+                    if (heroBar) heroBar.style.width = percent + '%';
+                    if (heroPercentText) heroPercentText.innerText = percent + '%';
+                    if (heroStatusText && text) heroStatusText.innerText = text;
+
+                    // Hero Steps UI
+                    const stepScript = document.getElementById('step-script');
+                    const stepAssets = document.getElementById('step-assets');
+                    const stepEditing = document.getElementById('step-editing');
+
+                    if (stepScript && stepAssets && stepEditing) {
+                        const activeClass = "bg-primary/10 border border-primary/50 rounded-2xl py-8 px-4 transition-all duration-500 shadow-[0_0_15px_rgba(var(--color-primary),0.2)]";
+                        const activeTextClass = "text-white font-bold text-lg tracking-wide";
+                        
+                        const inactiveClass = "bg-[#1a1a1a] border border-[#333] rounded-2xl py-8 px-4 transition-all duration-500 text-muted-text";
+                        const inactiveTextClass = "font-bold text-lg tracking-wide";
+
+                        if (percent < 30) {
+                            stepScript.className = activeClass;
+                            stepScript.querySelector('h3').className = activeTextClass;
+                            stepAssets.className = inactiveClass;
+                            stepAssets.querySelector('h3').className = inactiveTextClass;
+                            stepEditing.className = inactiveClass;
+                            stepEditing.querySelector('h3').className = inactiveTextClass;
+                        } else if (percent < 90) {
+                            stepScript.className = inactiveClass;
+                            stepScript.querySelector('h3').className = inactiveTextClass;
+                            
+                            stepAssets.className = "bg-amber-500/10 border border-amber-500/50 rounded-2xl py-8 px-4 transition-all duration-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]";
+                            stepAssets.querySelector('h3').className = activeTextClass;
+
+                            stepEditing.className = inactiveClass;
+                            stepEditing.querySelector('h3').className = inactiveTextClass;
+                        } else {
+                            stepScript.className = inactiveClass;
+                            stepScript.querySelector('h3').className = inactiveTextClass;
+                            stepAssets.className = inactiveClass;
+                            stepAssets.querySelector('h3').className = inactiveTextClass;
+
+                            stepEditing.className = "bg-green-500/10 border border-green-500/50 rounded-2xl py-8 px-4 transition-all duration-500 shadow-[0_0_15px_rgba(16,185,129,0.2)]";
+                            stepEditing.querySelector('h3').className = activeTextClass;
+                        }
+                    }
                 }
 
                 // Run once immediately
