@@ -26,6 +26,42 @@
                     selectedStyle: 'realistic', 
                     quality: 'hd', 
                     mode: 'simple',
+                    scriptContent: '{{ old('script', '') }}',
+                    userCredits: {{ auth()->check() ? auth()->user()->totalCredits() : 0 }},
+                    tierCosts: {
+                        standard: {{ config('credits.video_tiers.standard.credits', 2) }},
+                        hd: {{ config('credits.video_tiers.hd.credits', 20) }},
+                        premium: {{ config('credits.video_tiers.premium.credits', 25) }}
+                    },
+                    get estimatedScenes() {
+                        if (this.mode === 'simple') return 1;
+                        if (!this.scriptContent.trim()) return 0;
+                        
+                        const text = this.scriptContent.trim();
+                        let lines = [];
+                        
+                        // Try splitting by timecode first
+                        if (/\d+:\d{2}\s*-\s*\d+:?\d{0,2}/.test(text)) {
+                            lines = text.split(/(?=\d+:\d{2}\s*-\s*\d+:?\d{0,2})/);
+                        } else {
+                            // Fallback to splitting by newlines
+                            lines = text.split('\n');
+                        }
+                        
+                        return lines.map(l => l.trim()).filter(l => l.length > 5).length;
+                    },
+                    get estimatedCost() {
+                        return this.estimatedScenes * this.tierCosts[this.quality];
+                    },
+                    get hasEnoughCredits() {
+                        return this.userCredits >= this.estimatedCost;
+                    },
+                    switchMode(newMode) {
+                        this.mode = newMode;
+                        if (newMode === 'script' && this.quality !== 'standard') {
+                            this.quality = 'standard';
+                        }
+                    },
                     isEnhancing: false,
                     async enhancePrompt() {
                         const promptInput = this.$refs.simplePrompt;
@@ -62,12 +98,12 @@
                     {{-- Mode Selection Tabs --}}
                     <div class="flex justify-center mb-8">
                         <div class="bg-bg-2 p-1 rounded-xl inline-flex">
-                            <button type="button" @click="mode = 'simple'" 
+                            <button type="button" @click="switchMode('simple')" 
                                 :class="mode === 'simple' ? 'bg-surface shadow-sm text-primary font-bold' : 'text-text-muted hover:text-text'"
                                 class="px-6 py-2 rounded-lg transition-all text-sm">
                                 Simple Prompt
                             </button>
-                            <button type="button" @click="mode = 'script'" 
+                            <button type="button" @click="switchMode('script')" 
                                 :class="mode === 'script' ? 'bg-surface shadow-sm text-primary font-bold' : 'text-text-muted hover:text-text'"
                                 class="px-6 py-2 rounded-lg transition-all text-sm flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -107,21 +143,54 @@
                             </div>
 
                             {{-- Full Script Input --}}
-                            <div x-show="mode === 'script'" class="relative group" style="display: none;" x-transition>
-                                <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-                                <textarea
-                                    name="script"
-                                    rows="12"
-                                    class="relative w-full rounded-xl border border-border bg-surface/50 text-text p-5 focus:ring-0 focus:border-primary/50 transition-all placeholder:text-muted-text/50 resize-none z-10 font-mono text-sm leading-relaxed"
-                                    placeholder="Paste your full script here. We will break it down into scenes automatically.
+                            <div x-show="mode === 'script'" class="relative group space-y-4" style="display: none;" x-transition>
+                                <div class="relative">
+                                    <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                                    <textarea
+                                        x-model="scriptContent"
+                                        name="script"
+                                        rows="12"
+                                        class="relative w-full rounded-xl border border-border bg-surface/50 text-text p-5 focus:ring-0 focus:border-primary/50 transition-all placeholder:text-muted-text/50 resize-none z-10 font-mono text-sm leading-relaxed"
+                                        placeholder="Paste your full script here. We will break it down into scenes automatically.
 
 Example:
 Scene 1: The sun rises over the mountains.
 Scene 2: A cowboy rides his horse into the valley.
 Scene 3: Close up of the cowboy's face, determined."
-                                >{{ old('script') }}</textarea>
-                                <div class="absolute bottom-3 right-3 z-20 text-xs text-muted-text bg-surface/80 px-2 py-1 rounded">
-                                    Each line will happen sequentially
+                                    ></textarea>
+                                    <div class="absolute bottom-3 right-3 z-20 text-xs text-muted-text bg-surface/80 px-2 py-1 rounded">
+                                        Each line will happen sequentially
+                                    </div>
+                                </div>
+                                
+                                {{-- Cost Estimator Banner --}}
+                                <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-5 flex items-start gap-4">
+                                    <div class="bg-amber-500/20 text-amber-500 rounded-full p-2 mt-0.5 shadow-sm">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-amber-500 mb-1">Script Cost Estimation</h4>
+                                        <p class="text-xs text-text-muted mb-3">Generating full scripts requires creating multiple video clips and stitching them together. Costs multiply per scene.</p>
+                                        <div class="flex items-center gap-6 mt-3 pt-3 border-t border-amber-500/20">
+                                            <div>
+                                                <span class="block text-[10px] text-text-muted uppercase tracking-wider font-bold">Est. Scenes</span>
+                                                <span class="font-bold text-text text-lg" x-text="estimatedScenes"></span>
+                                            </div>
+                                            <div>
+                                                <span class="block text-[10px] text-text-muted uppercase tracking-wider font-bold">Quality</span>
+                                                <span class="font-bold text-text text-lg capitalize" x-text="quality"></span>
+                                            </div>
+                                            <div class="flex-1 text-right">
+                                                <span class="block text-[10px] text-text-muted uppercase tracking-wider font-bold">Total Est. Cost</span>
+                                                <span class="font-bold text-xl" :class="hasEnoughCredits ? 'text-amber-500' : 'text-red-500'" x-text="estimatedCost + ' credits'"></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div x-show="!hasEnoughCredits" class="mt-3 text-xs text-red-500 font-bold flex items-center gap-1" style="display: none;">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                            Insufficient credits for this script. Shorten your script, lower the quality, or upgrade your plan.
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -191,6 +260,9 @@ Scene 3: Close up of the cowboy's face, determined."
                                         <div class="bg-gradient-to-r from-primary to-accent h-full w-[70%]"></div>
                                     </div>
                                     <p class="text-xs text-muted-text">{{ $tiers['hd']['description'] ?? '1080p cinematic quality.' }}</p>
+                                    <div x-show="mode === 'script' && quality === 'hd'" class="mt-2 text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded" style="display: none;">
+                                        Warning: Expensive for long scripts!
+                                    </div>
                                     <span class="absolute top-2 left-2 bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full">POPULAR</span>
                                     <div x-show="quality === 'hd'" class="absolute -top-1 -right-1" x-transition>
                                         <div class="bg-primary text-white p-1 rounded-bl-lg shadow-sm">
@@ -219,6 +291,9 @@ Scene 3: Close up of the cowboy's face, determined."
                                         <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-full w-[95%]"></div>
                                     </div>
                                     <p class="text-xs text-muted-text">{{ $tiers['premium']['description'] ?? 'Highest fidelity. Hollywood-grade.' }}</p>
+                                    <div x-show="mode === 'script' && quality === 'premium'" class="mt-2 text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded" style="display: none;">
+                                        Warning: Extremely expensive for long scripts!
+                                    </div>
                                     <div x-show="quality === 'premium'" class="absolute -top-1 -right-1" x-transition>
                                         <div class="bg-amber-500 text-white p-1 rounded-bl-lg shadow-sm">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -288,9 +363,9 @@ Scene 3: Close up of the cowboy's face, determined."
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                             Back to Gallery
                         </a>
-                        <button type="submit" class="btn btn-primary px-10 py-4 text-lg font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1 flex items-center gap-2">
-                            <span>Start Generation</span>
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <button type="submit" :disabled="!hasEnoughCredits" :class="hasEnoughCredits ? 'btn-primary shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1' : 'bg-bg-2 text-muted-text border border-border cursor-not-allowed opacity-50'" class="btn px-10 py-4 text-lg font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
+                            <span x-text="hasEnoughCredits ? 'Start Generation' : 'Insufficient Credits'"></span>
+                            <svg x-show="hasEnoughCredits" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         </button>
                     </div>
                 </form>
