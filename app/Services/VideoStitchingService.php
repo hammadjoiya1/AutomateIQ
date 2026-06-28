@@ -59,7 +59,9 @@ class VideoStitchingService
                 }
 
                 // Mix video + audio
-                $cmd = "ffmpeg -y -i \"{$rawLocalPath}\" -i \"{$absoluteAudioPath}\" -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 -shortest \"{$finalLocalPath}\"";
+                // Removed -shortest so that if the audio is 1 sec, the video still plays for its full 5 secs.
+                // If audio is longer than video, the video will freeze on the last frame while audio finishes.
+                $cmd = "ffmpeg -y -i \"{$rawLocalPath}\" -i \"{$absoluteAudioPath}\" -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 \"{$finalLocalPath}\"";
                 \Illuminate\Support\Facades\Process::run($cmd);
             } else {
                 // Mix video + silent audio
