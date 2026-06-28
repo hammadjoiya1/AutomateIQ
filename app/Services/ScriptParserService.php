@@ -124,14 +124,21 @@ class ScriptParserService
         $script = trim($script);
         
         // 1. Detect and handle JSON inputs
-        if (str_starts_with($script, '{') || str_starts_with($script, '[')) {
-            $data = json_decode($script, true);
+        // Strip markdown backticks if present
+        $cleanScript = preg_replace('/^```json\s*|\s*```$/i', '', $script);
+        $cleanScript = trim($cleanScript);
+
+        if (str_starts_with($cleanScript, '{') || str_starts_with($cleanScript, '[')) {
+            $data = json_decode($cleanScript, true);
             if (json_last_error() === JSON_ERROR_NONE && is_array($data)) {
                 $scenesData = [];
                 if (isset($data['scenes']) && is_array($data['scenes'])) {
                     $scenesData = $data['scenes'];
                 } elseif (isset($data[0]) && is_array($data[0])) {
                     $scenesData = $data;
+                } elseif (isset($data['visual']) || isset($data['prompt']) || isset($data['description']) || isset($data['dialogue'])) {
+                    // Handle a single flat JSON object
+                    $scenesData = [$data];
                 }
 
                 if (!empty($scenesData)) {
