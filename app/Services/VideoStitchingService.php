@@ -27,23 +27,48 @@ class VideoStitchingService
         $concatContent = "";
         $downloadedFiles = [];
 
-        // 2. Download files locally
+        // 2. Download files locally and mix audio
         foreach ($scenes as $scene) {
             $url = $scene->video_url;
-            if (!$url)
+            if (!$url) {
                 continue;
+            }
 
             $extension = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?? 'mp4';
-            $filename = "scene_{$scene->sequence_order}.{$extension}";
-            $localPath = $tempDir . '/' . $filename;
+            $rawFilename = "scene_{$scene->sequence_order}_raw.{$extension}";
+            $rawLocalPath = $tempDir . '/' . $rawFilename;
+            $finalFilename = "scene_{$scene->sequence_order}_final.{$extension}";
+            $finalLocalPath = $tempDir . '/' . $finalFilename;
 
-            // Simple download
-            file_put_contents($localPath, file_get_contents($url));
-            $downloadedFiles[] = $localPath;
+            // Simple download of video
+            file_put_contents($rawLocalPath, file_get_contents($url));
+            $downloadedFiles[] = $rawLocalPath;
+            $downloadedFiles[] = $finalLocalPath; // mark for cleanup
+
+            if ($scene->audio_url) {
+                // Download audio
+                $audioExtension = pathinfo(parse_url($scene->audio_url, PHP_URL_PATH), PATHINFO_EXTENSION) ?? 'mp3';
+                $audioFilename = "scene_{$scene->sequence_order}_audio.{$audioExtension}";
+                $audioLocalPath = $tempDir . '/' . $audioFilename;
+                
+                // Audio URL is relative, e.g., /storage/projects/...
+                // We need the absolute path to the file
+                $absoluteAudioPath = public_path($scene->audio_url);
+                if (!file_exists($absoluteAudioPath)) {
+                    $absoluteAudioPath = storage_path('app/public/' . str_replace('/storage/', '', $scene->audio_url));
+                }
+
+                // Mix video + audio
+                $cmd = "ffmpeg -y -i \"{$rawLocalPath}\" -i \"{$absoluteAudioPath}\" -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 -shortest \"{$finalLocalPath}\"";
+                \Illuminate\Support\Facades\Process::run($cmd);
+            } else {
+                // Mix video + silent audio
+                $cmd = "ffmpeg -y -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -i \"{$rawLocalPath}\" -c:v copy -c:a aac -map 1:v:0 -map 0:a:0 -shortest \"{$finalLocalPath}\"";
+                \Illuminate\Support\Facades\Process::run($cmd);
+            }
 
             // Add to concat list (FFmpeg requires specific format)
-            // escape backslashes for Windows if needed, but forward slashes usually work with ffmpeg
-            $safePath = str_replace('\\', '/', $localPath);
+            $safePath = str_replace('\\', '/', $finalLocalPath);
             $concatContent .= "file '{$safePath}'\n";
         }
 
@@ -80,8 +105,12 @@ class VideoStitchingService
             // Return relative URL for storage
             return '/storage/' . $publicPath;
         } else {
-            // Log error?
-            // For now just return null
+            \Illuminate\Support\Facades\Log::error('FFmpeg Stitching Failed', [
+                'command' => $command,
+                'output' => $result->output(),
+                'error' => $result->errorOutput(),
+                'exit_code' => $result->exitCode(),
+            ]);
             return null;
         }
     }

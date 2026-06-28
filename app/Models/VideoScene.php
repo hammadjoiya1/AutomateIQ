@@ -16,6 +16,7 @@ class VideoScene extends Model
         'image_prompt',
         'status', // pending, generating, completed, failed
         'video_url',
+        'audio_url',
         'replicate_prediction_id',
         'settings',
     ];
