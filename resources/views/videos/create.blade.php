@@ -273,19 +273,20 @@ Scene 3: Close up of the cowboy's face, determined."
         <!-- Inbuilt Website Popup Alert -->
         <div x-data="{ show: true }" 
              x-show="show" 
+             style="display: none;"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 transform scale-90 translate-y-4"
              x-transition:enter-end="opacity-100 transform scale-100 translate-y-0"
              x-transition:leave="transition ease-in duration-200"
              x-transition:leave-start="opacity-100 transform scale-100 translate-y-0"
              x-transition:leave-end="opacity-0 transform scale-90 translate-y-4"
-             class="fixed inset-0 z-[9999] flex items-center justify-center px-4 pointer-events-none">
+             class="fixed inset-0 z-[99999] flex items-center justify-center px-4">
             
             <!-- Backdrop -->
-            <div class="fixed inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto" @click="show = false"></div>
+            <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="show = false"></div>
             
             <!-- Modal Content -->
-            <div class="bg-surface border border-red-500/30 rounded-3xl shadow-[0_0_50px_-12px_rgba(239,68,68,0.25)] p-8 max-w-md w-full relative z-10 pointer-events-auto flex flex-col items-center text-center">
+            <div class="bg-surface border border-red-500/30 rounded-3xl shadow-[0_0_50px_-12px_rgba(239,68,68,0.25)] p-8 max-w-md w-full relative flex flex-col items-center text-center">
                 <!-- Icon -->
                 <div class="w-20 h-20 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-6 ring-8 ring-red-500/5 shadow-inner">
                     <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -298,11 +299,11 @@ Scene 3: Close up of the cowboy's face, determined."
                 <p class="text-muted-text mb-8 text-lg">{{ session('error') }}</p>
                 
                 <!-- Action Buttons -->
-                <div class="flex gap-4 w-full">
-                    <button type="button" @click="show = false" class="btn-secondary flex-1 py-4 rounded-xl font-bold transition-all hover:bg-bg-2">
+                <div class="flex gap-4 w-full relative z-20">
+                    <button type="button" @click="show = false" class="btn-secondary flex-1 py-4 rounded-xl font-bold transition-all hover:bg-bg-2 cursor-pointer">
                         Close
                     </button>
-                    <a href="{{ route('pricing') }}" class="btn-primary flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1">
+                    <a href="{{ route('pricing') }}" class="btn-primary flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1 cursor-pointer">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         Get Credits
                     </a>
