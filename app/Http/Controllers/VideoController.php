@@ -27,6 +27,13 @@ class VideoController extends Controller
 
     public function store(Request $request)
     {
+        \Log::info('VideoController@store called', [
+            'mode' => $request->input('mode'),
+            'quality' => $request->input('quality'),
+            'user_credits' => auth()->user()->credits,
+            'role' => auth()->user()->role,
+        ]);
+
         $validated = $request->validate([
             'prompt' => 'nullable|required_if:mode,simple|string|min:10',
             'script' => 'nullable|required_if:mode,script|string|min:20',
