@@ -131,6 +131,11 @@ class VideoController extends Controller
         if ($project->user_id !== auth()->id()) {
             abort(403);
         }
+
+        if ($project->status === 'generating' || $project->status === 'scripting') {
+            return view('videos.generating', compact('project'));
+        }
+
         return view('videos.show', compact('project'));
     }
 
