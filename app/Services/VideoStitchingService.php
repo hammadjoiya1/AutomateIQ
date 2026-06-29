@@ -26,6 +26,7 @@ class VideoStitchingService
         $concatListPath = $tempDir . '/concat.txt';
         $concatContent = "";
         $downloadedFiles = [];
+        $ffmpeg = $this->getFfmpegPath();
 
         // 2. Download files locally and mix audio
         foreach ($scenes as $scene) {
@@ -61,11 +62,11 @@ class VideoStitchingService
                 // Mix video + audio
                 // Removed -shortest so that if the audio is 1 sec, the video still plays for its full 5 secs.
                 // If audio is longer than video, the video will freeze on the last frame while audio finishes.
-                $cmd = "ffmpeg -y -i \"{$rawLocalPath}\" -i \"{$absoluteAudioPath}\" -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 \"{$finalLocalPath}\"";
+                $cmd = "{$ffmpeg} -y -i \"{$rawLocalPath}\" -i \"{$absoluteAudioPath}\" -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 \"{$finalLocalPath}\"";
                 \Illuminate\Support\Facades\Process::run($cmd);
             } else {
                 // Mix video + silent audio
-                $cmd = "ffmpeg -y -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -i \"{$rawLocalPath}\" -c:v copy -c:a aac -map 1:v:0 -map 0:a:0 -shortest \"{$finalLocalPath}\"";
+                $cmd = "{$ffmpeg} -y -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -i \"{$rawLocalPath}\" -c:v copy -c:a aac -map 1:v:0 -map 0:a:0 -shortest \"{$finalLocalPath}\"";
                 \Illuminate\Support\Facades\Process::run($cmd);
             }
 
@@ -91,7 +92,7 @@ class VideoStitchingService
         }
 
         // Command: ffmpeg -f concat -safe 0 -i concat.txt -c copy output.mp4
-        $command = "ffmpeg -f concat -safe 0 -i \"{$concatListPath}\" -c copy \"{$outputPath}\"";
+        $command = "{$ffmpeg} -f concat -safe 0 -i \"{$concatListPath}\" -c copy \"{$outputPath}\"";
 
         // Execute
         $result = Process::run($command);
@@ -115,5 +116,30 @@ class VideoStitchingService
             ]);
             return null;
         }
+    }
+
+    private function getFfmpegPath(): string
+    {
+        // Check if it is in the PATH
+        $result = @exec("where ffmpeg 2>&1");
+        if (!empty($result) && strpos($result, 'Could not find') === false) {
+            return 'ffmpeg';
+        }
+
+        // Standard user AppData folder paths on Windows
+        $userProfile = getenv('USERPROFILE') ?: 'C:\\Users\\HP';
+        $possiblePaths = [
+            $userProfile . '\\AppData\\Local\\Microsoft\\WinGet\\Links\\ffmpeg.exe',
+            'C:\\ffmpeg\\bin\\ffmpeg.exe',
+            'C:\\Program Files\\ffmpeg\\bin\\ffmpeg.exe',
+        ];
+
+        foreach ($possiblePaths as $path) {
+            if (file_exists($path)) {
+                return '"' . $path . '"';
+            }
+        }
+
+        return 'ffmpeg';
     }
 }

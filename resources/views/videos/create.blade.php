@@ -334,8 +334,11 @@ Scene 3: Close up of the cowboy's face, determined."
                                     {{-- Gradient Background --}}
                                     <div class="absolute inset-0 bg-gradient-to-br {{ $style['grad'] }} transition-transform duration-500 group-hover:scale-110"></div>
                                     
+                                    {{-- Image Background --}}
+                                    <img src="{{ asset('images/aesthetics/' . $style['id'] . '.png') }}" alt="{{ $style['name'] }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy">
+                                    
                                     {{-- Overlay --}}
-                                    <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+                                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-300"></div>
                                     
                                     {{-- Selection Indicator --}}
                                     <div class="absolute top-2 right-2 transition-all duration-300" :class="selectedStyle === '{{ $style['id'] }}' ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'">
