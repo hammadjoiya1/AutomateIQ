@@ -152,4 +152,60 @@ class OpenAIService
             throw $e;
         }
     }
+
+    /**
+     * Generate an SEO-optimized markdown blog post.
+     *
+     * @param array $params
+     * @return array
+     * @throws Exception
+     */
+    public function generateBlogPost(array $params): array
+    {
+        try {
+            $topic = $params['topic'] ?? 'General topic';
+            $tone = $params['tone'] ?? 'professional';
+            $keywords = $params['keywords'] ?? '';
+            
+            $prompt = "Write a comprehensive, SEO-optimized blog post about: {$topic}.\n\n";
+            $prompt .= "**Requirements:**\n";
+            $prompt .= "- Tone: {$tone}\n";
+            if ($keywords) {
+                $prompt .= "- Target Keywords: {$keywords}\n";
+            }
+            $prompt .= "- Format: Return ONLY well-formatted Markdown for the body of the post. Use headers, bullet points, and bold text for structure.\n";
+            $prompt .= "- Include a compelling introduction and a strong conclusion.\n";
+
+            $response = OpenAI::chat()->create([
+                'model' => config('services.openai.model', 'gpt-4'),
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => 'You are an expert SEO copywriter and content marketer. You write engaging, highly-ranked blog posts formatted perfectly in Markdown.'
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $prompt
+                    ]
+                ],
+                'max_tokens' => 2500,
+                'temperature' => 0.7,
+            ]);
+
+            $markdownContent = $response->choices[0]->message->content;
+            
+            // Strip markdown code block formatting if present
+            $markdownContent = preg_replace('/^```markdown\s*|\s*```$/i', '', trim($markdownContent));
+
+            return [
+                'success' => true,
+                'content' => trim($markdownContent),
+                'tokens_used' => $response->usage->totalTokens ?? 0,
+            ];
+
+        } catch (Exception $e) {
+            Log::error('OpenAI Blog Generation Error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 }

@@ -23,6 +23,42 @@
             }
         }
     @endphp
+
+    <style>
+        /* Premium Slider Styles */
+        input[type=range].premium-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range].premium-slider:focus {
+            outline: none;
+        }
+        input[type=range].premium-slider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: rgba(var(--primary-rgb, 91, 33, 182), 0.2);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+        }
+        input[type=range].premium-slider::-webkit-slider-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: rgba(var(--primary-rgb, 91, 33, 182), 1);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -8px;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb, 91, 33, 182), 0.8), 0 0 5px rgba(255,255,255,0.5);
+            border: 2px solid white;
+            transition: transform 0.1s;
+        }
+        input[type=range].premium-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+    </style>
     <div class="bg-background py-20 sm:py-28" x-data="{
         shortRuns: 20,
         scriptRuns: 5,
@@ -63,7 +99,7 @@
                             <span class="text-text/80">Hooks & Captions</span>
                             <span class="text-primary font-bold"><span x-text="shortRuns"></span>/mo</span>
                         </div>
-                        <input type="range" min="0" max="300" step="5" x-model="shortRuns" class="w-full h-1.5 bg-background border border-white/10 rounded-lg appearance-none cursor-pointer accent-primary">
+                        <input type="range" min="0" max="300" step="5" x-model="shortRuns" class="premium-slider">
                         <div class="text-[10px] text-text/40 flex justify-between">
                             <span>0</span>
                             <span>300</span>
@@ -76,7 +112,7 @@
                             <span class="text-text/80">Long Scripts</span>
                             <span class="text-primary font-bold"><span x-text="scriptRuns"></span>/mo</span>
                         </div>
-                        <input type="range" min="0" max="100" step="2" x-model="scriptRuns" class="w-full h-1.5 bg-background border border-white/10 rounded-lg appearance-none cursor-pointer accent-primary">
+                        <input type="range" min="0" max="100" step="2" x-model="scriptRuns" class="premium-slider">
                         <div class="text-[10px] text-text/40 flex justify-between">
                             <span>0</span>
                             <span>100</span>
@@ -89,7 +125,7 @@
                             <span class="text-text/80">Video Generations</span>
                             <span class="text-primary font-bold"><span x-text="videoRuns"></span>/mo</span>
                         </div>
-                        <input type="range" min="0" max="50" step="1" x-model="videoRuns" class="w-full h-1.5 bg-background border border-white/10 rounded-lg appearance-none cursor-pointer accent-primary">
+                        <input type="range" min="0" max="50" step="1" x-model="videoRuns" class="premium-slider">
                         <div class="text-[10px] text-text/40 flex justify-between">
                             <span>0</span>
                             <span>50</span>
@@ -115,8 +151,8 @@
             <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Free Plan -->
                 <div 
-                    :class="recommendedPlan === 'free' ? 'border-primary/50 ring-2 ring-primary/20 scale-105 shadow-xl shadow-primary/10 bg-primary/5' : 'border-white/10 bg-surface/30 opacity-70'"
-                    class="rounded-2xl p-6 border transition-all duration-300 relative flex flex-col justify-between"
+                    :class="recommendedPlan === 'free' ? 'border-transparent scale-105 shadow-2xl shadow-primary/20 bg-primary/10 relative before:absolute before:inset-0 before:p-[2px] before:bg-gradient-to-r before:from-primary before:via-accent before:to-primary before:rounded-2xl before:-z-10 before:animate-[spin_3s_linear_infinite] before:bg-[length:200%_auto] z-10' : 'border-white/10 bg-surface/30 opacity-70'"
+                    class="rounded-2xl p-6 border transition-all duration-300 relative flex flex-col justify-between overflow-hidden"
                 >
                     <div x-show="recommendedPlan === 'free'" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">RECOMMENDED</div>
                     <div>
@@ -138,8 +174,8 @@
 
                 <!-- Pro Plan -->
                 <div 
-                    :class="recommendedPlan === 'pro' ? 'border-primary/50 ring-2 ring-primary/20 scale-105 shadow-xl shadow-primary/10 bg-primary/5' : 'border-primary/40 bg-primary/5'"
-                    class="rounded-2xl p-6 border transition-all duration-300 relative flex flex-col justify-between"
+                    :class="recommendedPlan === 'pro' ? 'border-transparent scale-105 shadow-2xl shadow-primary/20 bg-primary/10 relative before:absolute before:inset-0 before:p-[2px] before:bg-gradient-to-r before:from-primary before:via-accent before:to-primary before:rounded-2xl before:-z-10 before:animate-[spin_3s_linear_infinite] before:bg-[length:200%_auto] z-10' : 'border-primary/40 bg-primary/5'"
+                    class="rounded-2xl p-6 border transition-all duration-300 relative flex flex-col justify-between overflow-hidden"
                 >
                     <div x-show="recommendedPlan === 'pro'" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">RECOMMENDED</div>
                     <div x-show="recommendedPlan !== 'pro'" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-surface border border-white/10 text-text/60 text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">MOST POPULAR</div>
@@ -168,8 +204,8 @@
 
                 <!-- Team Plan -->
                 <div 
-                    :class="recommendedPlan === 'team' ? 'border-primary/50 ring-2 ring-primary/20 scale-105 shadow-xl shadow-primary/10 bg-primary/5' : 'border-white/10 bg-surface/30 opacity-70'"
-                    class="rounded-2xl p-6 border transition-all duration-300 relative flex flex-col justify-between"
+                    :class="recommendedPlan === 'team' ? 'border-transparent scale-105 shadow-2xl shadow-primary/20 bg-primary/10 relative before:absolute before:inset-0 before:p-[2px] before:bg-gradient-to-r before:from-primary before:via-accent before:to-primary before:rounded-2xl before:-z-10 before:animate-[spin_3s_linear_infinite] before:bg-[length:200%_auto] z-10' : 'border-white/10 bg-surface/30 opacity-70'"
+                    class="rounded-2xl p-6 border transition-all duration-300 relative flex flex-col justify-between overflow-hidden"
                 >
                     <div x-show="recommendedPlan === 'team'" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">RECOMMENDED</div>
                     <div>

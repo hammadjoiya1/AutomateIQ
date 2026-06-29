@@ -34,19 +34,106 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js" integrity="sha512-wC/cunGGDjXSl9OHwe00RQm5053048D51m178oIEqYqjBtv1k52rK8HnL/0Jm/E+Bv2wP9rN1e31XN/2V8B52g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <x-theme-styles :activeTheme="$activeTheme" />
     <style>
         [x-cloak] {
             display: none !important;
         }
+        
+        /* Lenis Smooth Scrolling Styles */
+        html.lenis {
+            height: auto;
+        }
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+        .lenis.lenis-scrolling iframe {
+            pointer-events: none;
+        }
+
+        /* Premium scrollbar for modern browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            border: 2px solid rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Bento Grid Spotlight & 3D Tilt Effect */
+        .bento-card {
+            background: rgba(var(--bg-2-rgb, 17, 24, 39), 0.45);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .bento-card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .bento-spotlight {
+            pointer-events: none;
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(var(--primary-rgb, 91, 33, 182), 0.1), transparent 40%);
+            z-index: 0;
+        }
+        .bento-card:hover .bento-spotlight {
+            opacity: 1;
+        }
+        .bento-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.3), transparent 40%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .bento-card:hover::before {
+            opacity: 1;
+        }
     </style>
+    <!-- Lenis Smooth Scrolling CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 </head>
 
 <body data-theme="{{ $activeTheme['slug'] ?? 'dark' }}"
-    class="antialiased min-h-screen flex flex-col relative transition-colors duration-500 bg-background text-text">
+    class="font-sans antialiased bg-background text-text overflow-x-hidden transition-colors duration-300">
+
+    <!-- Global Mouse Aura -->
+    <div id="global-aura" class="fixed top-0 left-0 w-96 h-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none z-[-1] opacity-50 mix-blend-screen transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500"></div>
+
+    <!-- Fluid Membrane Canvas Background -->
+    <canvas id="network-canvas" class="fixed inset-0 w-full h-full opacity-60 pointer-events-none z-0"></canvas>
+
+    <div class="relative min-h-screen overflow-x-clip">
     @if(session()->has('impersonated_by'))
-        <div class="bg-primary text-white text-center py-2 px-4 text-sm font-semibold flex items-center justify-center gap-4 relative z-50 shadow-md">
+        <div
+            class="bg-primary text-white text-center py-2 px-4 text-sm font-semibold flex items-center justify-center gap-4 relative z-50 shadow-md">
             <span>You are currently impersonating <strong>{{ Auth::user()->name }}</strong>.</span>
             <form action="{{ route('impersonate.leave') }}" method="POST" class="inline">
                 @csrf
@@ -54,9 +141,12 @@
             </form>
         </div>
     @endif
-    <!-- Background removed -->
 
-    <div x-data="{ open: false }" class="sticky top-0 z-50">
+        <!-- Global Background Ambient Glows -->
+        <div class="fixed top-1/4 left-1/10 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+        <div class="fixed bottom-1/3 right-1/10 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+        <div x-data="{ open: false }" class="sticky top-0 z-50">
         <!-- Navigation -->
         <nav class="glass-panel border-b border-primary/10 transition-all duration-300">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,9 +165,12 @@
                         <div class="shrink-0 flex items-center">
                             <a href="{{ route('home') }}" class="flex items-center gap-2 group">
                                 @if ($logo = \App\Models\Setting::get('site_logo'))
-                                    <img src="{{ Storage::url($logo) }}" class="h-8 w-auto rounded-full object-cover" alt="Logo">
+                                    <img src="{{ Storage::url($logo) }}" class="h-8 w-auto rounded-full object-cover"
+                                        alt="Logo">
                                 @else
-                                    <img src="{{ asset('images/favicon.png') }}" class="w-10 h-10 rounded-full object-cover border border-primary/20 group-hover:scale-105 transition-transform" alt="Logo">
+                                    <img src="{{ asset('images/favicon.png') }}"
+                                        class="w-10 h-10 rounded-full object-cover border border-primary/20 group-hover:scale-105 transition-transform"
+                                        alt="Logo">
                                 @endif
                                 <span class="font-bold text-xl tracking-tight">
                                     {{ \App\Models\Setting::get('site_name', 'AutomateIQ') }}
@@ -268,7 +361,8 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-12">
                 <div class="col-span-1 md:col-span-1 space-y-6">
                     <div class="flex items-center gap-2">
-                        <img src="{{ asset('images/favicon.png') }}" class="w-8 h-8 rounded-full object-cover border border-primary/20" alt="Logo">
+                        <img src="{{ asset('images/favicon.png') }}"
+                            class="w-8 h-8 rounded-full object-cover border border-primary/20" alt="Logo">
                         <span class="font-bold text-xl font-display text-text">AutomateIQ</span>
                     </div>
                     <p class="text-sm text-text-muted leading-relaxed max-w-xs">
@@ -348,6 +442,351 @@
             </div>
         </div>
     </footer>
+    </div> <!-- Close .relative.min-h-screen.overflow-x-clip wrapper -->
+
+    <!-- Global Scripts -->
+    <script>
+        document.addEventListener('turbo:load', () => {
+            // Only initialize Lenis once globally
+            if (!window.lenis) {
+                window.lenis = new Lenis({
+                    duration: 1.2,
+                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                    direction: 'vertical',
+                    gestureDirection: 'vertical',
+                    smooth: true,
+                    mouseMultiplier: 1,
+                    smoothTouch: false,
+                    touchMultiplier: 2,
+                    infinite: false,
+                });
+
+                function raf(time) {
+                    window.lenis.raf(time);
+                    requestAnimationFrame(raf);
+                }
+                requestAnimationFrame(raf);
+            }
+        });
+
+        // ==========================================
+        // 1. Fluid grid membrane canvas background
+        // ==========================================
+        document.addEventListener('turbo:load', () => {
+            const canvas = document.getElementById('network-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            let width, height;
+            let points = [];
+            const spacing = 45; // grid spacing
+            const mouseRadius = 140;
+            const spring = 0.04;
+            const damping = 0.85;
+            
+            let mouse = { x: null, y: null, vx: 0, vy: 0 };
+            
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                initGrid();
+            }
+            
+            function initGrid() {
+                points = [];
+                const cols = Math.ceil(width / spacing) + 1;
+                const rows = Math.ceil(height / spacing) + 1;
+                
+                for (let c = 0; c < cols; c++) {
+                    points[c] = [];
+                    for (let r = 0; r < rows; r++) {
+                        points[c][r] = {
+                            x: c * spacing,
+                            y: r * spacing,
+                            ox: c * spacing,
+                            oy: r * spacing,
+                            vx: 0,
+                            vy: 0
+                        };
+                    }
+                }
+            }
+            
+            window.addEventListener('resize', resize);
+            
+            window.addEventListener('mousemove', (e) => {
+                if (mouse.x !== null) {
+                    mouse.vx = e.clientX - mouse.x;
+                    mouse.vy = e.clientY - mouse.y;
+                }
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+            
+            window.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+            
+            resize();
+            
+            function animateCanvas() {
+                ctx.clearRect(0, 0, width, height);
+                
+                const cols = points.length;
+                const rows = points[0] ? points[0].length : 0;
+                
+                mouse.vx *= 0.9;
+                mouse.vy *= 0.9;
+                const mouseSpeed = Math.sqrt(mouse.vx * mouse.vx + mouse.vy * mouse.vy);
+                
+                for (let c = 0; c < cols; c++) {
+                    for (let r = 0; r < rows; r++) {
+                        const p = points[c][r];
+                        
+                        if (mouse.x !== null) {
+                            const dx = mouse.x - p.x;
+                            const dy = mouse.y - p.y;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (dist < mouseRadius) {
+                                const force = (mouseRadius - dist) / mouseRadius;
+                                const repel = force * (3.5 + mouseSpeed * 0.15); 
+                                const angle = Math.atan2(dy, dx);
+                                
+                                p.vx -= Math.cos(angle) * repel;
+                                p.vy -= Math.sin(angle) * repel;
+                            }
+                        }
+                        
+                        const ax = (p.ox - p.x) * spring;
+                        const ay = (p.oy - p.y) * spring;
+                        
+                        p.vx = (p.vx + ax) * damping;
+                        p.vy = (p.vy + ay) * damping;
+                        
+                        p.x += p.vx;
+                        p.y += p.vy;
+                    }
+                }
+                
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+                ctx.lineWidth = 1;
+                for (let c = 0; c < cols; c++) {
+                    ctx.beginPath();
+                    for (let r = 0; r < rows; r++) {
+                        const p = points[c][r];
+                        if (r === 0) ctx.moveTo(p.x, p.y);
+                        else ctx.lineTo(p.x, p.y);
+                    }
+                    ctx.stroke();
+                }
+                
+                for (let r = 0; r < rows; r++) {
+                    ctx.beginPath();
+                    for (let c = 0; c < cols; c++) {
+                        const p = points[c][r];
+                        if (c === 0) ctx.moveTo(p.x, p.y);
+                        else ctx.lineTo(p.x, p.y);
+                    }
+                    ctx.stroke();
+                }
+                
+                requestAnimationFrame(animateCanvas);
+            }
+            
+            animateCanvas();
+        });
+
+        // ==========================================
+        // 2. Global Mouse Aura Script (Velocity Lerp)
+        // ==========================================
+        document.addEventListener('turbo:load', () => {
+            const aura = document.getElementById('global-aura');
+            if (!aura) return;
+
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+            let auraX = mouseX;
+            let auraY = mouseY;
+            let lastMouseX = mouseX;
+            let lastMouseY = mouseY;
+            let velocityX = 0;
+            let velocityY = 0;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function animateAura() {
+                velocityX = mouseX - lastMouseX;
+                velocityY = mouseY - lastMouseY;
+                lastMouseX = mouseX;
+                lastMouseY = mouseY;
+
+                const speed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+                const maxSpeed = 100;
+                const limitedSpeed = Math.min(speed, maxSpeed);
+                
+                const stretch = 1 + (limitedSpeed / maxSpeed) * 0.8;
+                const squeeze = 1 - (limitedSpeed / maxSpeed) * 0.4;
+                const angle = Math.atan2(velocityY, velocityX);
+
+                const lerpFactor = 0.1;
+                auraX += (mouseX - auraX) * lerpFactor;
+                auraY += (mouseY - auraY) * lerpFactor;
+
+                aura.style.transform = `translate3d(${auraX}px, ${auraY}px, 0) translate(-50%, -50%) rotate(${angle}rad) scale(${stretch}, ${squeeze})`;
+                
+                requestAnimationFrame(animateAura);
+            }
+            animateAura();
+        });
+
+        // ==========================================
+        // 3. Bento Cards Spotlight & Tilt Setup
+        // ==========================================
+        document.addEventListener('mousemove', (e) => {
+            document.querySelectorAll('.bento-card').forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        document.addEventListener('turbo:load', () => {
+            if (typeof VanillaTilt !== 'undefined') {
+                VanillaTilt.init(document.querySelectorAll(".bento-card"), {
+                    max: 12,
+                    speed: 800,
+                    glare: true,
+                    "max-glare": 0.2,
+                    scale: 1.03,
+                    perspective: 1000,
+                    gyroscope: true
+                });
+            }
+        });
+
+        // ==========================================
+        // 4. Elastic Magnetic Buttons
+        // ==========================================
+        document.addEventListener('turbo:load', () => {
+            const magneticButtons = document.querySelectorAll('.magnetic-button');
+            magneticButtons.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const h = rect.width / 2;
+                    const v = rect.height / 2;
+                    const x = e.clientX - rect.left - h;
+                    const y = e.clientY - rect.top - v;
+                    
+                    btn.style.transform = `translate(${x * 0.35}px, ${y * 0.35}px) scale(1.05)`;
+                    btn.style.transition = 'transform 0.05s ease-out';
+                });
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = `translate(0px, 0px) scale(1)`;
+                    btn.style.transition = 'transform 0.6s cubic-bezier(0.25, 1.25, 0.5, 1.25)';
+                });
+            });
+        });
+
+        // ==========================================
+        // 5. Scroll-Bound 3D Dashboard Mockup Tilt
+        // ==========================================
+        document.addEventListener('turbo:load', () => {
+            const dashboard = document.getElementById('scroll-3d-dashboard');
+            if (dashboard) {
+                window.addEventListener('scroll', () => {
+                    const scrollProgress = Math.min(window.scrollY / 600, 1);
+                    const rotX = 15 - (scrollProgress * 15);
+                    const rotY = -5 + (scrollProgress * 5);
+                    const scale = 0.95 + (scrollProgress * 0.05);
+                    const translateY = (1 - scrollProgress) * 40;
+                    
+                    dashboard.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale}) translateY(${translateY}px)`;
+                });
+            }
+        });
+
+        // ==========================================
+        // 6. Text Scramble Effect
+        // ==========================================
+        class TextScramble {
+            constructor(el) {
+                this.el = el;
+                this.chars = '!<>-_\\/[]{}—=+*^?#________';
+                this.update = this.update.bind(this);
+            }
+            setText(newText) {
+                const oldText = this.el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise((resolve) => this.resolve = resolve);
+                this.queue = [];
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 40);
+                    const end = start + Math.floor(Math.random() * 40);
+                    this.queue.push({ from, to, start, end });
+                }
+                cancelAnimationFrame(this.frameRequest);
+                this.frame = 0;
+                this.update();
+                return promise;
+            }
+            update() {
+                let output = '';
+                let complete = 0;
+                for (let i = 0, n = this.queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = this.queue[i];
+                    if (this.frame >= end) {
+                        complete++;
+                        output += to;
+                    } else if (this.frame >= start) {
+                        if (!char || Math.random() < 0.28) {
+                            char = this.randomChar();
+                            this.queue[i].char = char;
+                        }
+                        output += `<span class="text-primary/70">${char}</span>`;
+                    } else {
+                        output += from;
+                    }
+                }
+                this.el.innerHTML = output;
+                if (complete === this.queue.length) {
+                    this.resolve();
+                } else {
+                    this.frameRequest = requestAnimationFrame(this.update);
+                    this.frame++;
+                }
+            }
+            randomChar() {
+                return this.chars[Math.floor(Math.random() * this.chars.length)];
+            }
+        }
+
+        document.addEventListener('turbo:load', () => {
+            const scrambles = document.querySelectorAll('[data-scramble]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.hasAttribute('data-scrambled')) {
+                        const fx = new TextScramble(entry.target);
+                        const originalText = entry.target.innerText;
+                        fx.setText(originalText);
+                        entry.target.setAttribute('data-scrambled', 'true');
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            scrambles.forEach(el => observer.observe(el));
+        });
+    </script>
 </body>
 
 </html>

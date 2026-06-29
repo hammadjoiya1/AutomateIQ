@@ -90,6 +90,13 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.audit'])->prefix('admin')
     // 1. Dashboard
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
+    // AI Blog Generator & Management
+    Route::get('/blog-generator', [\App\Http\Controllers\Admin\BlogGeneratorController::class, 'index'])->name('blog.generator');
+    Route::post('/blog-generator', [\App\Http\Controllers\Admin\BlogGeneratorController::class, 'generate'])->name('blog.generate');
+    Route::post('/blog-generator/store', [\App\Http\Controllers\Admin\BlogGeneratorController::class, 'store'])->name('blog.store');
+    
+    Route::resource('blog-posts', \App\Http\Controllers\Admin\BlogPostController::class)->except(['create', 'store', 'show']);
+
     // 2. User Management
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     Route::post('/users/{user}/ban', [\App\Http\Controllers\Admin\UserController::class, 'ban'])->name('users.ban');

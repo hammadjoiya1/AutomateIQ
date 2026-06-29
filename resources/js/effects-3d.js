@@ -160,7 +160,7 @@ export function initScrollAnimations() {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     const el = entry.target;
-                    const animation = el.dataset.animation || "fadeInUp";
+                    const animation = el.dataset.animation || "fade-in-up";
                     const delay = el.dataset.delay || "0";
 
                     el.style.animationDelay = `${delay}ms`;

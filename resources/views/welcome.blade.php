@@ -17,24 +17,87 @@
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Vanilla Tilt for 3D wow effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js" integrity="sha512-wC/cunGGDjXSl9OHwe00RQm5053048D51m178oIEqYqjBtv1k52rK8HnL/0Jm/E+Bv2wP9rN1e31XN/2V8B52g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
         [x-cloak] {
             display: none !important;
+        }
+        
+        @keyframes progress {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+        
+        .workflow-line-anim {
+            animation: dash 1s linear infinite;
+        }
+
+        /* Bento Grid Spotlight Effect */
+        .bento-card {
+            background: rgba(var(--bg-2-rgb, 17, 24, 39), 0.45);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .bento-spotlight {
+            pointer-events: none;
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(var(--primary-rgb, 91, 33, 182), 0.1), transparent 40%);
+            z-index: 0;
+        }
+        .bento-card:hover .bento-spotlight {
+            opacity: 1;
+        }
+        .bento-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.3), transparent 40%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .bento-card:hover::before {
+            opacity: 1;
         }
     </style>
 </head>
 
 <body data-theme="{{ $activeTheme['slug'] ?? 'dark' }}"
     class="font-sans antialiased bg-background text-text overflow-x-hidden">
+    
+    <!-- Global Mouse Aura -->
+    <div id="global-aura" class="fixed top-0 left-0 w-96 h-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none z-[-1] opacity-50 mix-blend-screen transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500"></div>
+
     <!-- Animated Background -->
-    <div class="fixed inset-0 -z-10 overflow-hidden">
-        <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px] animate-float opacity-50">
-        </div>
-        <div
-            class="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-[100px] animate-float-delayed opacity-50">
-        </div>
-        <div class="absolute inset-0 bg-grid-pattern opacity-[0.03]"></div>
+    <div class="fixed inset-0 -z-10 overflow-hidden bg-background">
+        <canvas id="network-canvas" class="absolute inset-0 w-full h-full opacity-60"></canvas>
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-float opacity-40 pointer-events-none"></div>
+        <div class="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-accent/20 rounded-full blur-[120px] animate-float-delayed opacity-40 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none"></div>
     </div>
 
     <div x-data="{ scrolled: false, open: false }" @scroll.window="scrolled = (window.pageYOffset > 20)">
@@ -173,9 +236,9 @@
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up"
                 style="animation-delay: 0.3s;">
-                <a href="{{ route('register') }}" class="btn btn-primary btn-lg w-full sm:w-auto group">
+                <a href="{{ route('register') }}" class="btn btn-primary btn-lg w-full sm:w-auto group magnetic-button inline-block">
                     Start Creating Now
-                    <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none"
+                    <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform inline" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
@@ -185,15 +248,67 @@
             </div>
 
             <!-- Hero Image/Dashboard Preview -->
-            <div class="mt-20 relative max-w-5xl mx-auto animate-slide-up" style="animation-delay: 0.4s;">
+            <div class="mt-20 relative max-w-5xl mx-auto animate-slide-up" style="animation-delay: 0.4s; perspective: 1200px;">
                 <div class="absolute inset-0 bg-primary/20 blur-3xl -z-10 rounded-full opacity-40"></div>
-                <div class="glass-panel rounded-2xl p-2 border border-white/10 shadow-2xl">
-                    <img src="https://placehold.co/1200x675/1e293b/ffffff?text=Dashboard+Preview"
-                        alt="Dashboard Preview"
-                        class="rounded-xl w-full border border-white/5 opacity-90 block dark:hidden">
-                    <img src="https://placehold.co/1200x675/0f172a/ffffff?text=Dashboard+Preview+Dark"
-                        alt="Dashboard Preview"
-                        class="rounded-xl w-full border border-white/5 opacity-90 hidden dark:block">
+                
+                <!-- Mock Browser Window with initial 3D tilt -->
+                <div id="scroll-3d-dashboard" class="glass-panel rounded-2xl border border-white/10 shadow-2xl overflow-hidden bg-background/80 backdrop-blur-xl transition-transform duration-75 ease-out" style="transform: rotateX(15deg) rotateY(-5deg) scale(0.95); transform-style: preserve-3d; will-change: transform;">
+                    <!-- Browser Header -->
+                    <div class="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-surface/50">
+                        <div class="flex gap-1.5">
+                            <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                        </div>
+                        <div class="mx-auto flex items-center justify-center bg-background border border-white/5 rounded-md px-3 py-1 text-xs text-text-muted w-1/3">
+                            <svg class="w-3 h-3 mr-2 opacity-50" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            app.automateiq.com
+                        </div>
+                        <div class="w-10"></div>
+                    </div>
+
+                    <!-- Workflow Mock Animation -->
+                    <div class="relative h-[300px] sm:h-[450px] p-6 sm:p-10 overflow-hidden bg-grid-pattern bg-[length:20px_20px]">
+                        <!-- Connecting Line (SVG SVG) -->
+                        <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" style="filter: drop-shadow(0 0 4px rgba(var(--primary-rgb), 0.5))">
+                            <path class="workflow-line text-primary opacity-50" stroke-dasharray="10" stroke="currentColor" stroke-width="2" fill="none" d="M 200 150 C 350 150, 350 250, 500 250"></path>
+                            <path class="workflow-line-anim text-primary" stroke-dasharray="10" stroke="currentColor" stroke-width="2" fill="none" d="M 200 150 C 350 150, 350 250, 500 250"></path>
+                        </svg>
+
+                        <!-- Node 1: Trigger -->
+                        <div class="workflow-node absolute left-[10%] sm:left-[20%] top-[80px] sm:top-[120px] w-48 bg-surface border border-white/10 rounded-xl p-3 shadow-lg z-10 flex flex-col gap-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-md bg-accent/20 flex items-center justify-center text-accent">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                </div>
+                                <span class="text-xs font-bold text-text">New Idea</span>
+                            </div>
+                            <div class="text-[10px] text-text-muted bg-background/50 rounded px-2 py-1 border border-white/5">Webhook received</div>
+                            <div class="w-full bg-background rounded-full h-1 mt-1 overflow-hidden">
+                                <div class="bg-accent h-1 w-full rounded-full animate-pulse"></div>
+                            </div>
+                        </div>
+
+                        <!-- Node 2: AI Action -->
+                        <div class="workflow-node absolute left-[50%] sm:left-[60%] top-[150px] sm:top-[220px] w-56 bg-surface border border-primary/30 rounded-xl p-3 shadow-xl shadow-primary/10 z-10 flex flex-col gap-2 transform transition-transform" style="animation-delay: 0.5s;">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 rounded-md bg-primary/20 flex items-center justify-center text-primary">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                    </div>
+                                    <span class="text-xs font-bold text-text">Generate Video</span>
+                                </div>
+                                <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                            </div>
+                            <div class="text-[10px] text-text-muted bg-background/50 rounded px-2 py-1 border border-white/5 font-mono text-primary/70">Generating b-roll...</div>
+                            <div class="flex gap-1 mt-1">
+                                <div class="flex-1 bg-background rounded-full h-1 overflow-hidden">
+                                    <div class="bg-primary h-1 rounded-full w-full animate-[progress_2s_ease-in-out_infinite]"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -202,54 +317,66 @@
     <!-- Features Grid -->
     <section id="features" class="py-24 bg-surface/50 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">Everything you need to scale</h2>
+            <div class="text-center max-w-3xl mx-auto mb-16 scroll-animate" data-animation="fade-in-up">
+                <h2 class="font-display text-3xl md:text-4xl font-bold mb-4 tilt-3d" data-scramble>Everything you need to scale</h2>
                 <p class="text-text-muted text-lg">A focused toolkit for faceless creators—from hooks to scripts to scene
                     breakdowns and multi‑platform repurposing.</p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
-                <div class="card p-8 card-hover group">
-                    <div
-                        class="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-                            </path>
-                        </svg>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8" data-stagger-reveal id="bento-grid">
+                <!-- Feature 1 (Large Bento, Spans 8 cols) -->
+                <div class="bento-card md:col-span-8 glass-article rounded-3xl p-8 relative overflow-hidden group scroll-animate" data-animation="fade-in-up" style="transform-style: preserve-3d;">
+                    <div class="bento-spotlight"></div>
+                    <div class="relative z-10 h-full flex flex-col justify-between" style="transform: translateZ(30px); transform-style: preserve-3d;">
+                        <div style="transform-style: preserve-3d;">
+                            <div class="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-primary/20" style="transform: translateZ(20px);">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-3xl font-display font-bold mb-4" style="transform: translateZ(15px);">Short‑form Script Builder</h3>
+                            <p class="text-text-muted text-lg max-w-md" style="transform: translateZ(10px);">Time‑coded scripts with b‑roll and delivery notes for Shorts, Reels, and TikTok. Engineered for maximum retention.</p>
+                        </div>
+                        <div class="mt-8 pt-8 border-t border-white/5 flex gap-4" style="transform: translateZ(12px);">
+                            <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded">JSON Output</span>
+                            <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded">Hooks</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Short‑form Script Builder</h3>
-                    <p class="text-text-muted">Time‑coded scripts with b‑roll and delivery notes for Shorts, Reels, and TikTok.</p>
                 </div>
 
-                <!-- Feature 2 -->
-                <div class="card p-8 card-hover group">
-                    <div
-                        class="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent mb-6 group-hover:scale-110 transition-transform">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z">
-                            </path>
-                        </svg>
+                <!-- Feature 2 (Tall Bento, Spans 4 cols) -->
+                <div class="bento-card md:col-span-4 glass-article rounded-3xl p-8 relative overflow-hidden group scroll-animate" data-animation="fade-in-up" style="animation-delay: 0.1s; transform-style: preserve-3d;">
+                    <div class="bento-spotlight"></div>
+                    <div class="relative z-10 h-full flex flex-col justify-between" style="transform: translateZ(30px); transform-style: preserve-3d;">
+                        <div class="h-14 w-14 rounded-2xl bg-accent/10 flex items-center justify-center text-accent mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-accent/20" style="transform: translateZ(20px);">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-display font-bold mb-4" style="transform: translateZ(15px);">Scene Splitter</h3>
+                            <p class="text-text-muted" style="transform: translateZ(10px);">Turn scripts into visual scenes with camera, motion, and on‑screen text cues.</p>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Scene Splitter</h3>
-                    <p class="text-text-muted">Turn scripts into visual scenes with camera, motion, and on‑screen text cues.</p>
                 </div>
 
-                <!-- Feature 3 -->
-                <div class="card p-8 card-hover group">
-                    <div
-                        class="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 mb-6 group-hover:scale-110 transition-transform">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                            </path>
-                        </svg>
+                <!-- Feature 3 (Wide Bento, Spans 12 cols) -->
+                <div class="bento-card md:col-span-12 glass-article rounded-3xl p-8 sm:p-12 relative overflow-hidden group scroll-animate" data-animation="fade-in-up" style="animation-delay: 0.2s; transform-style: preserve-3d;">
+                    <div class="bento-spotlight"></div>
+                    <div class="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-16" style="transform: translateZ(30px); transform-style: preserve-3d;">
+                        <div class="flex-1" style="transform-style: preserve-3d;">
+                            <div class="h-14 w-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/20" style="transform: translateZ(20px);">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-3xl font-display font-bold mb-4" style="transform: translateZ(15px);">Image Generator</h3>
+                            <p class="text-text-muted text-lg max-w-lg" style="transform: translateZ(10px);">Create thumbnail-ready visuals and b-roll for your videos with our integrated DALL-E 3 engine. Generate variations instantly without leaving the dashboard.</p>
+                        </div>
+                        <div class="w-full md:w-1/3 aspect-video rounded-xl border border-white/10 bg-surface/50 overflow-hidden flex items-center justify-center group-hover:border-blue-500/30 transition-colors" style="transform: translateZ(25px);">
+                            <div class="w-16 h-16 rounded-full border border-white/5 border-t-blue-500 animate-spin"></div>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Image Generator</h3>
-                    <p class="text-text-muted">Create thumbnail-ready visuals and b-roll for your videos with our
-                        integrated DALL-E 3 engine.</p>
                 </div>
             </div>
         </div>
@@ -404,6 +531,335 @@
             </div>
         </div>
     </footer>
-</body>
 
+    <!-- Interactive Canvas Background Script & Advanced Motion Effects -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ==========================================
+            // 1. Interactive Fluid Grid Canvas Background
+            // ==========================================
+            const canvas = document.getElementById('network-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            let width, height;
+            let points = [];
+            const spacing = 45; // Space between grid lines
+            const mouseRadius = 130;
+            const spring = 0.04;
+            const damping = 0.85;
+            
+            let mouse = { x: null, y: null, px: null, py: null, vx: 0, vy: 0 };
+            
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                initGrid();
+            }
+            
+            function initGrid() {
+                points = [];
+                const cols = Math.ceil(width / spacing) + 1;
+                const rows = Math.ceil(height / spacing) + 1;
+                
+                for (let c = 0; c < cols; c++) {
+                    points[c] = [];
+                    for (let r = 0; r < rows; r++) {
+                        points[c][r] = {
+                            x: c * spacing,
+                            y: r * spacing,
+                            ox: c * spacing,
+                            oy: r * spacing,
+                            vx: 0,
+                            vy: 0
+                        };
+                    }
+                }
+            }
+            
+            window.addEventListener('resize', resize);
+            
+            window.addEventListener('mousemove', (e) => {
+                if (mouse.x !== null) {
+                    mouse.vx = e.clientX - mouse.x;
+                    mouse.vy = e.clientY - mouse.y;
+                }
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+            
+            window.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+            
+            resize();
+            
+            function animateCanvas() {
+                ctx.clearRect(0, 0, width, height);
+                
+                const cols = points.length;
+                const rows = points[0] ? points[0].length : 0;
+                
+                // Track mouse velocity decay
+                mouse.vx *= 0.9;
+                mouse.vy *= 0.9;
+                const mouseSpeed = Math.sqrt(mouse.vx * mouse.vx + mouse.vy * mouse.vy);
+                
+                // 1. Update Grid Points
+                for (let c = 0; c < cols; c++) {
+                    for (let r = 0; r < rows; r++) {
+                        const p = points[c][r];
+                        
+                        if (mouse.x !== null) {
+                            const dx = mouse.x - p.x;
+                            const dy = mouse.y - p.y;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (dist < mouseRadius) {
+                                const force = (mouseRadius - dist) / mouseRadius;
+                                // Pull/Push intensity linked to cursor velocity
+                                const repel = force * (3 + mouseSpeed * 0.15); 
+                                const angle = Math.atan2(dy, dx);
+                                
+                                p.vx -= Math.cos(angle) * repel;
+                                p.vy -= Math.sin(angle) * repel;
+                            }
+                        }
+                        
+                        // Spring force returning to anchor position
+                        const ax = (p.ox - p.x) * spring;
+                        const ay = (p.oy - p.y) * spring;
+                        
+                        p.vx = (p.vx + ax) * damping;
+                        p.vy = (p.vy + ay) * damping;
+                        
+                        p.x += p.vx;
+                        p.y += p.vy;
+                    }
+                }
+                
+                // 2. Draw Membrane Lines (Vertical)
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+                ctx.lineWidth = 1;
+                for (let c = 0; c < cols; c++) {
+                    ctx.beginPath();
+                    for (let r = 0; r < rows; r++) {
+                        const p = points[c][r];
+                        if (r === 0) ctx.moveTo(p.x, p.y);
+                        else ctx.lineTo(p.x, p.y);
+                    }
+                    ctx.stroke();
+                }
+                
+                // 3. Draw Membrane Lines (Horizontal)
+                for (let r = 0; r < rows; r++) {
+                    ctx.beginPath();
+                    for (let c = 0; c < cols; c++) {
+                        const p = points[c][r];
+                        if (c === 0) ctx.moveTo(p.x, p.y);
+                        else ctx.lineTo(p.x, p.y);
+                    }
+                    ctx.stroke();
+                }
+                
+                requestAnimationFrame(animateCanvas);
+            }
+            
+            animateCanvas();
+        });
+
+        // ==========================================
+        // 2. Bento Grid Mouse Spotlight Effect
+        // ==========================================
+        document.addEventListener('mousemove', (e) => {
+            document.querySelectorAll('.bento-card').forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Initialize 3D Vanilla Tilt
+        if (typeof VanillaTilt !== 'undefined') {
+            VanillaTilt.init(document.querySelectorAll(".bento-card"), {
+                max: 12, // slightly increased for stronger 3D depth
+                speed: 800,
+                glare: true,
+                "max-glare": 0.2,
+                scale: 1.03,
+                perspective: 1000,
+                gyroscope: true
+            });
+        }
+
+        // ==========================================
+        // 3. Velocity-Deforming Global Mouse Aura
+        // ==========================================
+        const aura = document.getElementById('global-aura');
+        if (aura) {
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+            let auraX = mouseX;
+            let auraY = mouseY;
+            
+            let lastMouseX = mouseX;
+            let lastMouseY = mouseY;
+            let velocityX = 0;
+            let velocityY = 0;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function animateAura() {
+                // Calculate cursor velocity
+                velocityX = mouseX - lastMouseX;
+                velocityY = mouseY - lastMouseY;
+                
+                lastMouseX = mouseX;
+                lastMouseY = mouseY;
+
+                // Damping velocity
+                const speed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+                const maxSpeed = 100;
+                const limitedSpeed = Math.min(speed, maxSpeed);
+                
+                // Calculate stretch factors
+                const stretch = 1 + (limitedSpeed / maxSpeed) * 0.8;
+                const squeeze = 1 - (limitedSpeed / maxSpeed) * 0.4;
+                
+                // Rotation angle matching mouse movement vector
+                const angle = Math.atan2(velocityY, velocityX);
+
+                // Lerping the actual position tracking
+                const lerpFactor = 0.1;
+                auraX += (mouseX - auraX) * lerpFactor;
+                auraY += (mouseY - auraY) * lerpFactor;
+
+                // Scale up when moving fast, stretch dynamically
+                aura.style.transform = `translate3d(${auraX}px, ${auraY}px, 0) translate(-50%, -50%) rotate(${angle}rad) scale(${stretch}, ${squeeze})`;
+                
+                requestAnimationFrame(animateAura);
+            }
+            animateAura();
+        }
+
+        // ==========================================
+        // 4. Elastic Magnetic Buttons
+        // ==========================================
+        const magneticButtons = document.querySelectorAll('.magnetic-button');
+        magneticButtons.forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const h = rect.width / 2;
+                const v = rect.height / 2;
+                const x = e.clientX - rect.left - h;
+                const y = e.clientY - rect.top - v;
+                
+                btn.style.transform = `translate(${x * 0.35}px, ${y * 0.35}px) scale(1.05)`;
+                btn.style.transition = 'transform 0.05s ease-out';
+            });
+            btn.addEventListener('mouseleave', () => {
+                // Spring back with overshoot look
+                btn.style.transform = `translate(0px, 0px) scale(1)`;
+                btn.style.transition = 'transform 0.6s cubic-bezier(0.25, 1.25, 0.5, 1.25)';
+            });
+        });
+
+        // ==========================================
+        // 5. Scroll-Bound 3D Dashboard Mockup Tilt
+        // ==========================================
+        const dashboard = document.getElementById('scroll-3d-dashboard');
+        if (dashboard) {
+            window.addEventListener('scroll', () => {
+                const scrollProgress = Math.min(window.scrollY / 600, 1);
+                
+                // Interpolate from tilted to flat state
+                const rotX = 15 - (scrollProgress * 15);
+                const rotY = -5 + (scrollProgress * 5);
+                const scale = 0.95 + (scrollProgress * 0.05);
+                const translateY = (1 - scrollProgress) * 40; // parallax lift
+                
+                dashboard.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale}) translateY(${translateY}px)`;
+            });
+        }
+
+        // ==========================================
+        // 6. Text Scramble Effect
+        // ==========================================
+        class TextScramble {
+            constructor(el) {
+                this.el = el;
+                this.chars = '!<>-_\\/[]{}—=+*^?#________';
+                this.update = this.update.bind(this);
+            }
+            setText(newText) {
+                const oldText = this.el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise((resolve) => this.resolve = resolve);
+                this.queue = [];
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 40);
+                    const end = start + Math.floor(Math.random() * 40);
+                    this.queue.push({ from, to, start, end });
+                }
+                cancelAnimationFrame(this.frameRequest);
+                this.frame = 0;
+                this.update();
+                return promise;
+            }
+            update() {
+                let output = '';
+                let complete = 0;
+                for (let i = 0, n = this.queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = this.queue[i];
+                    if (this.frame >= end) {
+                        complete++;
+                        output += to;
+                    } else if (this.frame >= start) {
+                        if (!char || Math.random() < 0.28) {
+                            char = this.randomChar();
+                            this.queue[i].char = char;
+                        }
+                        output += `<span class="text-primary/70">${char}</span>`;
+                    } else {
+                        output += from;
+                    }
+                }
+                this.el.innerHTML = output;
+                if (complete === this.queue.length) {
+                    this.resolve();
+                } else {
+                    this.frameRequest = requestAnimationFrame(this.update);
+                    this.frame++;
+                }
+            }
+            randomChar() {
+                return this.chars[Math.floor(Math.random() * this.chars.length)];
+            }
+        }
+
+        const scrambles = document.querySelectorAll('[data-scramble]');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.hasAttribute('data-scrambled')) {
+                    const fx = new TextScramble(entry.target);
+                    const originalText = entry.target.innerText;
+                    fx.setText(originalText);
+                    entry.target.setAttribute('data-scrambled', 'true');
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        scrambles.forEach(el => observer.observe(el));
+    </script>
+</body>
 </html>

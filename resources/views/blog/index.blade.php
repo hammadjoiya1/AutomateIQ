@@ -1,8 +1,8 @@
 <x-public-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h1 class="text-4xl font-extrabold text-text tracking-tight sm:text-5xl">
+            <div class="text-center mb-12 scroll-animate" data-animation="fade-in-up">
+                <h1 class="text-4xl font-extrabold text-text tracking-tight sm:text-5xl font-display tilt-3d" data-scramble>
                     Latest Insights
                 </h1>
                 <p class="mt-4 max-w-2xl mx-auto text-xl text-text/70">
@@ -10,11 +10,11 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-stagger-reveal>
                 @forelse($posts as $post)
-                    <a href="{{ route('blog.show', $post->slug) }}" class="block group">
+                    <a href="{{ route('blog.show', $post->slug) }}" class="block group scroll-animate card-3d" data-animation="fade-in-up">
                         <div
-                            class="bg-background border border-primary/20 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+                            class="glass-article rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                             <!-- Image Placeholder -->
                             <div class="h-48 bg-primary/10 flex items-center justify-center text-primary/30">
                                 @if($post->featured_image)
