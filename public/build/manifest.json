@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-BB4hupZQ.css",
+    "file": "assets/app-IZMFljQi.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -15,7 +15,7 @@
     "isDynamicEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-BOjRih7x.js",
+    "file": "assets/app-Cwy7vzdN.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -25,13 +25,20 @@
       "resources/js/advanced-effects.js",
       "resources/js/light-theme-effects.js",
       "resources/js/effects-3d.js",
-      "resources/js/wow-effects.js"
+      "resources/js/wow-effects.js",
+      "resources/js/glowy-waves-hero.js"
     ]
   },
   "resources/js/effects-3d.js": {
     "file": "assets/effects-3d-D4szHNQB.js",
     "name": "effects-3d",
     "src": "resources/js/effects-3d.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/glowy-waves-hero.js": {
+    "file": "assets/glowy-waves-hero-oMAWHuKG.js",
+    "name": "glowy-waves-hero",
+    "src": "resources/js/glowy-waves-hero.js",
     "isDynamicEntry": true
   },
   "resources/js/interactions.js": {

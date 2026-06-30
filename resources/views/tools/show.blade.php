@@ -2,8 +2,8 @@
     $trialActive = Auth::check() && Auth::user()->trial_ends_at && now()->lt(Auth::user()->trial_ends_at);
     $isPro = Auth::check() && (in_array(Auth::user()->plan, ['pro', 'team']) || $trialActive);
 @endphp
-<x-public-layout :meta-title="$tool->name . ' — AI Tool'" :meta-description="\Illuminate\Support\Str::limit($tool->description, 160)">
-    <div class="py-12 lg:py-20 animate-fade-in" x-data="toolRunner(@js($tool->input_schema ?? []), '{{ $tool->tool_type }}', @js($presets ?? []), {{ $isFavorite ? 'true' : 'false' }})">
+<x-app-layout :meta-title="$tool->name . ' — AI Tool'" :meta-description="\Illuminate\Support\Str::limit($tool->description, 160)">
+    <div class="py-6 animate-fade-in" x-data="toolRunner(@js($tool->input_schema ?? []), '{{ $tool->tool_type }}', @js($presets ?? []), {{ $isFavorite ? 'true' : 'false' }})">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-4">
             <!-- Breadcrumbs -->
             <nav class="flex mb-8 text-sm" aria-label="Breadcrumb">
@@ -797,4 +797,4 @@
             }
         </script>
     </div>
-</x-public-layout>
+</x-app-layout>

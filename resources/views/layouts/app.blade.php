@@ -10,9 +10,9 @@
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=outfit:400,500,600,700|inter:400,500,600&display=swap"
-        rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,700;125,800;125,900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -39,15 +39,16 @@
             </form>
         </div>
     @endif
-    <!-- Background Elements -->
-    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] opacity-40">
-        </div>
-        <div
-            class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 rounded-full blur-[120px] opacity-40">
-        </div>
-        <div class="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
-    </div>
+    <!-- Ambient Background Glow Orbs -->
+    <div class="ambient-glow ambient-glow-1"></div>
+    <div class="ambient-glow ambient-glow-2"></div>
+    <div class="ambient-glow ambient-glow-3"></div>
+
+    <!-- Fine Grid overlay for satin background finish -->
+    <div class="fixed inset-0 -z-10 bg-grid-pattern opacity-[0.02] pointer-events-none"></div>
+
+    <!-- Global Mouse Aura -->
+    <div id="global-aura" class="fixed top-0 left-0 w-96 h-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none z-[-1] opacity-50 mix-blend-screen transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500"></div>
 
     <div class="min-h-full flex" x-data="{ sidebarOpen: false }">
         <!-- Off-canvas menu for mobile -->
@@ -216,6 +217,52 @@
         </div>
     </div>
     <x-confirm-dialog />
+
+    <!-- Global Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const aura = document.getElementById('global-aura');
+            if (aura) {
+                let mouseX = window.innerWidth / 2;
+                let mouseY = window.innerHeight / 2;
+                let auraX = mouseX;
+                let auraY = mouseY;
+                let lastMouseX = mouseX;
+                let lastMouseY = mouseY;
+                let velocityX = 0;
+                let velocityY = 0;
+
+                window.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                });
+
+                function animateAura() {
+                    velocityX = mouseX - lastMouseX;
+                    velocityY = mouseY - lastMouseY;
+                    lastMouseX = mouseX;
+                    lastMouseY = mouseY;
+
+                    const speed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+                    const maxSpeed = 100;
+                    const limitedSpeed = Math.min(speed, maxSpeed);
+                    
+                    const stretch = 1 + (limitedSpeed / maxSpeed) * 0.8;
+                    const squeeze = 1 - (limitedSpeed / maxSpeed) * 0.4;
+                    const angle = Math.atan2(velocityY, velocityX);
+
+                    const lerpFactor = 0.1;
+                    auraX += (mouseX - auraX) * lerpFactor;
+                    auraY += (mouseY - auraY) * lerpFactor;
+
+                    aura.style.transform = `translate3d(${auraX}px, ${auraY}px, 0) translate(-50%, -50%) rotate(${angle}rad) scale(${stretch}, ${squeeze})`;
+                    
+                    requestAnimationFrame(animateAura);
+                }
+                animateAura();
+            }
+        });
+    </script>
 </body>
 
 </html>

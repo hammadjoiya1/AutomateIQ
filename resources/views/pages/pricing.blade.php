@@ -1,4 +1,4 @@
-<x-public-layout>
+<x-public-layout meta-title="Pricing - AutomateIQ">
     @php
         $creditsFree = (int) \App\Models\Setting::get('credits.monthly_credits.free', config('credits.monthly_credits.free'));
         $creditsPro = (int) \App\Models\Setting::get('credits.monthly_credits.pro', config('credits.monthly_credits.pro'));
@@ -59,222 +59,308 @@
             transform: scale(1.1);
         }
     </style>
-    <div class="bg-background py-20 sm:py-28" x-data="{
-        shortRuns: 20,
-        scriptRuns: 5,
-        videoRuns: 2,
-        shortWeight: {{ $exampleShortCredits }},
-        scriptWeight: {{ $exampleScriptCredits }},
-        videoWeight: {{ $exampleVideoCredits }},
+    
+    <div class="py-24 sm:py-32 relative" x-data="{
+        serviceType: 'both',
+        contentVolume: 30,
+        priorityAccess: false,
+        customBranding: false,
+        engineTier: 'ultra',
         numberFormat(val) {
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         },
-        get totalCredits() {
-            return (this.shortRuns * this.shortWeight) + (this.scriptRuns * this.scriptWeight) + (this.videoRuns * this.videoWeight);
+        get agencyCost() {
+            let base = 3500;
+            if (this.serviceType === 'script') base = 1500;
+            if (this.serviceType === 'video') base = 2000;
+            let scale = this.contentVolume / 30;
+            let addOn = (this.priorityAccess ? 200 : 0) + (this.customBranding ? 300 : 0);
+            return Math.max(800, Math.round((base * scale) + addOn));
+        },
+        get freelancerCost() {
+            let base = 1200;
+            if (this.serviceType === 'script') base = 500;
+            if (this.serviceType === 'video') base = 800;
+            let scale = this.contentVolume / 30;
+            let addOn = (this.priorityAccess ? 100 : 0) + (this.customBranding ? 150 : 0);
+            return Math.max(300, Math.round((base * scale) + addOn));
+        },
+        get automateiqCost() {
+            let base = 29;
+            if (this.contentVolume <= 10) base = 0;
+            else if (this.contentVolume > 150) base = 99;
+            
+            let addOn = (this.priorityAccess ? 10 : 0) + (this.customBranding ? 15 : 0);
+            let engineFee = 0;
+            if (this.engineTier === 'turbo') engineFee = 10;
+            if (this.engineTier === 'ultra') engineFee = 25;
+            
+            return base + addOn + engineFee;
         },
         get recommendedPlan() {
-            let total = this.totalCredits;
-            if (total <= {{ $creditsFree }}) return 'free';
-            if (total <= {{ $creditsPro }}) return 'pro';
+            if (this.contentVolume <= 10) return 'free';
+            if (this.contentVolume <= 150) return 'pro';
             return 'team';
         }
     }">
-        <div class="mx-auto max-w-6xl px-6 lg:px-8">
-            <div class="mx-auto max-w-2xl text-center">
-                <h2 class="text-3xl font-bold tracking-tight text-text sm:text-4xl">Simple Pricing</h2>
-                <p class="mt-4 text-base text-text/70">Start free. Upgrade when you’re ready.</p>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
+                <div class="section-badge mb-4 text-center inline-block">💎 Project Estimation</div>
+                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-text mb-4">Flexible pricing for every stage. <br>Try project estimation calculator.</h2>
+                <p class="mt-4 text-lg text-text/70">Start free. Scale your automated content production instantly.</p>
             </div>
 
-            <!-- Interactive Credit Calculator -->
-            <div class="mt-12 max-w-4xl mx-auto card p-8 border border-white/5 bg-surface/40 backdrop-blur-md rounded-3xl shadow-xl">
-                <div class="text-center mb-8">
-                    <h3 class="text-xl font-bold text-text">Estimate Your Monthly Usage</h3>
-                    <p class="text-sm text-text/60 mt-1">Drag the sliders to estimate how many credits your projects will consume.</p>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Short text slider -->
-                    <div class="space-y-3">
-                        <div class="flex justify-between text-xs font-semibold">
-                            <span class="text-text/80">Hooks & Captions</span>
-                            <span class="text-primary font-bold"><span x-text="shortRuns"></span>/mo</span>
+            <!-- Two-Column StratStudio Pricing Calculator -->
+            <div class="strat-card no-tilt scroll-reveal mt-12 max-w-5xl mx-auto p-0 mb-20 overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12">
+                    <!-- Left Column: Inputs -->
+                    <div class="lg:col-span-7 p-8 md:p-10 space-y-8">
+                        <!-- Service Type -->
+                        <div class="space-y-4">
+                            <h4 class="text-sm font-semibold text-text uppercase tracking-wider">What kind of service do you need?</h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="serviceType" value="script" x-model="serviceType" class="w-4 h-4 text-primary bg-background border-border focus:ring-primary focus:ring-2">
+                                    <span class="text-sm font-medium text-text/80 group-hover:text-text">Only Scriptwriting (AI scripts, hooks, ideas)</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="serviceType" value="video" x-model="serviceType" class="w-4 h-4 text-primary bg-background border-border focus:ring-primary focus:ring-2">
+                                    <span class="text-sm font-medium text-text/80 group-hover:text-text">Only Video Automation (Scene lists, cues, overlays)</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="serviceType" value="both" x-model="serviceType" class="w-4 h-4 text-primary bg-background border-border focus:ring-primary focus:ring-2">
+                                    <span class="text-sm font-medium text-text/80 group-hover:text-text">Full Production Suite (All tools + automated workflows)</span>
+                                </label>
+                            </div>
                         </div>
-                        <input type="range" min="0" max="300" step="5" x-model="shortRuns" class="premium-slider">
-                        <div class="text-[10px] text-text/40 flex justify-between">
-                            <span>0</span>
-                            <span>300</span>
+
+                        <!-- Content Volume -->
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-sm font-semibold text-text uppercase tracking-wider">Select number of monthly outputs:</h4>
+                                <span class="text-primary font-bold text-lg" x-text="contentVolume"></span>
+                            </div>
+                            <input type="range" min="5" max="500" step="5" x-model="contentVolume" class="premium-slider">
+                            <div class="text-[10px] text-text/40 flex justify-between">
+                                <span>5</span>
+                                <span>500</span>
+                            </div>
+                        </div>
+
+                        <!-- Add-ons -->
+                        <div class="space-y-4">
+                            <h4 class="text-sm font-semibold text-text uppercase tracking-wider">Add-ons:</h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center justify-between cursor-pointer group">
+                                    <span class="flex items-center gap-3">
+                                        <input type="checkbox" x-model="priorityAccess" class="w-4 h-4 rounded text-primary bg-background border-border focus:ring-primary focus:ring-2">
+                                        <span class="text-sm font-medium text-text/80 group-hover:text-text">Priority AI Queue Access</span>
+                                    </span>
+                                    <span class="text-xs font-semibold text-primary">+ $10/mo</span>
+                                </label>
+                                <label class="flex items-center justify-between cursor-pointer group">
+                                    <span class="flex items-center gap-3">
+                                        <input type="checkbox" x-model="customBranding" class="w-4 h-4 rounded text-primary bg-background border-border focus:ring-primary focus:ring-2">
+                                        <span class="text-sm font-medium text-text/80 group-hover:text-text">Custom Branding Preset Library</span>
+                                    </span>
+                                    <span class="text-xs font-semibold text-primary">+ $15/mo</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Speed Selector -->
+                        <div class="space-y-4">
+                            <h4 class="text-sm font-semibold text-text uppercase tracking-wider">Select AI Engine Tier:</h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center justify-between cursor-pointer group">
+                                    <span class="flex items-center gap-3">
+                                        <input type="radio" name="engineTier" value="standard" x-model="engineTier" class="w-4 h-4 text-primary bg-background border-border focus:ring-primary focus:ring-2">
+                                        <span class="text-sm font-medium text-text/80 group-hover:text-text">Standard Engine (Balanced speed)</span>
+                                    </span>
+                                    <span class="text-xs font-semibold text-primary">Included</span>
+                                </label>
+                                <label class="flex items-center justify-between cursor-pointer group">
+                                    <span class="flex items-center gap-3">
+                                        <input type="radio" name="engineTier" value="turbo" x-model="engineTier" class="w-4 h-4 text-primary bg-background border-border focus:ring-primary focus:ring-2">
+                                        <span class="text-sm font-medium text-text/80 group-hover:text-text">High-Speed Turbo API</span>
+                                    </span>
+                                    <span class="text-xs font-semibold text-primary">+ $10/mo</span>
+                                </label>
+                                <label class="flex items-center justify-between cursor-pointer group">
+                                    <span class="flex items-center gap-3">
+                                        <input type="radio" name="engineTier" value="ultra" x-model="engineTier" class="w-4 h-4 text-primary bg-background border-border focus:ring-primary focus:ring-2">
+                                        <span class="text-sm font-medium text-text/80 group-hover:text-text">Ultra-Quality Models (GPT-4o/Claude)</span>
+                                    </span>
+                                    <span class="text-xs font-semibold text-primary">+ $25/mo</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Long-form script slider -->
-                    <div class="space-y-3">
-                        <div class="flex justify-between text-xs font-semibold">
-                            <span class="text-text/80">Long Scripts</span>
-                            <span class="text-primary font-bold"><span x-text="scriptRuns"></span>/mo</span>
+                    <!-- Right Column: Estimated Costs -->
+                    <div class="lg:col-span-5 p-8 md:p-10 bg-slate-900/50 border-l border-white/5 space-y-6 flex flex-col justify-center">
+                        <div>
+                            <h4 class="text-lg font-bold text-text">Estimated Cost</h4>
+                            <p class="text-xs text-text/60 mt-1">This is an instant estimation to give you an idea of your potential monthly savings.</p>
                         </div>
-                        <input type="range" min="0" max="100" step="2" x-model="scriptRuns" class="premium-slider">
-                        <div class="text-[10px] text-text/40 flex justify-between">
-                            <span>0</span>
-                            <span>100</span>
-                        </div>
-                    </div>
 
-                    <!-- Video generator slider -->
-                    <div class="space-y-3">
-                        <div class="flex justify-between text-xs font-semibold">
-                            <span class="text-text/80">Video Generations</span>
-                            <span class="text-primary font-bold"><span x-text="videoRuns"></span>/mo</span>
+                        <!-- Card 1: Traditional copywriter -->
+                        <div class="bg-surface/50 border border-white/5 rounded-xl p-4 space-y-1">
+                            <span class="text-[10px] text-text/50 font-bold uppercase tracking-wider">Traditional Copywriter / Editor</span>
+                            <div class="text-2xl font-extrabold text-text" x-text="'$' + numberFormat(agencyCost)"></div>
+                            <span class="text-[10px] text-red-500 font-semibold block">+ Slow turnaround & high management overhead</span>
                         </div>
-                        <input type="range" min="0" max="50" step="1" x-model="videoRuns" class="premium-slider">
-                        <div class="text-[10px] text-text/40 flex justify-between">
-                            <span>0</span>
-                            <span>50</span>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="text-left">
-                        <span class="text-xs text-text/60 uppercase font-bold tracking-wider">Estimated Monthly Needs</span>
-                        <div class="text-3xl font-extrabold text-gradient-primary mt-1"><span x-text="numberFormat(totalCredits)"></span> <span class="text-base font-normal text-text/60">credits</span></div>
-                    </div>
-                    <div class="bg-primary/10 border border-primary/20 px-4 py-2.5 rounded-2xl flex items-center gap-3">
-                        <div class="w-2.5 h-2.5 bg-primary rounded-full animate-pulse"></div>
-                        <div class="text-sm">
-                            <span class="text-text/60">Recommended plan:</span>
-                            <span class="font-bold text-text capitalize ml-1" x-text="recommendedPlan"></span>
+                        <!-- Card 2: Regular freelancer -->
+                        <div class="bg-surface/50 border border-white/5 rounded-xl p-4 space-y-1">
+                            <span class="text-[10px] text-text/50 font-bold uppercase tracking-wider">Standard Freelancer Mini-Studio</span>
+                            <div class="text-2xl font-extrabold text-text" x-text="'$' + numberFormat(freelancerCost)"></div>
+                            <span class="text-[10px] text-red-500 font-semibold block">+ Requires endless review & back‑and‑forth loops</span>
+                        </div>
+
+                        <!-- Card 3: With AutomateIQ -->
+                        <div class="relative rounded-xl border border-primary/30 p-5 overflow-hidden bg-gradient-to-br from-primary/10 to-accent/5 shadow-xl shadow-primary/5">
+                            <div class="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
+                            <span class="text-[10px] text-primary font-bold uppercase tracking-wider block">With AutomateIQ</span>
+                            <div class="text-3xl font-black text-text mt-1" x-text="'$' + numberFormat(automateiqCost)"></div>
+                            <span class="text-[10px] text-green-500 font-semibold block mt-1">✓ Instant production & total creative control</span>
                         </div>
                     </div>
                 </div>
             </div>
+            </div>
 
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid md:grid-cols-3 gap-8 items-stretch scroll-reveal-stagger">
                 <!-- Free Plan -->
                 <div 
-                    :class="recommendedPlan === 'free' ? 'border-transparent scale-105 shadow-2xl shadow-primary/20 bg-primary/10 relative before:absolute before:inset-0 before:p-[2px] before:bg-gradient-to-r before:from-primary before:via-accent before:to-primary before:rounded-2xl before:-z-10 before:animate-[spin_3s_linear_infinite] before:bg-[length:200%_auto] z-10' : 'border-white/10 bg-surface/30 opacity-70'"
-                    class="rounded-2xl p-6 border transition-all duration-300 relative flex flex-col justify-between overflow-hidden"
+                    :class="recommendedPlan === 'free' ? 'pricing-card-strat featured flex flex-col justify-between' : 'pricing-card-strat flex flex-col justify-between opacity-80 scale-95'"
                 >
-                    <div x-show="recommendedPlan === 'free'" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">RECOMMENDED</div>
                     <div>
-                        <h3 class="text-lg font-semibold text-text">Free</h3>
-                        <p class="mt-1 text-sm text-text/60">Try the core tools.</p>
-                        <div class="mt-4 text-3xl font-bold text-text">$0<span class="text-sm font-medium text-text/60">/mo</span></div>
-                        <ul class="mt-5 space-y-2 text-sm text-text/70">
-                            <li>{{ number_format($creditsFree) }} credits / month</li>
-                            <li>20 library items</li>
-                            <li>Video generation not included</li>
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-text font-display">Starter</h3>
+                            <span x-show="recommendedPlan === 'free'" class="text-[10px] bg-primary px-2.5 py-1 rounded-full text-white font-bold uppercase tracking-wider font-mono shadow-lg">Recommended</span>
+                        </div>
+                        <div class="text-5xl font-extrabold text-text mt-4">$0</div>
+                        <div class="text-xs text-text/40 mt-1 font-medium font-sans">per month</div>
+                        <ul class="space-y-4 mt-8">
+                            <li class="flex items-center gap-3 text-sm text-text/60 font-medium font-sans">
+                                <svg class="w-4 h-4 text-text/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                {{ number_format($creditsFree) }} credits / month
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-text/60 font-medium font-sans">
+                                <svg class="w-4 h-4 text-text/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                20 library items
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-text/60 font-medium font-sans">
+                                <svg class="w-4 h-4 text-text/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                Video generation not included
+                            </li>
                         </ul>
                     </div>
                     @auth
-                        <a href="{{ route('dashboard') }}" class="mt-6 btn btn-ghost w-full">Go to dashboard</a>
+                        <a href="{{ route('dashboard') }}" class="btn-ghost-strat w-full text-center mt-8 justify-center">Go to dashboard</a>
                     @else
-                        <a href="{{ route('register') }}" class="mt-6 btn btn-ghost w-full">Get started</a>
+                        <a href="{{ route('register') }}" class="btn-ghost-strat w-full text-center mt-8 justify-center">Get Started</a>
                     @endauth
                 </div>
 
                 <!-- Pro Plan -->
                 <div 
-                    :class="recommendedPlan === 'pro' ? 'border-transparent scale-105 shadow-2xl shadow-primary/20 bg-primary/10 relative before:absolute before:inset-0 before:p-[2px] before:bg-gradient-to-r before:from-primary before:via-accent before:to-primary before:rounded-2xl before:-z-10 before:animate-[spin_3s_linear_infinite] before:bg-[length:200%_auto] z-10' : 'border-primary/40 bg-primary/5'"
-                    class="rounded-2xl p-6 border transition-all duration-300 relative flex flex-col justify-between overflow-hidden"
+                    :class="recommendedPlan === 'pro' ? 'pricing-card-strat featured flex flex-col justify-between' : 'pricing-card-strat flex flex-col justify-between'"
                 >
-                    <div x-show="recommendedPlan === 'pro'" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">RECOMMENDED</div>
-                    <div x-show="recommendedPlan !== 'pro'" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-surface border border-white/10 text-text/60 text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">MOST POPULAR</div>
                     <div>
-                        <h3 class="text-lg font-semibold text-text mt-1">Pro</h3>
-                        <p class="mt-1 text-sm text-text/60">For creators scaling output.</p>
-                        <div class="mt-4 text-3xl font-bold text-text">$29<span class="text-sm font-medium text-text/60">/mo</span></div>
-                        <ul class="mt-5 space-y-2 text-sm text-text/70">
-                            <li>{{ number_format($creditsPro) }} credits / month</li>
-                            <li>Unlimited library</li>
-                            <li>Video generation included</li>
-                            <li>Automated workflows</li>
-                            <li>Top-up credits available</li>
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-text font-display">Pro Creator</h3>
+                            <span x-show="recommendedPlan === 'pro'" class="text-[10px] bg-primary px-2.5 py-1 rounded-full text-white font-bold uppercase tracking-wider font-mono shadow-lg">Recommended</span>
+                            <span x-show="recommendedPlan !== 'pro'" class="text-[10px] bg-surface border border-white/10 px-2.5 py-1 rounded-full text-text/60 font-bold uppercase tracking-wider font-mono shadow-lg">Popular</span>
+                        </div>
+                        <div class="text-5xl font-extrabold text-text mt-4">$29</div>
+                        <div class="text-xs text-text/40 mt-1 font-medium font-sans">per month</div>
+                        <ul class="space-y-4 mt-8">
+                            <li class="flex items-center gap-3 text-sm text-text/80 font-semibold font-sans">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                {{ number_format($creditsPro) }} credits / month
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-text/80 font-semibold font-sans">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Unlimited library
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-text/80 font-semibold font-sans">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Video generation included
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-text/80 font-semibold font-sans">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Full preset engine workflows
+                            </li>
                         </ul>
                     </div>
                     @auth
                         @if(in_array(Auth::user()->plan, ['pro', 'team']))
-                            <a href="{{ route('billing.portal') }}" class="mt-6 btn btn-primary w-full">Manage billing</a>
+                            <a href="{{ route('billing.portal') }}" class="btn-ghost-strat w-full text-center mt-8 justify-center">Manage billing</a>
                         @else
-                            <a href="{{ route('billing.checkout', 'pro') }}" class="mt-6 btn btn-primary w-full">Upgrade to Pro</a>
+                            <a href="{{ route('billing.checkout', 'pro') }}" class="btn-glow w-full text-center mt-8 justify-center">Upgrade to Pro</a>
                         @endif
                     @else
-                        <a href="{{ route('register') }}" class="mt-6 btn btn-primary w-full">Get started</a>
+                        <a href="{{ route('register') }}" class="btn-glow w-full text-center mt-8 justify-center">Get Started</a>
                     @endauth
                 </div>
 
                 <!-- Team Plan -->
                 <div 
-                    :class="recommendedPlan === 'team' ? 'border-transparent scale-105 shadow-2xl shadow-primary/20 bg-primary/10 relative before:absolute before:inset-0 before:p-[2px] before:bg-gradient-to-r before:from-primary before:via-accent before:to-primary before:rounded-2xl before:-z-10 before:animate-[spin_3s_linear_infinite] before:bg-[length:200%_auto] z-10' : 'border-white/10 bg-surface/30 opacity-70'"
-                    class="rounded-2xl p-6 border transition-all duration-300 relative flex flex-col justify-between overflow-hidden"
+                    :class="recommendedPlan === 'team' ? 'pricing-card-strat featured flex flex-col justify-between' : 'pricing-card-strat flex flex-col justify-between opacity-80 scale-95'"
                 >
-                    <div x-show="recommendedPlan === 'team'" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">RECOMMENDED</div>
                     <div>
-                        <h3 class="text-lg font-semibold text-text">Team</h3>
-                        <p class="mt-1 text-sm text-text/60">For agencies and teams.</p>
-                        <div class="mt-4 text-3xl font-bold text-text">$99<span class="text-sm font-medium text-text/60">/mo</span></div>
-                        <ul class="mt-5 space-y-2 text-sm text-text/70">
-                            <li>{{ number_format($creditsTeam) }} credits / month</li>
-                            <li>Video generation included</li>
-                            <li>5 user seats</li>
-                            <li>Top-up credits available</li>
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-text font-display">Agency</h3>
+                            <span x-show="recommendedPlan === 'team'" class="text-[10px] bg-primary px-2.5 py-1 rounded-full text-white font-bold uppercase tracking-wider font-mono shadow-lg">Recommended</span>
+                        </div>
+                        <div class="text-5xl font-extrabold text-text mt-4">$99</div>
+                        <div class="text-xs text-text/40 mt-1 font-medium font-sans">per month</div>
+                        <ul class="space-y-4 mt-8">
+                            <li class="flex items-center gap-3 text-sm text-text/60 font-medium font-sans">
+                                <svg class="w-4 h-4 text-text/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                {{ number_format($creditsTeam) }} credits / month
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-text/60 font-medium font-sans">
+                                <svg class="w-4 h-4 text-text/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                5 user seats
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-text/60 font-medium font-sans">
+                                <svg class="w-4 h-4 text-text/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Priority Support channels
+                            </li>
                         </ul>
                     </div>
-                    <a href="{{ route('demo') }}" class="mt-6 btn btn-ghost w-full">Book demo</a>
+                    <a href="{{ route('demo') }}" class="btn-ghost-strat w-full text-center mt-8 justify-center">Book Demo</a>
                 </div>
             </div>
-
-            <div class="mt-10 text-center text-sm text-text/60">
+            
+            <div class="mt-10 text-center text-sm text-text/60 scroll-reveal">
                 Questions? <a href="{{ route('contact') }}" class="text-primary hover:underline">Contact us</a>.
             </div>
 
             @if(!empty($topupPacks))
-                <div class="mt-16">
+                <div class="mt-24 scroll-reveal">
                     <div class="mx-auto max-w-2xl text-center">
-                        <h3 class="text-2xl font-bold text-text">Credit Top-Ups</h3>
-                        <p class="mt-2 text-sm text-text/70">Need more this month? Buy credits instantly.</p>
+                        <h3 class="text-3xl font-bold text-text">Credit Top-Ups</h3>
+                        <p class="mt-2 text-base text-text/70">Need more this month? Buy credits instantly.</p>
                     </div>
                     <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                         @foreach($topupPacks as $pack)
-                            <div class="rounded-2xl p-6 border border-white/10 bg-surface/30">
-                                <div class="text-sm text-text/60">{{ $pack['label'] }}</div>
-                                <div class="mt-2 text-3xl font-bold text-text">{{ number_format($pack['credits']) }} credits</div>
+                            <div class="strat-card p-8 flex flex-col justify-center items-center text-center">
+                                <div class="text-sm font-bold tracking-wider text-primary uppercase">{{ $pack['label'] }}</div>
+                                <div class="mt-3 text-4xl font-extrabold text-text">{{ number_format($pack['credits']) }}</div>
+                                <div class="text-xs text-text/40 mb-6 mt-1">credits</div>
                                 @if(!empty($pack['price']))
-                                    <div class="mt-1 text-sm text-text/60">{{ $pack['price'] }}</div>
+                                    <div class="text-lg text-text/80 font-semibold">{{ $pack['price'] }}</div>
                                 @endif
-                                <a href="{{ route('billing.topup', $pack['key']) }}" class="mt-6 btn btn-primary w-full">Buy Credits</a>
+                                <a href="{{ route('billing.topup', $pack['key']) }}" class="mt-6 btn-glow w-full justify-center">Buy Credits</a>
                             </div>
                         @endforeach
                     </div>
                 </div>
             @endif
-            <div class="bg-surface/30 border-t border-white/10 py-16">
-                <div class="mx-auto max-w-6xl px-6 lg:px-8">
-                    <div class="mx-auto max-w-2xl text-center">
-                        <h3 class="text-2xl font-bold text-text">How credits work</h3>
-                        <p class="mt-2 text-sm text-text/70">Each run uses credits based on model costs. Credits reset monthly for subscriptions.</p>
-                    </div>
-                    <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="rounded-2xl p-6 border border-white/10 bg-background/40">
-                            <div class="text-sm text-text/60">Short text (hooks, captions)</div>
-                            <div class="mt-2 text-2xl font-bold text-text">~{{ number_format($exampleShortCredits) }} credits</div>
-                            <div class="mt-2 text-xs text-text/60">Typical 1–2 paragraph output</div>
-                        </div>
-                        <div class="rounded-2xl p-6 border border-white/10 bg-background/40">
-                            <div class="text-sm text-text/60">Long-form scripts</div>
-                            <div class="mt-2 text-2xl font-bold text-text">~{{ number_format($exampleScriptCredits) }} credits</div>
-                            <div class="mt-2 text-xs text-text/60">Longer outputs and higher token usage</div>
-                        </div>
-                        <div class="rounded-2xl p-6 border border-white/10 bg-background/40">
-                            <div class="text-sm text-text/60">AI video generation</div>
-                            <div class="mt-2 text-2xl font-bold text-text">~{{ number_format($exampleVideoCredits) }} credits</div>
-                            <div class="mt-2 text-xs text-text/60">Default frame count and FPS</div>
-                        </div>
-                    </div>
-                    <div class="mt-8 text-center text-sm text-text/60">
-                        Free plan includes {{ number_format($creditsFree) }} credits per month. Subscription credits reset each month; top-ups never expire.
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </x-public-layout>

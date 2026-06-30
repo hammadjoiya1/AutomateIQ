@@ -2,11 +2,18 @@ import './bootstrap';
 
 import Alpine from 'alpinejs';
 import * as Turbo from '@hotwired/turbo';
+import { initAnimatedCard } from './AnimatedCard';
+import { initGradientBlinds } from './GradientBlinds';
+import { initMagneticButtons } from './magnetic';
+import { initButtonPress, initCardHover, initScrollReveal, animateCount, initWaveform, initConnectorLines } from './motion-presets';
 
 window.Alpine = Alpine;
 window.Turbo = Turbo;
 
-Turbo.setProgressBarDelay(150);
+Turbo.config.drive.progressBarDelay = 150;
+
+initAnimatedCard();
+initGradientBlinds();
 
 Alpine.start();
 
@@ -18,7 +25,38 @@ function trackEvent(event, payload = {}) {
 }
 window.trackEvent = trackEvent;
 
+function initLenis() {
+    if (typeof Lenis !== 'undefined') {
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            orientation: 'vertical',
+            gestureOrientation: 'vertical',
+            smoothWheel: true,
+            wheelMultiplier: 0.95,
+            smoothTouch: false,
+            infinite: false,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        document.addEventListener('turbo:before-visit', () => {
+            lenis.destroy();
+        }, { once: true });
+    }
+}
+
 function initPage() {
+    initLenis();
+    initMagneticButtons();
+    initButtonPress();
+    initCardHover();
+    initScrollReveal();
+    initConnectorLines();
     trackEvent('page_view', { path: window.location.pathname });
 
     document.querySelectorAll('[data-analytics-event]').forEach((el) => {
@@ -77,24 +115,81 @@ function initPage() {
         trackEvent('ab_test', { id: el.getAttribute('data-abtest'), variant: pick?.id });
     });
 
-    // Scroll Animation Observer
+    // StratStudio Scroll Animation Observer
     const observerOptions = {
         root: null,
         rootMargin: '0px',
         threshold: 0.1
     };
 
-    const observer = new IntersectionObserver((entries, observer) => {
+    const scrollObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                observer.unobserve(entry.target); // Only animate once
+                entry.target.classList.add('is-visible');
+                entry.target.classList.add('active'); // Keep support for old .reveal
+
+                // If it's a count-up element, trigger count-up animation
+                if (entry.target.classList.contains('count-up')) {
+                    const targetVal = parseInt(entry.target.getAttribute('data-value') || '0', 10);
+                    animateCount(entry.target, targetVal, 0.8);
+                }
+
+                observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
-    const revealedElements = document.querySelectorAll('.reveal');
-    revealedElements.forEach(el => observer.observe(el));
+    // Track scroll-reveal elements
+    const revealedElements = document.querySelectorAll('.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale, .count-up, .reveal');
+    revealedElements.forEach(el => scrollObserver.observe(el));
+
+    // Helper function to animate values
+    function animateCountUp(obj, start, end, duration) {
+        let startTimestamp = null;
+        const prefix = obj.getAttribute('data-prefix') || '';
+        const suffix = obj.getAttribute('data-suffix') || '';
+
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            // Ease out quad
+            const easeOutQuad = progress * (2 - progress);
+            const current = Math.floor(easeOutQuad * (end - start) + start);
+            obj.textContent = prefix + current.toLocaleString() + suffix;
+
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                obj.textContent = prefix + end.toLocaleString() + suffix;
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // Scroll-bound 3D Dashboard Mockup Tilt
+    const dashboard = document.querySelector('.dashboard-mockup-3d');
+    if (dashboard) {
+        const handleScrollTilt = () => {
+            const rect = dashboard.getBoundingClientRect();
+            const viewHeight = window.innerHeight;
+
+            // Calculate how far through the viewport the dashboard is
+            const elementTop = rect.top;
+            const elementHeight = rect.height;
+
+            // Progress from 0 (at bottom of screen) to 1 (fully visible / scrolled past)
+            const progress = Math.min(Math.max((viewHeight - elementTop) / (viewHeight + elementHeight * 0.5), 0), 1);
+
+            // Rotations go from 12deg tilt down to 0deg flat
+            const rotX = Math.max(12 - (progress * 15), 0);
+            const rotY = Math.max(-3 + (progress * 5), -3); // subtle Y rotation
+            const scale = 0.96 + (progress * 0.04);
+
+            dashboard.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
+        };
+        window.addEventListener('scroll', handleScrollTilt, { passive: true });
+        handleScrollTilt(); // Run once initially
+    }
 
     // Init Custom Cursor (works everywhere)
     // initCustomCursor(); // Disabled - no custom cursor following mouse
@@ -127,6 +222,24 @@ function initPage() {
     import('./wow-effects').then(module => {
         module.initWowEffects();
     }).catch(e => console.warn('Wow effects not loaded:', e));
+
+    // Init waveform elements (idle ambient state by default)
+    const waveformBars = [...document.querySelectorAll('.waveform-bar')];
+    if (waveformBars.length) initWaveform(waveformBars, false);
+    window.initWaveform = initWaveform;
+
+    // 🌊 Init Interactive Glowy Waves (Hero Background)
+    const glowyCanvas = document.getElementById('glowy-canvas');
+    if (glowyCanvas) {
+        import('./glowy-waves-hero').then(module => {
+            let cleanup = module.initGlowyWavesHero('#glowy-canvas');
+
+            // Cleanup on Turbo before-cache
+            document.addEventListener('turbo:before-cache', () => {
+                if (cleanup) cleanup();
+            }, { once: true });
+        }).catch(e => console.error('GlowyWavesHero failed to load:', e));
+    }
 }
 
 document.addEventListener('turbo:load', () => {

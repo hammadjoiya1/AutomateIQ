@@ -1,20 +1,19 @@
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <h2 class="font-display font-bold text-3xl text-text leading-tight mb-2">
                         {{ __('My Workflows') }}
                     </h2>
                     <p class="text-text-muted">Manage and automate your content creation pipelines</p>
                 </div>
-                <a href="{{ route('workflows.create') }}"
-                    class="btn btn-primary btn-shine hover-glow shadow-lg transition-transform hover:-translate-y-1">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <x-ui.button variant="primary" href="{{ route('workflows.create') }}">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
                     Create Workflow
-                </a>
+                </x-ui.button>
             </div>
 
             @if(session('success'))
@@ -73,10 +72,9 @@
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                    class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full {{ $workflow->active ? 'bg-success/10 text-success border border-success/20' : 'bg-text-muted/10 text-text-muted border border-text-muted/20' }}">
+                                                <x-ui.badge :variant="$workflow->active ? 'success' : 'secondary'">
                                                     {{ $workflow->active ? 'Active' : 'Inactive' }}
-                                                </span>
+                                                </x-ui.badge>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-text-muted">
                                                 {{ $workflow->created_at->format('M d, Y') }}
@@ -87,12 +85,11 @@
                                                     <form action="{{ route('workflows.run', $workflow) }}" method="POST"
                                                         class="flex items-center gap-2">
                                                         @csrf
-                                                        <input type="text" name="topic" placeholder="Enter topic..."
-                                                            class="text-xs rounded-lg border-primary/20 bg-background/50 text-text px-3 py-1.5 w-40 focus:ring-primary focus:border-primary transition-all focus:w-48 placeholder-text-muted/50"
-                                                            required>
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-primary whitespace-nowrap shadow-md hover:shadow-lg">
-                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                        <x-ui.input type="text" name="topic" placeholder="Enter topic..."
+                                                            class="w-40 focus:w-48 transition-all h-8 text-xs py-1"
+                                                            required />
+                                                        <x-ui.button type="submit" variant="primary" size="sm" class="whitespace-nowrap">
+                                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
                                                                 viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                                     stroke-width="2"
@@ -103,17 +100,14 @@
                                                                 </path>
                                                             </svg>
                                                             Run
-                                                        </button>
+                                                        </x-ui.button>
                                                     </form>
                                                     <div class="h-4 w-px bg-primary/20"></div>
-                                                    <a href="{{ route('workflows.edit', $workflow) }}"
-                                                        class="btn btn-sm btn-secondary hover:text-primary">Edit</a>
+                                                    <x-ui.button variant="secondary" size="sm" href="{{ route('workflows.edit', $workflow) }}">Edit</x-ui.button>
                                                     @if(!empty($hasWorkflowRuns))
-                                                        <a href="{{ route('workflows.runs.index', $workflow) }}"
-                                                            class="btn btn-sm btn-ghost">Runs</a>
+                                                        <x-ui.button variant="ghost" size="sm" href="{{ route('workflows.runs.index', $workflow) }}">Runs</x-ui.button>
                                                         @if($workflow->runs()->exists())
-                                                            <a href="{{ route('workflows.runs.show', $workflow->runs()->latest()->first()) }}"
-                                                                class="btn btn-sm btn-ghost">View Results</a>
+                                                            <x-ui.button variant="ghost" size="sm" href="{{ route('workflows.runs.show', $workflow->runs()->latest()->first()) }}">View Results</x-ui.button>
                                                         @endif
                                                     @endif
                                                 </div>
@@ -138,7 +132,7 @@
                             <h3 class="text-lg font-bold text-text mb-2">No workflows yet</h3>
                             <p class="text-text-muted max-w-sm mx-auto mb-8">Get started by creating a new automation
                                 workflow to streamline your content creation.</p>
-                            <a href="{{ route('workflows.create') }}" class="btn btn-primary btn-shine hover-glow">
+                            <x-ui.button variant="primary" href="{{ route('workflows.create') }}">
                                 <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                                     fill="currentColor">
                                     <path fill-rule="evenodd"
@@ -146,7 +140,7 @@
                                         clip-rule="evenodd" />
                                 </svg>
                                 Create First Workflow
-                            </a>
+                            </x-ui.button>
                         </div>
                     @endif
                 </div>

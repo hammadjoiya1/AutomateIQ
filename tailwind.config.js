@@ -14,7 +14,8 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],
-                display: ['Outfit', ...defaultTheme.fontFamily.sans],
+                display: ['Archivo', ...defaultTheme.fontFamily.sans],
+                mono: ['JetBrains Mono', ...defaultTheme.fontFamily.mono],
             },
             colors: {
                 background: 'var(--bg)',
@@ -37,13 +38,17 @@ export default {
 
                 danger: 'var(--danger)',
                 success: 'var(--success)',
+                warning: 'var(--warning)',
+
+                signal: 'var(--color-signal)',
+                'signal-dim': 'var(--color-signal-dim)',
+                'accent-dim': 'var(--color-accent-dim)',
 
                 input: 'var(--input-bg)',
                 'input-text': 'var(--input-text)',
                 ring: 'var(--focus-ring)',
 
-                // Keep accents for backward compat if needed, or map to primary
-                accent: 'var(--primary)',
+                accent: 'var(--color-accent)',
             },
             keyframes: {
                 'fade-in-up': {
@@ -67,6 +72,14 @@ export default {
                 scroll: {
                     '0%': { transform: 'translateX(0)' },
                     '100%': { transform: 'translateX(-50%)' },
+                },
+                marquee: {
+                    '0%': { transform: 'translateX(0%)' },
+                    '100%': { transform: 'translateX(-100%)' },
+                },
+                marquee2: {
+                    '0%': { transform: 'translateX(100%)' },
+                    '100%': { transform: 'translateX(0%)' },
                 }
             },
             animation: {
@@ -74,6 +87,13 @@ export default {
                 'fade-in': 'fade-in 1s ease-out forwards',
                 'float': 'float 6s ease-in-out infinite',
                 'scroll': 'scroll 30s linear infinite',
+                'marquee': 'marquee 25s linear infinite',
+                'marquee2': 'marquee2 25s linear infinite',
+            },
+            borderRadius: {
+                'control-sm': 'var(--radius-sm)',
+                'control-md': 'var(--radius-md)',
+                'control-lg': 'var(--radius-lg)',
             },
         },
     },

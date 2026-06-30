@@ -36,10 +36,8 @@ return new class extends Migration {
 
             // Seed default themes
             DB::table('themes')->insert([
-                ['name' => 'Light', 'key' => 'light', 'is_active' => true, 'is_default' => false, 'created_at' => now(), 'updated_at' => now()],
+                ['name' => 'Light', 'key' => 'light', 'is_active' => true, 'is_default' => true, 'created_at' => now(), 'updated_at' => now()],
                 ['name' => 'Dark', 'key' => 'dark', 'is_active' => true, 'is_default' => false, 'created_at' => now(), 'updated_at' => now()],
-                ['name' => 'Neon Cyber', 'key' => 'neon-cyber', 'is_active' => true, 'is_default' => false, 'created_at' => now(), 'updated_at' => now()],
-                ['name' => 'Luxury Gold', 'key' => 'luxury-gold', 'is_active' => true, 'is_default' => true, 'created_at' => now(), 'updated_at' => now()],
             ]);
         }
 

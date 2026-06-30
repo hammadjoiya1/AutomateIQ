@@ -17,8 +17,6 @@
                     class="w-16 h-16 rounded-full flex items-center justify-center text-2xl mb-4 bg-bg-2 border border-border">
                     @if($theme->key == 'light') ☀️
                     @elseif($theme->key == 'dark') 🌑
-                    @elseif($theme->key == 'neon-cyber') 👾
-                    @elseif($theme->key == 'luxury-gold') ⚜️
                     @endif
                 </div>
                 <h3 class="font-bold text-lg text-text">{{ $theme->name }}</h3>

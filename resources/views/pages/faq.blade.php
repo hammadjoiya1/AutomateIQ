@@ -1,32 +1,33 @@
-<x-public-layout>
-    <div class="bg-background py-24 sm:py-32">
+<x-public-layout meta-title="FAQ - AutomateIQ">
+    <div class="py-24 sm:py-32 relative">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
-            <div class="mx-auto max-w-2xl text-center">
-                <h2 class="text-3xl font-bold tracking-tight text-text sm:text-4xl">Frequently Asked Questions</h2>
-                <p class="mt-4 text-base leading-7 text-text/70">
+            <div class="text-center scroll-reveal mb-16">
+                <x-ui.badge variant="accent" class="mb-4 text-center">❓ FAQ</x-ui.badge>
+                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-text font-display">Frequently Asked Questions</h2>
+                <p class="mt-4 text-lg leading-7 text-text-muted max-w-2xl mx-auto">
                     Questions about getting started with automated content creation? We have answers.
                 </p>
             </div>
-            <div class="mt-20">
-                <dl
-                    class="space-y-16 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-16 sm:space-y-0 lg:grid-cols-3 lg:gap-x-10">
-                    <div>
-                        <dt class="text-base font-semibold leading-7 text-text">Do I need to show my face?</dt>
-                        <dd class="mt-2 text-base leading-7 text-text/70">No! Our entire platform is built for
-                            "faceless" content creators. Tools focus on hooks, short scripts, scene splitting, video
-                            prompts, and repurposing across platforms.</dd>
-                    </div>
-                    <div>
-                        <dt class="text-base font-semibold leading-7 text-text">Is the content original?</dt>
-                        <dd class="mt-2 text-base leading-7 text-text/70">Yes, every generation is unique based on your
-                            specific inputs and our advanced AI prompts.</dd>
-                    </div>
-                    <div>
-                        <dt class="text-base font-semibold leading-7 text-text">Can I cancel anytime?</dt>
-                        <dd class="mt-2 text-base leading-7 text-text/70">Absolutely. There are no contracts. You can
-                            downgrade to the free plan whenever you like.</dd>
-                    </div>
-                </dl>
+            
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 scroll-reveal-stagger">
+                <x-ui.card padding="p-6 md:p-8" :hoverEffect="true" class="scroll-reveal flex flex-col">
+                    <dt class="text-lg font-bold leading-7 text-text mb-3">Do I need to show my face?</dt>
+                    <dd class="text-base leading-relaxed text-text-muted flex-grow">
+                        No! Our entire platform is built for "faceless" content creators. Tools focus on hooks, short scripts, scene splitting, video prompts, and repurposing across platforms.
+                    </dd>
+                </x-ui.card>
+                <x-ui.card padding="p-6 md:p-8" :hoverEffect="true" class="scroll-reveal flex flex-col">
+                    <dt class="text-lg font-bold leading-7 text-text mb-3">Is the content original?</dt>
+                    <dd class="text-base leading-relaxed text-text-muted flex-grow">
+                        Yes, every generation is unique based on your specific inputs and our advanced AI prompts.
+                    </dd>
+                </x-ui.card>
+                <x-ui.card padding="p-6 md:p-8" :hoverEffect="true" class="scroll-reveal flex flex-col">
+                    <dt class="text-lg font-bold leading-7 text-text mb-3">Can I cancel anytime?</dt>
+                    <dd class="text-base leading-relaxed text-text-muted flex-grow">
+                        Absolutely. There are no contracts. You can downgrade to the free plan whenever you like.
+                    </dd>
+                </x-ui.card>
             </div>
         </div>
     </div>

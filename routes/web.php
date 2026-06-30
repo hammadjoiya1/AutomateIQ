@@ -192,4 +192,6 @@ Route::get('/faq', [\App\Http\Controllers\PagesController::class, 'faq'])->name(
 Route::get('/privacy', [\App\Http\Controllers\PagesController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [\App\Http\Controllers\PagesController::class, 'terms'])->name('terms');
 
+Route::view('/glowy-demo', 'pages.glowy-demo')->name('glowy-demo');
+
 require __DIR__ . '/auth.php';

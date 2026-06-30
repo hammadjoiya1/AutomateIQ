@@ -25,30 +25,45 @@
         }
     @endphp
 
-    <div class="space-y-10 animate-fade-in pb-10">
+    <div class="space-y-10 pb-10">
         <!-- Welcome Section -->
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 scroll-reveal">
             <div>
-                <p class="text-xs uppercase tracking-widest text-text-muted">Overview</p>
-                <h1 class="text-3xl md:text-4xl font-display font-bold text-text mt-2">Dashboard</h1>
-                <p class="text-text-muted mt-2 text-lg">Welcome back, {{ Auth::user()->name }}. Here's a quick snapshot
+                {{-- Live system indicator strip --}}
+                <div class="flex items-center gap-3 mb-3">
+                    <x-ui.badge variant="accent" class="gap-1.5">
+                        <span class="relative flex h-1.5 w-1.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background: var(--color-accent)"></span>
+                            <span class="relative inline-flex rounded-full h-1.5 w-1.5" style="background: var(--color-accent)"></span>
+                        </span>
+                        Live
+                    </x-ui.badge>
+                    {{-- Waveform system-live indicator --}}
+                    <div class="waveform" aria-hidden="true">
+                        @for ($i = 0; $i < 8; $i++)<div class="waveform-bar"></div>@endfor
+                    </div>
+                    <span class="text-xs font-mono" style="color: var(--color-text-muted)">System active</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-display font-bold text-text">Dashboard</h1>
+                <p class="text-text-muted mt-2 text-lg">Welcome back, <span class="text-primary font-semibold">{{ Auth::user()->name }}</span>. Here's a quick snapshot
                     of your workspace.</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
-                <a href="{{ route('tools.index') }}" class="btn btn-primary shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all" data-analytics-event="cta_new_generation">
+                <x-ui.button variant="primary" href="{{ route('tools.index') }}" data-analytics-event="cta_new_generation">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     New Generation
-                </a>
-                <a href="{{ route('workflows.create') }}" class="btn btn-secondary border border-white/10 hover:bg-surface transition-all" data-analytics-event="cta_workflow_create">
+                </x-ui.button>
+                <x-ui.button variant="secondary" href="{{ route('workflows.create') }}" data-analytics-event="cta_workflow_create">
                     Create Workflow
-                </a>
-                <a href="{{ route('tools.history') }}" class="btn btn-ghost hover:bg-surface transition-all" data-analytics-event="cta_history">
+                </x-ui.button>
+                <x-ui.button variant="ghost" href="{{ route('tools.history') }}" data-analytics-event="cta_history">
                     History
-                </a>
+                </x-ui.button>
             </div>
         </div>
 
         @if(!$onboardingDone)
-            <div class="card p-5 border border-primary/30 bg-primary/10 shadow-lg shadow-primary/5 rounded-2xl">
+            <x-ui.card padding="p-5" class="border-primary/30 bg-primary/10 shadow-lg shadow-primary/5" :hoverEffect="false">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div class="text-sm text-text">
                         <span class="font-bold text-primary flex items-center gap-2 mb-1">
@@ -57,15 +72,15 @@
                         </span>
                         Finish the 5‑minute onboarding to unlock your workflow automation.
                     </div>
-                    <a href="{{ route('onboarding.show') }}" class="btn btn-primary shadow-lg shadow-primary/20 hover:scale-105 transition-all" data-analytics-event="cta_onboarding">
+                    <x-ui.button variant="primary" href="{{ route('onboarding.show') }}" data-analytics-event="cta_onboarding">
                         Start Onboarding
-                    </a>
+                    </x-ui.button>
                 </div>
-            </div>
+            </x-ui.card>
         @endif
 
         @if($lowCredits)
-            <div class="card p-5 border border-yellow-500/30 bg-yellow-500/10 shadow-lg shadow-yellow-500/5 rounded-2xl animate-pulse">
+            <x-ui.card padding="p-5" class="border-yellow-500/30 bg-yellow-500/10 shadow-lg shadow-yellow-500/5 animate-pulse" :hoverEffect="false">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div class="text-sm text-text">
                         <span class="font-bold text-yellow-500 flex items-center gap-2 mb-1">
@@ -76,31 +91,30 @@
                     </div>
                     <div class="flex flex-wrap gap-2">
                         @if(!empty($topupPacks))
-                            <a href="{{ route('billing.topup', array_key_first($topupPacks)) }}" class="btn btn-primary"
-                                data-analytics-event="cta_topup_low_credits">
+                            <x-ui.button variant="primary" href="{{ route('billing.topup', array_key_first($topupPacks)) }}" data-analytics-event="cta_topup_low_credits">
                                 Buy Credits
-                            </a>
+                            </x-ui.button>
                         @endif
-                        <a href="{{ $upgradeUrl }}" class="btn btn-secondary border border-white/10" data-analytics-event="cta_upgrade_low_credits">
+                        <x-ui.button variant="secondary" href="{{ $upgradeUrl }}" data-analytics-event="cta_upgrade_low_credits">
                             Upgrade
-                        </a>
+                        </x-ui.button>
                     </div>
                 </div>
-            </div>
+            </x-ui.card>
         @endif
 
         <div class="grid lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 space-y-8">
                 <!-- Recent Generations (Grid format) -->
                 <div>
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-between mb-4 scroll-reveal">
                         <h3 class="text-xl font-display font-bold text-text">Recent Generations</h3>
-                        <a href="{{ route('tools.history') }}" class="text-sm text-primary hover:underline font-semibold transition-all">View All</a>
+                        <a href="{{ route('tools.history') }}" class="text-sm text-primary hover:underline font-semibold transition-all">View All →</a>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @forelse(Auth::user()->toolRuns()->with('tool')->latest()->take(4)->get() as $run)
-                            <div class="card p-5 border border-white/5 bg-surface/50 hover:bg-surface hover:border-primary/20 transition-all cursor-pointer group rounded-2xl relative overflow-hidden">
+                            <x-ui.card padding="p-5" class="cursor-pointer group relative overflow-hidden" :hoverEffect="true">
                                 <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <div class="relative z-10">
                                     <div class="flex items-center justify-between mb-3">
@@ -112,18 +126,20 @@
                                     <h4 class="font-bold text-text mb-1">{{ $run->tool->name ?? 'Unknown Tool' }}</h4>
                                     <p class="text-sm text-text-muted line-clamp-2">Generated output content preview...</p>
                                     <div class="mt-4 flex items-center justify-between">
-                                        <span class="badge badge-success bg-green-500/10 text-green-500 border-none text-xs">Completed</span>
+                                        <x-ui.badge variant="signal" class="text-xs">Completed</x-ui.badge>
                                     </div>
                                 </div>
-                            </div>
+                            </x-ui.card>
                         @empty
-                            <div class="col-span-1 md:col-span-2 card p-8 border border-white/5 bg-surface/50 rounded-2xl text-center">
-                                <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mx-auto mb-4">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                                </div>
-                                <h4 class="font-bold text-text mb-2">No generations yet</h4>
-                                <p class="text-sm text-text-muted mb-4">Start generating content using our AI tools.</p>
-                                <a href="{{ route('tools.index') }}" class="btn btn-primary">Try a Tool</a>
+                            <div class="col-span-1 md:col-span-2">
+                                <x-ui.card padding="p-8" class="text-center" :hoverEffect="false">
+                                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mx-auto mb-4">
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                    </div>
+                                    <h4 class="font-bold text-text mb-2">No generations yet</h4>
+                                    <p class="text-sm text-text-muted mb-4">Start generating content using our AI tools.</p>
+                                    <x-ui.button variant="primary" href="{{ route('tools.index') }}">Try a Tool</x-ui.button>
+                                </x-ui.card>
                             </div>
                         @endforelse
                     </div>
@@ -131,13 +147,13 @@
 
                 <!-- Workflows -->
                 <div>
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-between mb-4 scroll-reveal">
                         <h3 class="text-xl font-display font-bold text-text">Active Workflows</h3>
-                        <a href="{{ route('workflows.index') }}" class="text-sm text-primary hover:underline font-semibold transition-all">Manage All</a>
+                        <a href="{{ route('workflows.index') }}" class="text-sm text-primary hover:underline font-semibold transition-all">Manage All →</a>
                     </div>
                     
-                    <div class="card p-1 border border-white/5 bg-surface/30 rounded-3xl overflow-hidden">
-                        <div class="divide-y divide-white/5">
+                    <x-ui.card padding="p-1" class="overflow-hidden" :hoverEffect="false">
+                        <div class="divide-y divide-border">
                             @forelse(Auth::user()->workflows()->latest()->take(3)->get() as $workflow)
                                 <div class="group flex items-center justify-between p-4 hover:bg-surface/80 transition-colors">
                                     <div class="flex items-center gap-4">
@@ -154,18 +170,18 @@
                             @empty
                                 <div class="p-6 text-center">
                                     <div class="text-sm text-text-muted mb-3">No workflows created. Automation saves you hours of work.</div>
-                                    <a href="{{ route('workflows.create') }}" class="btn btn-sm btn-secondary border border-white/10">Create Workflow</a>
+                                    <x-ui.button variant="secondary" size="sm" href="{{ route('workflows.create') }}">Create Workflow</x-ui.button>
                                 </div>
                             @endforelse
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
 
             <!-- Right Sidebar Panel -->
             <div class="space-y-8">
                 <!-- Usage Ring Chart Card -->
-                <div class="card p-6 border border-white/5 bg-surface/50 rounded-3xl relative overflow-hidden">
+                <x-ui.card padding="p-6" class="relative overflow-hidden scroll-reveal" :hoverEffect="false">
                     <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
                     
                     <h3 class="text-lg font-bold text-text mb-4">Credit Usage</h3>
@@ -174,15 +190,15 @@
                         <!-- ApexCharts Donut will render here -->
                         <div id="creditUsageChart" class="relative z-10"></div>
                         <div class="absolute inset-0 flex items-center justify-center flex-col z-0">
-                            <span class="text-3xl font-display font-bold text-text">{{ number_format($subscriptionCredits) }}</span>
+                            <span class="text-3xl font-display font-bold text-text" data-mono>{{ number_format($subscriptionCredits) }}</span>
                             <span class="text-xs text-text-muted uppercase tracking-wider font-semibold">Remaining</span>
                         </div>
                     </div>
-                    
-                    <div class="mt-4 bg-background/50 rounded-xl p-4 border border-white/5">
+
+                    <div class="mt-4 bg-background/50 rounded-control-md p-4 border border-border">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm text-text-muted">Total Allowance</span>
-                            <span class="text-sm font-bold text-text">{{ number_format($monthlyCredits) }}</span>
+                            <span class="text-sm font-bold text-text" data-mono>{{ number_format($monthlyCredits) }}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-sm text-text-muted">Plan</span>
@@ -191,17 +207,19 @@
                     </div>
 
                     @if($plan !== 'pro' && $plan !== 'team')
-                        <a href="{{ $upgradeUrl }}" class="btn btn-primary w-full mt-6 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all" data-analytics-event="cta_upgrade_usage_meter">
-                            Upgrade Plan
-                        </a>
+                        <div class="mt-6">
+                            <x-ui.button variant="primary" class="w-full" href="{{ $upgradeUrl }}" data-analytics-event="cta_upgrade_usage_meter">
+                                Upgrade Plan
+                            </x-ui.button>
+                        </div>
                     @endif
-                </div>
+                </x-ui.card>
 
                 <!-- Total Credits Overview -->
-                <div class="card p-6 border border-white/5 bg-surface/50 rounded-3xl">
+                <x-ui.card padding="p-6" class="scroll-reveal" :hoverEffect="false">
                     <div class="text-sm text-text-muted uppercase tracking-wider font-semibold">Total Balance</div>
-                    <div class="text-4xl font-display font-bold text-text mt-2 flex items-baseline gap-2">
-                        {{ number_format($credits) }}
+                    <div class="text-4xl font-display font-bold mt-2 flex items-baseline gap-2">
+                        <span class="text-primary font-mono" data-mono>{{ number_format($credits) }}</span>
                         <span class="text-sm text-text-muted font-normal">credits</span>
                     </div>
                     
@@ -210,20 +228,20 @@
                             <span class="text-text-muted flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-primary"></span> Subscription
                             </span>
-                            <span class="font-bold text-text">{{ number_format($subscriptionCredits) }}</span>
+                            <span class="font-bold text-text" data-mono>{{ number_format($subscriptionCredits) }}</span>
                         </div>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-text-muted flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-accent"></span> Top-ups
+                                <span class="w-2 h-2 rounded-full" style="background: var(--color-signal)"></span> Top-ups
                             </span>
-                            <span class="font-bold text-text">{{ number_format($topupCredits) }}</span>
+                            <span class="font-bold text-text" data-mono>{{ number_format($topupCredits) }}</span>
                         </div>
                     </div>
 
                     <div class="mt-6">
-                        <a href="{{ route('pricing') }}" class="btn btn-secondary w-full border border-white/10 hover:bg-surface transition-all">Buy more credits</a>
+                        <x-ui.button variant="secondary" class="w-full" href="{{ route('pricing') }}">Buy more credits</x-ui.button>
                     </div>
-                </div>
+                </x-ui.card>
             </div>
         </div>
     </div>
@@ -252,7 +270,7 @@
                         }
                     }
                 },
-                colors: ['#3b82f6', '#1e293b'],
+                colors: ['#FF4B1F', '#1C2024'],
                 labels: ['Used', 'Remaining'],
                 plotOptions: {
                     pie: {
@@ -291,11 +309,9 @@
             // Detect theme to adjust chart colors
             const theme = document.documentElement.getAttribute('data-theme') || 'dark';
             if (theme === 'light') {
-                options.colors = ['#2563eb', '#f1f5f9'];
+                options.colors = ['#FF4B1F', '#f1f5f9'];
                 options.stroke.colors = ['#ffffff'];
                 options.tooltip.theme = 'light';
-            } else if (theme === 'neon') {
-                options.colors = ['#d946ef', '#18181b'];
             }
 
             var chart = new ApexCharts(document.querySelector("#creditUsageChart"), options);

@@ -1,21 +1,19 @@
-<x-public-layout meta-title="AI Tools — AutomateIQ" meta-description="Creator-grade hooks, viral ideas, short scripts, scene splitters, video prompts, and repurposing tools for faceless growth.">
-    <div class="py-12 lg:py-20 animate-fade-in">
+<x-app-layout>
+    <div class="py-8 animate-fade-in">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Header section with centered search -->
-            <div class="text-center max-w-3xl mx-auto mb-16 px-4">
-                <div
-                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-6">
-                    <span class="relative flex h-2 w-2">
-                        <span
-                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <div class="text-center max-w-3xl mx-auto mb-12 px-4">
+                <x-ui.badge variant="accent" class="mb-6">
+                    <span class="relative flex h-2 w-2 mr-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                     </span>
                     {{ $tools->total() }} AI Tools Available
-                </div>
-                <h1 class="text-4xl md:text-5xl font-display font-bold text-text tracking-tight mb-6">
-                    Automate your <span class="text-gradient-primary">creative workflow</span>
+                </x-ui.badge>
+                <h1 class="text-3xl md:text-4xl font-display font-bold text-text tracking-tight mb-4">
+                    Automate your <span class="text-primary">creative workflow</span>
                 </h1>
-                <p class="text-xl text-text-muted mb-10 leading-relaxed">
+                <p class="text-lg text-text-muted mb-8 leading-relaxed">
                     Focused tools for faceless creators: hooks, ideas, short scripts, scene splitters, video prompts, and repurposing.
                 </p>
 
@@ -29,7 +27,7 @@
                         </svg>
                     </div>
                     <input type="text" name="search" value="{{ request()->search }}"
-                        class="w-full pl-12 pr-4 py-4 rounded-2xl bg-surface/50 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-lg shadow-black/5 text-text placeholder:text-text-muted/50"
+                        class="w-full pl-12 pr-4 py-4 rounded-control-sm bg-input border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm text-text placeholder:text-muted focus:outline-none"
                         placeholder="Search for tools like 'Script Writer'...">
                     @if(request()->category)
                         <input type="hidden" name="category" value="{{ request()->category }}">
@@ -44,21 +42,21 @@
             </div>
 
             <!-- Categories Filter -->
-            <div class="mb-12 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
-                <div class="flex gap-3 justify-start md:justify-center min-w-max">
+            <div class="mb-10 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+                <div class="flex gap-2 justify-start md:justify-center min-w-max">
                     <a href="{{ route('tools.index', ['search' => request()->search, 'tag' => request()->tag, 'favorite' => request()->favorite]) }}"
-                        class="px-5 py-2.5 rounded-xl text-sm font-medium transition-all {{ !request()->category ? 'bg-primary text-white shadow-lg shadow-primary/25 ring-2 ring-primary/20' : 'bg-surface border border-border text-text-muted hover:text-text hover:bg-surface/80' }}">
+                        class="px-4 py-2 rounded-control-sm text-sm font-semibold transition-all {{ !request()->category ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-surface border border-border text-text-muted hover:text-text hover:bg-surface/80' }}">
                         All Tools
                     </a>
                     @foreach($categories as $category)
                         <a href="{{ route('tools.index', ['category' => $category->slug, 'search' => request()->search, 'tag' => request()->tag, 'favorite' => request()->favorite]) }}"
-                            class="px-5 py-2.5 rounded-xl text-sm font-medium transition-all {{ request()->category === $category->slug ? 'bg-primary text-white shadow-lg shadow-primary/25 ring-2 ring-primary/20' : 'bg-surface border border-border text-text-muted hover:text-text hover:bg-surface/80' }}">
+                            class="px-4 py-2 rounded-control-sm text-sm font-semibold transition-all {{ request()->category === $category->slug ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-surface border border-border text-text-muted hover:text-text hover:bg-surface/80' }}">
                             {{ $category->name }}
                         </a>
                     @endforeach
                     @auth
                         <a href="{{ route('tools.index', ['favorite' => request()->favorite ? null : 1, 'search' => request()->search, 'category' => request()->category, 'tag' => request()->tag]) }}"
-                            class="px-5 py-2.5 rounded-xl text-sm font-medium transition-all {{ request()->favorite ? 'bg-primary text-white shadow-lg shadow-primary/25 ring-2 ring-primary/20' : 'bg-surface border border-border text-text-muted hover:text-text hover:bg-surface/80' }}">
+                            class="px-4 py-2 rounded-control-sm text-sm font-semibold transition-all {{ request()->favorite ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-surface border border-border text-text-muted hover:text-text hover:bg-surface/80' }}">
                             Favorites
                         </a>
                     @endauth
@@ -67,14 +65,14 @@
 
             @if($tags->isNotEmpty())
                 <div class="mb-10 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
-                    <div class="flex gap-3 justify-start md:justify-center min-w-max">
+                    <div class="flex gap-2 justify-start md:justify-center min-w-max">
                         <a href="{{ route('tools.index', ['search' => request()->search, 'category' => request()->category, 'favorite' => request()->favorite]) }}"
-                            class="px-4 py-2 rounded-full text-xs font-medium transition-all {{ !request()->tag ? 'bg-surface border border-border text-text' : 'bg-surface/50 border border-border text-text-muted hover:text-text' }}">
+                            class="px-3 py-1.5 rounded-control-sm text-xs font-semibold transition-all {{ !request()->tag ? 'bg-surface border border-border text-text' : 'bg-surface/50 border border-border text-text-muted hover:text-text' }}">
                             All Tags
                         </a>
                         @foreach($tags as $tag)
                             <a href="{{ route('tools.index', ['tag' => $tag->slug, 'search' => request()->search, 'category' => request()->category, 'favorite' => request()->favorite]) }}"
-                                class="px-4 py-2 rounded-full text-xs font-medium transition-all {{ request()->tag === $tag->slug ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-surface border border-border text-text-muted hover:text-text' }}">
+                                class="px-3 py-1.5 rounded-control-sm text-xs font-semibold transition-all {{ request()->tag === $tag->slug ? 'bg-primary/20 text-primary border border-primary/30' : 'bg-surface border border-border text-text-muted hover:text-text' }}">
                                 {{ $tag->name }}
                             </a>
                         @endforeach
@@ -87,8 +85,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
                     @foreach($tools as $tool)
                         <a href="{{ route('tools.show', $tool->slug) }}" class="group block h-full">
-                            <div
-                                class="card h-full p-6 transition-all duration-300 group-hover:translate-y-[-4px] group-hover:shadow-2xl group-hover:shadow-primary/10 group-hover:border-primary/20 relative overflow-hidden">
+                            <x-ui.card padding="p-6" class="h-full relative overflow-hidden transition-all duration-300 group-hover:translate-y-[-4px] group-hover:border-primary/30" :hoverEffect="true">
                                 <!-- Hover Glow Effect -->
                                 <div
                                     class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -96,14 +93,14 @@
 
                                 <div class="relative z-10 flex flex-col h-full">
                                     <div class="flex items-start justify-between mb-6">
-                                        <div
-                                            class="h-12 w-12 rounded-xl bg-surface border border-white/10 flex items-center justify-center text-primary group-hover:scale-110 group-hover:text-white group-hover:bg-primary transition-all duration-300 shadow-sm">
+                                        <div data-card-icon
+                                            class="h-12 w-12 rounded-control-sm bg-surface border border-border flex items-center justify-center text-primary group-hover:text-white group-hover:bg-primary transition-all duration-300 shadow-sm">
                                             <!-- Dynamic Icon Logic (Placeholder) -->
                                             <span class="font-bold text-lg">{{ substr($tool->name, 0, 1) }}</span>
                                         </div>
                                         @if($tool->is_featured)
                                             <span
-                                                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                                                class="inline-flex items-center px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
                                                 Featured
                                             </span>
                                         @endif
@@ -116,7 +113,7 @@
 
                                     <div class="pt-4 border-t border-border flex items-center justify-between text-sm">
                                         <span
-                                            class="text-text-muted group-hover:text-text transition-colors">{{ $tool->category->name ?? 'Utility' }}</span>
+                                            class="text-text-muted group-hover:text-text transition-colors font-semibold">{{ $tool->category->name ?? 'Utility' }}</span>
                                         @if($tool->tags->isNotEmpty())
                                             <span class="text-xs text-text-muted">{{ $tool->tags->pluck('name')->implode(' • ') }}</span>
                                         @endif
@@ -130,7 +127,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </x-ui.card>
                         </a>
                     @endforeach
                 </div>
@@ -139,7 +136,7 @@
                     {{ $tools->links() }}
                 </div>
             @else
-                <div class="text-center py-24 glass-panel rounded-3xl mx-4 border-dashed">
+                <x-ui.card padding="py-24 px-4" class="text-center mx-4 border-dashed" :hoverEffect="false">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface mb-6">
                         <svg class="w-8 h-8 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -148,9 +145,9 @@
                     </div>
                     <h3 class="text-xl font-bold text-text mb-2">No tools found</h3>
                     <p class="text-text-muted mb-8">We couldn't find any tools matching your search criteria.</p>
-                    <a href="{{ route('tools.index') }}" class="btn btn-secondary">Clear All Filters</a>
-                </div>
+                    <x-ui.button variant="secondary" href="{{ route('tools.index') }}">Clear All Filters</x-ui.button>
+                </x-ui.card>
             @endif
         </div>
     </div>
-</x-public-layout>
+</x-app-layout>
