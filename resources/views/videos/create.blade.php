@@ -145,7 +145,7 @@
                             {{-- Full Script Input --}}
                             <div x-show="mode === 'script'" class="relative group space-y-4" style="display: none;" x-transition>
                                 <div class="relative">
-                                    <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                                    <div class="absolute -inset-0.5 bg-gradient-to-r from-primary to-accent rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
                                     <textarea
                                         x-model="scriptContent"
                                         name="script"
@@ -217,7 +217,7 @@ Scene 3: Close up of the cowboy's face, determined."
                                 <div 
                                     @click="quality = 'standard'"
                                     class="cursor-pointer border-2 rounded-xl p-4 transition-all duration-300 relative overflow-hidden group"
-                                    :class="quality === 'standard' ? 'border-success bg-surface shadow-lg shadow-green-500/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
+                                    :class="quality === 'standard' ? 'border-success bg-surface shadow-lg shadow-success/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
                                 >
                                     <div class="flex justify-between items-start mb-2 relative z-10">
                                         <div>
@@ -288,7 +288,7 @@ Scene 3: Close up of the cowboy's face, determined."
                                         </div>
                                     </div>
                                     <div class="w-full bg-bg-2 h-1.5 rounded-full overflow-hidden mb-2">
-                                        <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-full w-[95%]"></div>
+                                        <div class="bg-gradient-to-r from-warning to-accent h-full w-[95%]"></div>
                                     </div>
                                     <p class="text-xs text-muted-text">{{ $tiers['premium']['description'] ?? 'Highest fidelity. Hollywood-grade.' }}</p>
                                     <div x-show="mode === 'script' && quality === 'premium'" class="mt-2 text-[10px] font-bold text-warning bg-warning/10 px-2 py-1 rounded" style="display: none;">
