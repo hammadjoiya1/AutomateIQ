@@ -15,7 +15,7 @@
     // Radius: var(--radius-sm) = 6px — no pills, equipment has edges
     $variants = [
         'primary'   => 'bg-[var(--color-accent)] text-white border border-transparent
-                        hover:bg-[#FF6B47] active:bg-[#E03A12]',
+                        hover:bg-[var(--primary-hover)] active:bg-[var(--primary-dark)]',
         'secondary' => 'bg-transparent text-[var(--color-text-muted)] border border-[var(--color-border)]
                         hover:border-[var(--color-text-muted)] hover:text-[var(--color-text)]',
         'ghost'     => 'bg-transparent text-[var(--color-text-muted)] border border-transparent

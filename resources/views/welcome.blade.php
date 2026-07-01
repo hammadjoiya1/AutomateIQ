@@ -25,7 +25,7 @@
         window.addEventListener('error', function(e) {
             if (e.message && e.message.indexOf('ResizeObserver') !== -1) return;
             var div = document.createElement('div');
-            div.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ef4444;color:white;padding:15px;z-index:99999;font-family:monospace;font-size:12px;white-space:pre-wrap;box-shadow:0 4px 12px rgba(0,0,0,0.5);';
+            div.style.cssText = 'position:fixed;top:0;left:0;right:0;background:var(--danger);color:white;padding:15px;z-index:99999;font-family:monospace;font-size:12px;white-space:pre-wrap;box-shadow:0 4px 12px rgba(0,0,0,0.5);';
             div.textContent = 'JS Error: ' + e.message + '\nFile: ' + e.filename + '\nLine: ' + e.lineno + ':' + e.colno + '\nStack: ' + (e.error ? e.error.stack : 'N/A');
             document.body.appendChild(div);
         });
@@ -111,7 +111,7 @@
                 <div x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full"
                     x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-150"
                     x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
-                    class="h-full bg-[#0a0a0f] border-r border-white/10 p-6 flex flex-col justify-between overflow-y-auto">
+                    class="h-full bg-[var(--color-bg)] border-r border-white/10 p-6 flex flex-col justify-between overflow-y-auto">
                     <div>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
@@ -194,7 +194,7 @@
                 <div class="absolute inset-0 bg-primary/20 blur-3xl -z-10 rounded-full opacity-40"></div>
                 
                 <div
-                    class="dashboard-mockup-3d terminal-window relative rounded-2xl border border-white/[0.06] shadow-2xl overflow-hidden bg-[#050508] aspect-[16/10] sm:aspect-[16/9] text-left">
+                    class="dashboard-mockup-3d terminal-window relative rounded-2xl border border-white/[0.06] shadow-2xl overflow-hidden bg-[var(--color-bg)] aspect-[16/10] sm:aspect-[16/9] text-left">
                     <!-- Terminal Header -->
                     <div class="terminal-header flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
                         <div class="terminal-dots flex gap-1.5">
@@ -529,7 +529,7 @@
                 <p class="text-white/50 text-lg font-medium">Estimate your customized multi-step AI workflow scaling budgets instantly.</p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-12 items-center bg-[#050508] border border-white/[0.06] rounded-2xl p-8 md:p-12 relative overflow-hidden">
+            <div class="grid md:grid-cols-2 gap-12 items-center bg-[var(--color-bg)] border border-white/[0.06] rounded-2xl p-8 md:p-12 relative overflow-hidden">
                 <!-- Grid decorative pattern -->
                 <div class="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none"></div>
 
