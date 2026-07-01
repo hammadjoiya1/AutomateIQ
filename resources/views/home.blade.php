@@ -24,11 +24,14 @@
     <!-- Lenis Smooth Scroll -->
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
 
-    <style>
-        [x-cloak] {
-            display: none !important;
-        }
-    </style>
+    <script>
+        window.addEventListener('error', function(e) {
+            var div = document.createElement('div');
+            div.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ef4444;color:white;padding:15px;z-index:99999;font-family:monospace;font-size:12px;white-space:pre-wrap;box-shadow:0 4px 12px rgba(0,0,0,0.5);';
+            div.textContent = 'JS Error: ' + e.message + '\nFile: ' + e.filename + '\nLine: ' + e.lineno + ':' + e.colno + '\nStack: ' + (e.error ? e.error.stack : 'N/A');
+            document.body.appendChild(div);
+        });
+    </script>
 </head>
 
 <body data-theme="{{ $activeTheme['slug'] ?? 'dark' }}"
