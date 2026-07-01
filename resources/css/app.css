@@ -100,10 +100,6 @@
     background: rgba(255, 255, 255, 0.04); /* fallback before WebGL loads */
     position: relative;
     overflow: hidden;
-    transition: opacity 0.2s;
-}
-.capsule-nav-logo-pill:hover {
-    opacity: 0.9;
 }
 
 /* Nav links */

@@ -96,7 +96,7 @@ function initNavBlinds() {
             blindMinWidth: 50,
             spotlightRadius: 0.6,
             spotlightSoftness: 1.2,
-            spotlightOpacity: 0.9,
+            spotlightOpacity: 0.0,
             mouseDampening: 0.12,
             shineDirection: 'left',
             mixBlendMode: 'normal',
