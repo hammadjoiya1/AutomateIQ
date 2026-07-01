@@ -6,19 +6,19 @@
 /* ── Control Room (dark, primary) ── */
 :root,
 [data-theme="dark"] {
-    --color-bg: #0B0D0F;
-    --color-surface: #15181C;
-    --color-surface-raised: #1C2024;
-    --color-border: #262B30;
+    --color-bg: #1A1816;
+    --color-surface: #24211D;
+    --color-surface-raised: #2C2822;
+    --color-border: #3A352E;
 
-    --color-text: #F2F0EA;
-    --color-text-muted: #7A8088;
+    --color-text: #F5F1E8;
+    --color-text-muted: #9A9184;
 
-    --color-accent: #FF4B1F;
-    --color-accent-dim: #7A2410;
-    --color-signal: #00D9A3;
-    --color-signal-dim: #0A4536;
-    --color-warn: #FFB020;
+    --color-accent: #E08A66;
+    --color-accent-dim: #4A2E22;
+    --color-signal: #7FBF9B;
+    --color-signal-dim: #1D352A;
+    --color-warn: #E0A94A;
 
     --radius-sm: 6px;
     --radius-md: 10px;
@@ -37,32 +37,32 @@
     --text-secondary: var(--color-text-muted);
     --muted-text: var(--color-text-muted);
     --border: var(--color-border);
-    --border-light: #2E343A;
+    --border-light: #4A453E;
 
     --primary: var(--color-accent);
-    --primary-hover: #FF6B47;
-    --primary-rgb: 255, 75, 31;
-    --primary-light: #FF7A58;
+    --primary-hover: #EFA184;
+    --primary-rgb: 224, 138, 102;
+    --primary-light: #EFA184;
     --primary-dark: var(--color-accent-dim);
 
     --secondary: var(--color-surface-raised);
-    --secondary-hover: #262B30;
+    --secondary-hover: #3A352E;
 
-    --danger: var(--color-accent);
+    --danger: #E0685A;
     --success: var(--color-signal);
     --warning: var(--color-warn);
-    --info: #3B9EFF;
+    --info: #7F9CBF;
 
     --input-bg: var(--color-surface);
     --input-text: var(--color-text);
     --placeholder: var(--color-text-muted);
     --focus-ring: var(--color-accent-dim);
 
-    --gradient-primary: linear-gradient(135deg, #FF4B1F 0%, #FF6B47 100%);
-    --gradient-accent: linear-gradient(135deg, #FF4B1F 0%, #FF7A58 100%);
+    --gradient-primary: linear-gradient(135deg, #E08A66 0%, #EFA184 100%);
+    --gradient-accent: linear-gradient(135deg, #E08A66 0%, #EFA184 100%);
     --gradient-mesh:
-        radial-gradient(at 20% 20%, rgba(255, 75, 31, 0.08), transparent 60%),
-        radial-gradient(at 80% 80%, rgba(0, 217, 163, 0.05), transparent 60%);
+        radial-gradient(at 20% 20%, rgba(224, 138, 102, 0.08), transparent 60%),
+        radial-gradient(at 80% 80%, rgba(127, 191, 155, 0.05), transparent 60%);
 
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
     --shadow:
@@ -79,19 +79,19 @@
 
 /* ── Light Fallback ── */
 [data-theme="light"] {
-    --color-bg: #F5F3EE;
-    --color-surface: #FFFFFF;
-    --color-surface-raised: #F8F6F1;
-    --color-border: #D8D4CC;
+    --color-bg: #F7F4EC;
+    --color-surface: #EDE9DC;
+    --color-surface-raised: #F2EFE4;
+    --color-border: #DDD6C4;
 
-    --color-text: #1A1A1A;
-    --color-text-muted: #6B6560;
+    --color-text: #1F1D1A;
+    --color-text-muted: #8A8478;
 
-    --color-accent: #FF4B1F;
-    --color-accent-dim: #7A2410;
-    --color-signal: #00A87E;
-    --color-signal-dim: #D1F5EC;
-    --color-warn: #FFB020;
+    --color-accent: #CC785C;
+    --color-accent-dim: #EFC5B4;
+    --color-signal: #4F7D5D;
+    --color-signal-dim: #D1E5D7;
+    --color-warn: #B8862E;
 
     --radius-sm: 6px;
     --radius-md: 10px;
@@ -109,32 +109,32 @@
     --text-secondary: var(--color-text-muted);
     --muted-text: var(--color-text-muted);
     --border: var(--color-border);
-    --border-light: #E8E5DF;
+    --border-light: #DDD6C4;
 
     --primary: var(--color-accent);
-    --primary-hover: #FF6B47;
-    --primary-rgb: 255, 75, 31;
-    --primary-light: #FF7A58;
+    --primary-hover: #B35F44;
+    --primary-rgb: 204, 120, 92;
+    --primary-light: #EFC5B4;
     --primary-dark: var(--color-accent-dim);
 
     --secondary: var(--color-surface-raised);
-    --secondary-hover: #EAE8E3;
+    --secondary-hover: #EDE9DC;
 
-    --danger: #DC2626;
+    --danger: #B23B2E;
     --success: var(--color-signal);
     --warning: var(--color-warn);
-    --info: #2563EB;
+    --info: #4F6D7D;
 
     --input-bg: var(--color-surface);
     --input-text: var(--color-text);
     --placeholder: var(--color-text-muted);
     --focus-ring: var(--color-accent-dim);
 
-    --gradient-primary: linear-gradient(135deg, #FF4B1F 0%, #FF6B47 100%);
-    --gradient-accent: linear-gradient(135deg, #FF4B1F 0%, #FF7A58 100%);
+    --gradient-primary: linear-gradient(135deg, #CC785C 0%, #B35F44 100%);
+    --gradient-accent: linear-gradient(135deg, #CC785C 0%, #EFC5B4 100%);
     --gradient-mesh:
-        radial-gradient(at 20% 20%, rgba(255, 75, 31, 0.06), transparent 60%),
-        radial-gradient(at 80% 80%, rgba(0, 168, 126, 0.04), transparent 60%);
+        radial-gradient(at 20% 20%, rgba(204, 120, 92, 0.06), transparent 60%),
+        radial-gradient(at 80% 80%, rgba(79, 125, 93, 0.04), transparent 60%);
 
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
