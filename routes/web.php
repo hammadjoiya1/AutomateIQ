@@ -124,6 +124,7 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.audit'])->prefix('admin')
     // 6. Settings & Themes
     Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+    Route::get('/settings/legal', [\App\Http\Controllers\Admin\SettingController::class, 'legalPages'])->name('settings.legal');
 
     Route::get('/themes', [\App\Http\Controllers\Admin\ThemeController::class, 'index'])->name('themes.index');
     Route::post('/themes/{theme}/activate', [\App\Http\Controllers\Admin\ThemeController::class, 'activate'])->name('themes.activate');
@@ -195,3 +196,4 @@ Route::get('/terms', [\App\Http\Controllers\PagesController::class, 'terms'])->n
 Route::view('/glowy-demo', 'pages.glowy-demo')->name('glowy-demo');
 
 require __DIR__ . '/auth.php';
+Route::post('/book-demo', [\App\Http\Controllers\PagesController::class, 'submitDemo'])->name('demo.submit');

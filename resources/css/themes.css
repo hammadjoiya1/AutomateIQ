@@ -1,143 +1,143 @@
 /*
-   CONTROL ROOM DESIGN SYSTEM — AutomateIQ
-   "Broadcast Control Room" — two themes only: dark primary + light fallback
+   AUTOMATEIQ DESIGN SYSTEM v2.0
+   Monochrome + Lime — dark primary + light fallback
+   Accent rationing: one primary CTA per screen + hero orb rim light only.
 */
 
-/* ── Control Room (dark, primary) ── */
+/* ── Dark (primary) ── */
 :root,
 [data-theme="dark"] {
-    --color-bg: #1A1816;
-    --color-surface: #24211D;
-    --color-surface-raised: #2C2822;
-    --color-border: #3A352E;
+    --color-bg:             #0C0C0C;
+    --color-surface:        #171717;
+    --color-surface-raised: #1F1F1F;
+    --color-border:         #2A2A2A;
 
-    --color-text: #F5F1E8;
-    --color-text-muted: #9A9184;
+    --color-text:           #F2F2ED;
+    --color-text-muted:     #8C8C86;
 
-    --color-accent: #E08A66;
-    --color-accent-dim: #4A2E22;
-    --color-signal: #7FBF9B;
-    --color-signal-dim: #1D352A;
-    --color-warn: #E0A94A;
+    --color-accent:         #D4FF3D;
+    --color-accent-dim:     #3A4212;
+    --color-success:        #6EE7B7;
+    --color-warn:           #E8B93D;
+    --danger:               #FF5C5C;
 
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 16px;
 
-    --font-display: 'Archivo', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body:    'Inter', sans-serif;
+    --font-mono:    'Space Mono', monospace;
 
-    /* Bridge to existing Tailwind vars throughout the app */
-    --bg: var(--color-bg);
-    --bg-2: var(--color-surface);
-    --card: var(--color-surface);
-    --surface: var(--color-surface-raised);
-    --text: var(--color-text);
+    /* Bridge aliases for existing Tailwind/component usage */
+    --bg:             var(--color-bg);
+    --bg-2:           var(--color-surface);
+    --card:           var(--color-surface);
+    --surface:        var(--color-surface-raised);
+    --text:           var(--color-text);
     --text-secondary: var(--color-text-muted);
-    --muted-text: var(--color-text-muted);
-    --border: var(--color-border);
-    --border-light: #4A453E;
+    --muted-text:     var(--color-text-muted);
+    --border:         var(--color-border);
+    --border-light:   #333333;
 
-    --primary: var(--color-accent);
-    --primary-hover: #EFA184;
-    --primary-rgb: 224, 138, 102;
-    --primary-light: #EFA184;
-    --primary-dark: var(--color-accent-dim);
+    /* Primary = accent (rationed) */
+    --primary:       var(--color-accent);
+    --primary-hover: #BCDF35;
+    --primary-rgb:   212, 255, 61;   /* D4FF3D in r,g,b — for rgba() usage */
+    --primary-light: #E8FF85;
+    --primary-dark:  var(--color-accent-dim);
 
-    --secondary: var(--color-surface-raised);
-    --secondary-hover: #3A352E;
+    --secondary:       var(--color-surface-raised);
+    --secondary-hover: #2A2A2A;
 
-    --danger: #E0685A;
-    --success: var(--color-signal);
+    --success: var(--color-success);
     --warning: var(--color-warn);
-    --info: #7F9CBF;
+    --info:    #6B9FD4;
 
-    --input-bg: var(--color-surface);
-    --input-text: var(--color-text);
+    --input-bg:    var(--color-surface);
+    --input-text:  var(--color-text);
     --placeholder: var(--color-text-muted);
-    --focus-ring: var(--color-accent-dim);
+    --focus-ring:  var(--color-accent-dim);
 
-    --gradient-primary: linear-gradient(135deg, #E08A66 0%, #EFA184 100%);
-    --gradient-accent: linear-gradient(135deg, #E08A66 0%, #EFA184 100%);
+    --gradient-primary: linear-gradient(135deg, #D4FF3D 0%, #BCDF35 100%);
+    --gradient-accent:  linear-gradient(135deg, #D4FF3D 0%, #E8FF85 100%);
     --gradient-mesh:
-        radial-gradient(at 20% 20%, rgba(224, 138, 102, 0.08), transparent 60%),
-        radial-gradient(at 80% 80%, rgba(127, 191, 155, 0.05), transparent 60%);
+        radial-gradient(at 20% 20%, rgba(212, 255, 61, 0.05), transparent 60%),
+        radial-gradient(at 80% 80%, rgba(110, 231, 183, 0.03), transparent 60%);
 
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6);
     --shadow:
-        0 4px 8px rgba(0, 0, 0, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.5),
         0 0 0 1px var(--color-border);
     --shadow-lg:
-        0 8px 24px rgba(0, 0, 0, 0.5),
+        0 8px 24px rgba(0, 0, 0, 0.6),
         0 0 0 1px var(--color-border);
     --shadow-xl:
-        0 16px 40px rgba(0, 0, 0, 0.6),
+        0 16px 40px rgba(0, 0, 0, 0.7),
         0 0 0 1px var(--color-border);
     --shadow-color: 0 0 0;
 }
 
-/* ── Light Fallback ── */
+/* ── Light ── */
 [data-theme="light"] {
-    --color-bg: #F7F4EC;
-    --color-surface: #EDE9DC;
-    --color-surface-raised: #F2EFE4;
-    --color-border: #DDD6C4;
+    --color-bg:             #FAFAF7;
+    --color-surface:        #F0F0EC;
+    --color-surface-raised: #FFFFFF;
+    --color-border:         #DEDED8;
 
-    --color-text: #1F1D1A;
-    --color-text-muted: #8A8478;
+    --color-text:           #141412;
+    --color-text-muted:     #6B6B64;
 
-    --color-accent: #CC785C;
-    --color-accent-dim: #EFC5B4;
-    --color-signal: #4F7D5D;
-    --color-signal-dim: #D1E5D7;
-    --color-warn: #B8862E;
+    --color-accent:         #7A9A00;   /* olive-lime — legible on light bg */
+    --color-accent-dim:     #EAF5C0;
+    --color-success:        #2F9E6E;
+    --color-warn:           #B8862E;
+    --danger:               #C4453A;
 
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 16px;
 
-    --font-display: 'Archivo', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body:    'Inter', sans-serif;
+    --font-mono:    'Space Mono', monospace;
 
-    --bg: var(--color-bg);
-    --bg-2: var(--color-surface);
-    --card: var(--color-surface);
-    --surface: var(--color-surface-raised);
-    --text: var(--color-text);
+    --bg:             var(--color-bg);
+    --bg-2:           var(--color-surface);
+    --card:           var(--color-surface);
+    --surface:        var(--color-surface-raised);
+    --text:           var(--color-text);
     --text-secondary: var(--color-text-muted);
-    --muted-text: var(--color-text-muted);
-    --border: var(--color-border);
-    --border-light: #DDD6C4;
+    --muted-text:     var(--color-text-muted);
+    --border:         var(--color-border);
+    --border-light:   #DEDED8;
 
-    --primary: var(--color-accent);
-    --primary-hover: #B35F44;
-    --primary-rgb: 204, 120, 92;
-    --primary-light: #EFC5B4;
-    --primary-dark: var(--color-accent-dim);
+    --primary:       var(--color-accent);
+    --primary-hover: #5E7800;
+    --primary-rgb:   122, 154, 0;    /* 7A9A00 in r,g,b */
+    --primary-light: #C5DC6A;
+    --primary-dark:  var(--color-accent-dim);
 
-    --secondary: var(--color-surface-raised);
-    --secondary-hover: #EDE9DC;
+    --secondary:       var(--color-surface-raised);
+    --secondary-hover: #F0F0EC;
 
-    --danger: #B23B2E;
-    --success: var(--color-signal);
+    --success: var(--color-success);
     --warning: var(--color-warn);
-    --info: #4F6D7D;
+    --info:    #3D6490;
 
-    --input-bg: var(--color-surface);
-    --input-text: var(--color-text);
+    --input-bg:    var(--color-surface);
+    --input-text:  var(--color-text);
     --placeholder: var(--color-text-muted);
-    --focus-ring: var(--color-accent-dim);
+    --focus-ring:  var(--color-accent-dim);
 
-    --gradient-primary: linear-gradient(135deg, #CC785C 0%, #B35F44 100%);
-    --gradient-accent: linear-gradient(135deg, #CC785C 0%, #EFC5B4 100%);
+    --gradient-primary: linear-gradient(135deg, #7A9A00 0%, #5E7800 100%);
+    --gradient-accent:  linear-gradient(135deg, #7A9A00 0%, #EAF5C0 100%);
     --gradient-mesh:
-        radial-gradient(at 20% 20%, rgba(204, 120, 92, 0.06), transparent 60%),
-        radial-gradient(at 80% 80%, rgba(79, 125, 93, 0.04), transparent 60%);
+        radial-gradient(at 20% 20%, rgba(122, 154, 0, 0.05), transparent 60%),
+        radial-gradient(at 80% 80%, rgba(47, 158, 110, 0.03), transparent 60%);
 
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+    --shadow:    0 4px 12px rgba(0, 0, 0, 0.10);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
     --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.15);
     --shadow-color: 0 0 0;

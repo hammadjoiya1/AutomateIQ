@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-oOZwskDA.css",
+    "file": "assets/app-C-e6bhn7.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -9,29 +9,31 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-Bq0IO6uA.js",
+    "file": "assets/app-eWZSESGZ.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "dynamicImports": [
-      "resources/js/gradient-blinds.js",
-      "resources/js/gradient-blinds.js",
+      "resources/js/drifting-blobs.js",
       "resources/js/physics-grid.js",
       "resources/js/terminal-sim.js",
       "resources/js/spotlight.js",
       "resources/js/estimator.js"
+    ],
+    "css": [
+      "assets/app-CpXwwO1r.css"
     ]
   },
-  "resources/js/estimator.js": {
-    "file": "assets/estimator-BGKnXhOv.js",
-    "name": "estimator",
-    "src": "resources/js/estimator.js",
+  "resources/js/drifting-blobs.js": {
+    "file": "assets/drifting-blobs-DmDkdCwK.js",
+    "name": "drifting-blobs",
+    "src": "resources/js/drifting-blobs.js",
     "isDynamicEntry": true
   },
-  "resources/js/gradient-blinds.js": {
-    "file": "assets/gradient-blinds-BriSzMaT.js",
-    "name": "gradient-blinds",
-    "src": "resources/js/gradient-blinds.js",
+  "resources/js/estimator.js": {
+    "file": "assets/estimator-GXP6sb97.js",
+    "name": "estimator",
+    "src": "resources/js/estimator.js",
     "isDynamicEntry": true
   },
   "resources/js/physics-grid.js": {

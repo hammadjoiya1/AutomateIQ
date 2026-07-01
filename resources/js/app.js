@@ -1,7 +1,11 @@
 import './bootstrap';
 
 import Alpine from 'alpinejs';
-import * as Turbo from '@hotwired/turbo';
+import Swup from 'swup';
+import SwupScriptsPlugin from '@swup/scripts-plugin';
+import SwupFormsPlugin from '@swup/forms-plugin';
+import 'trix';
+import 'trix/dist/trix.css';
 import { initAnimatedCard } from './AnimatedCard';
 import { initMagneticButtons } from './magnetic';
 import {
@@ -14,16 +18,17 @@ import {
 } from './motion-presets';
 
 window.Alpine = Alpine;
-window.Turbo = Turbo;
+const swup = new Swup({ plugins: [new SwupScriptsPlugin(), new SwupFormsPlugin()] });
+window.swup = swup;
 
-Turbo.config.drive.progressBarDelay = 150;
+
 
 // Register Alpine components
 initAnimatedCard();
 
 Alpine.start();
 
-// ── Analytics ─────────────────────────────────────────────────────────────────
+// â”€â”€ Analytics â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 window.dataLayer = window.dataLayer || [];
 function trackEvent(event, payload = {}) {
     window.dataLayer.push({ event, ...payload });
@@ -31,7 +36,7 @@ function trackEvent(event, payload = {}) {
 }
 window.trackEvent = trackEvent;
 
-// ── Lenis smooth scroll ────────────────────────────────────────────────────────
+// â”€â”€ Lenis smooth scroll â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function initLenis() {
     if (typeof Lenis === 'undefined') return;
     const lenis = new Lenis({
@@ -43,53 +48,62 @@ function initLenis() {
     });
     const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);
-    document.addEventListener('turbo:before-visit', () => lenis.destroy(), { once: true });
+    swup.hooks.on('visit:start', () => lenis.destroy());
 }
 
-// ── Navbar GradientBlinds — mounted once, persists across Turbo navigations ───
+// â”€â”€ Navbar GradientBlinds â€” mounted once, persists across Turbo navigations â”€â”€â”€
 let navBlindsCleanup = null;
-let heroBlindsCleanup = null;
+let driftingBlobsCleanup = null;
 let physicsGridCleanup = null;
 let terminalSimCleanup = null;
 let spotlightCleanup = null;
 let estimatorCleanup = null;
 
-function initHeroBlinds() {
-    const mount = document.getElementById('hero-blinds-mount');
-    if (!mount) {
-        if (heroBlindsCleanup) {
-            heroBlindsCleanup();
-            heroBlindsCleanup = null;
+function initDriftingBlobs() {
+    const canvas = document.getElementById('drifting-blobs-canvas');
+    if (!canvas) {
+        if (driftingBlobsCleanup) {
+            driftingBlobsCleanup();
+            driftingBlobsCleanup = null;
         }
         return;
     }
 
-    if (heroBlindsCleanup) return; // already running
+    if (driftingBlobsCleanup) return; // already running
 
-    const getThemeColor = (varName, fallback) => {
-        return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
-    };
-    const accentColor = getThemeColor('--color-accent', '#E08A66');
-    const hoverColor = getThemeColor('--primary-hover', '#EFA184');
+    // Only run the drifting blobs in dark mode.
+    // In light mode, leave the canvas transparent to avoid a muddy look.
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    if (!isDark) {
+        if (driftingBlobsCleanup) {
+            driftingBlobsCleanup();
+            driftingBlobsCleanup = null;
+        }
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        return;
+    }
 
-    import('./gradient-blinds').then(({ mountGradientBlinds }) => {
-        heroBlindsCleanup = mountGradientBlinds(mount, {
-            gradientColors: [accentColor, hoverColor],
-            angle: 45,
-            noise: 0.3,
-            blindCount: 12,
-            blindMinWidth: 50,
-            spotlightRadius: 0.5,
-            spotlightSoftness: 1,
-            spotlightOpacity: 1,
-            mouseDampening: 0.15,
-            distortAmount: 0,
-            shineDirection: 'left',
-            mixBlendMode: 'lighten',
-        });
+    // Read rim color from current theme token
+    const accentHex = getComputedStyle(document.documentElement)
+        .getPropertyValue('--color-accent').trim() || '#D4FF3D';
+
+    function hexToRgba(hex, alpha) {
+        const h = hex.replace('#', '');
+        const r = parseInt(h.slice(0, 2), 16);
+        const g = parseInt(h.slice(2, 4), 16);
+        const b = parseInt(h.slice(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+    const primaryColor = hexToRgba(accentHex.startsWith('#') ? accentHex : '#D4FF3D', 0.15);
+    const secondaryColor = 'rgba(255, 255, 255, 0.05)';
+
+    import('./drifting-blobs').then(({ mountDriftingBlobs }) => {
+        driftingBlobsCleanup = mountDriftingBlobs(canvas, { primaryColor, secondaryColor });
     }).catch((e) => {
-        console.error('[hero-blinds]', e);
-        throw e;
+        console.error('[drifting-blobs]', e);
     });
 }
 
@@ -100,8 +114,8 @@ function initNavBlinds() {
     const getThemeColor = (varName, fallback) => {
         return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
     };
-    const accentColor = getThemeColor('--color-accent', '#E08A66');
-    const hoverColor = getThemeColor('--primary-hover', '#EFA184');
+    const accentColor = getThemeColor('--color-accent', '#D4FF3D');
+    const hoverColor = getThemeColor('--primary-hover', '#BCDF35');
 
     import('./gradient-blinds').then(({ mountGradientBlinds }) => {
         navBlindsCleanup = mountGradientBlinds(mount, {
@@ -123,7 +137,7 @@ function initNavBlinds() {
     });
 }
 
-// ── Per-page init (runs on every Turbo navigation) ────────────────────────────
+// â”€â”€ Per-page init (runs on every Turbo navigation) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function initPage() {
     initLenis();
     initMagneticButtons();
@@ -133,6 +147,22 @@ function initPage() {
     initCardHover();
     initScrollReveal();
     initConnectorLines();
+
+
+    // â”€â”€ Category & Section Scroll Reveals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-revealed');
+            }
+        });
+    }, {
+        threshold: 0.15
+    });
+    
+    document.querySelectorAll('.section-scroll-fade, .category-scroll-fade').forEach(el => {
+        sectionObserver.observe(el);
+    });
 
     // Waveform bars
     document.querySelectorAll('.waveform').forEach((wf) => {
@@ -153,7 +183,7 @@ function initPage() {
         });
     });
 
-    // Pricing toggle (monthly ↔ annual)
+    // Pricing toggle (monthly â†” annual)
     const toggle = document.querySelector('[data-pricing-toggle]');
     if (toggle) {
         let annual = false;
@@ -217,7 +247,7 @@ function initPage() {
         '.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale, .count-up, .reveal, .hero-text-reveal'
     ).forEach((el) => scrollObserver.observe(el));
 
-    // ── Hero dashboard mockup scroll-tilt ────────────────────────────────────
+    // â”€â”€ Hero dashboard mockup scroll-tilt â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const dashboard = document.querySelector('.dashboard-mockup-3d');
     if (dashboard) {
         const handleScrollTilt = () => {
@@ -231,13 +261,13 @@ function initPage() {
         handleScrollTilt();
     }
 
-    // ── Navbar GradientBlinds ─────────────────────────────────────────────────
-    initNavBlinds();
+    // â”€â”€ Navbar GradientBlinds â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // initNavBlinds();
  
-    // ── Hero GradientBlinds ───────────────────────────────────────────────────
-    initHeroBlinds();
+    // â”€â”€ Hero Drifting Blobs Background â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    initDriftingBlobs();
 
-    // ── Physics Grid Background Canvas ────────────────────────────────────────
+    // â”€â”€ Physics Grid Background Canvas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const canvasGrid = document.getElementById('physics-canvas');
     if (canvasGrid) {
         if (physicsGridCleanup) {
@@ -249,7 +279,7 @@ function initPage() {
         });
     }
 
-    // ── Terminal Mockup Emulator ─────────────────────────────────────────────
+    // â”€â”€ Terminal Mockup Emulator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const terminalBody = document.querySelector('.terminal-body-sim');
     if (terminalBody) {
         if (terminalSimCleanup) {
@@ -261,7 +291,7 @@ function initPage() {
         });
     }
 
-    // ── Mouse Border Spotlight Glowing Cards ─────────────────────────────────
+    // â”€â”€ Mouse Border Spotlight Glowing Cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (document.querySelector('.spotlight-card')) {
         if (spotlightCleanup) {
             spotlightCleanup();
@@ -272,7 +302,7 @@ function initPage() {
         });
     }
 
-    // ── Interactive Pipeline Cost Estimator ──────────────────────────────────
+    // â”€â”€ Interactive Pipeline Cost Estimator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (document.getElementById('estimator-volume')) {
         if (estimatorCleanup) {
             estimatorCleanup();
@@ -284,16 +314,15 @@ function initPage() {
     }
 }
  
-document.addEventListener('turbo:load', () => {
+swup.hooks.on('page:view', () => {
     Alpine.initTree(document.body);
-    initPage();
 });
  
-document.addEventListener('turbo:before-cache', () => {
+swup.hooks.on('visit:start', () => {
     Alpine.destroyTree(document.body);
-    if (heroBlindsCleanup) {
-        heroBlindsCleanup();
-        heroBlindsCleanup = null;
+    if (driftingBlobsCleanup) {
+        driftingBlobsCleanup();
+        driftingBlobsCleanup = null;
     }
     if (physicsGridCleanup) {
         physicsGridCleanup();
@@ -313,10 +342,9 @@ document.addEventListener('turbo:before-cache', () => {
     }
 });
 
-document.addEventListener('turbo:visit', () => {
+swup.hooks.on('visit:start', () => {
     document.body.classList.add('turbo-transitioning');
 });
 
-document.addEventListener('turbo:render', () => {
-    document.body.classList.remove('turbo-transitioning');
-});
+initPage();
+swup.hooks.on('page:view', initPage);

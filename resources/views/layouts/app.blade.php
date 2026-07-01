@@ -30,7 +30,7 @@
 
 <body data-theme="{{ $activeTheme['slug'] ?? 'dark' }}"
     class="h-full font-sans antialiased text-text transition-colors duration-500 bg-background">
-    @if(session()->has('impersonated_by'))
+    @if(Auth::check() && session()->has('impersonated_by'))
         <div class="bg-primary text-white text-center py-2 px-4 text-sm font-semibold flex items-center justify-center gap-4 relative z-50 shadow-md">
             <span>You are currently impersonating <strong>{{ Auth::user()->name }}</strong>.</span>
             <form action="{{ route('impersonate.leave') }}" method="POST" class="inline">
@@ -149,66 +149,75 @@
                 </div>
 
                 <div class="flex items-center gap-x-4 lg:gap-x-6">
-                    <!-- Credit Badge -->
-                    <a href="{{ route('pricing') }}"
-                        class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 text-primary border border-primary/30 font-bold hover:scale-105 transition-all shadow-lg shadow-primary/10 mr-2"
-                        title="Buy more credits">
-                        <svg class="w-4 h-4 animate-pulse" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        <span class="text-sm font-bold">{{ number_format(Auth::user()->credits) }} Credits</span>
-                    </a>
+                    @auth
+                        <!-- Credit Badge -->
+                        <a href="{{ route('pricing') }}"
+                            class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 text-primary border border-primary/30 font-bold hover:scale-105 transition-all shadow-lg shadow-primary/10 mr-2"
+                            title="Buy more credits">
+                            <svg class="w-4 h-4 animate-pulse" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <span class="text-sm font-bold">{{ number_format(Auth::user()->credits) }} Credits</span>
+                        </a>
 
-                    <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" type="button"
-                            class="-m-1.5 flex items-center p-1.5 hover:bg-surface rounded-lg transition-colors">
-                            <span class="sr-only">Open user menu</span>
-                            <div
-                                class="h-8 w-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm ring-2 ring-transparent group-hover:ring-primary/20 transition-all">
-                                {{ substr(Auth::user()->name, 0, 1) }}
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" type="button"
+                                class="-m-1.5 flex items-center p-1.5 hover:bg-surface rounded-lg transition-colors">
+                                <span class="sr-only">Open user menu</span>
+                                <div
+                                    class="h-8 w-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm ring-2 ring-transparent group-hover:ring-primary/20 transition-all">
+                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                </div>
+                                <span class="hidden lg:flex lg:items-center">
+                                    <span class="ml-4 text-sm font-semibold text-text">{{ Auth::user()->name }}</span>
+                                    <svg class="ml-2 h-5 w-5 text-text-muted" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+
+                            <div x-show="open" @click.away="open = false"
+                                class="absolute right-0 z-10 mt-2.5 w-48 origin-top-right rounded-xl glass-panel py-2 shadow-lg ring-1 ring-white/5 focus:outline-none"
+                                role="menu" x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="transform opacity-0 scale-95"
+                                x-transition:enter-end="transform opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="transform opacity-100 scale-100"
+                                x-transition:leave-end="transform opacity-0 scale-95">
+
+                                <div class="px-4 py-2 border-b border-border/50 mb-1">
+                                    <p class="text-sm font-semibold text-text truncate">{{ Auth::user()->name }}</p>
+                                    <p class="text-xs text-text-muted truncate">{{ Auth::user()->email }}</p>
+                                </div>
+
+                                <a href="{{ route('profile.edit') }}"
+                                    class="block px-4 py-2 text-sm text-text hover:bg-primary/10 transition-colors">Profile
+                                    Settings</a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="block w-full text-left px-4 py-2 text-sm text-danger hover:bg-danger/10 transition-colors">Sign
+                                        out</button>
+                                </form>
                             </div>
-                            <span class="hidden lg:flex lg:items-center">
-                                <span class="ml-4 text-sm font-semibold text-text">{{ Auth::user()->name }}</span>
-                                <svg class="ml-2 h-5 w-5 text-text-muted" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </span>
-                        </button>
-
-                        <div x-show="open" @click.away="open = false"
-                            class="absolute right-0 z-10 mt-2.5 w-48 origin-top-right rounded-xl glass-panel py-2 shadow-lg ring-1 ring-white/5 focus:outline-none"
-                            role="menu" x-transition:enter="transition ease-out duration-100"
-                            x-transition:enter-start="transform opacity-0 scale-95"
-                            x-transition:enter-end="transform opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="transform opacity-100 scale-100"
-                            x-transition:leave-end="transform opacity-0 scale-95">
-
-                            <div class="px-4 py-2 border-b border-border/50 mb-1">
-                                <p class="text-sm font-semibold text-text truncate">{{ Auth::user()->name }}</p>
-                                <p class="text-xs text-text-muted truncate">{{ Auth::user()->email }}</p>
-                            </div>
-
-                            <a href="{{ route('profile.edit') }}"
-                                class="block px-4 py-2 text-sm text-text hover:bg-primary/10 transition-colors">Profile
-                                Settings</a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit"
-                                    class="block w-full text-left px-4 py-2 text-sm text-danger hover:bg-danger/10 transition-colors">Sign
-                                    out</button>
-                            </form>
                         </div>
-                    </div>
+                    @else
+                        <a href="{{ route('login') }}" class="text-sm font-semibold text-text-muted hover:text-text transition-colors">
+                            Log in
+                        </a>
+                        <a href="{{ route('register') }}" class="btn-primary-strat text-sm py-1.5 px-4 rounded-full font-bold shadow-lg shadow-primary/20">
+                            Get Started
+                        </a>
+                    @endauth
                 </div>
             </div>
 
             <!-- Content Area -->
-            <main class="py-10">
+            <main id="swup" class="transition-fade py-10">
                 <div class="px-4 sm:px-6 lg:px-8">
                     <x-flash-alerts />
                     {{ $slot }}

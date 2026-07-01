@@ -24,7 +24,7 @@ export function initEstimator() {
         const volume = parseInt(volumeInput.value, 10);
         
         // Formatter helper
-        volumeLabel.textContent = volume.toLocaleString() + ' Runs';
+        volumeLabel.textContent = volume.toLocaleString() + ' Hours';
 
         // 1. Calculate Complexity Multiplier
         let complexityMult = 1.0;
@@ -33,12 +33,12 @@ export function initEstimator() {
         if (activeComplexity === 'enterprise') complexityMult = 3.5;
 
         // 2. Compute base cost and usage fee
-        // First 10,000 runs are free/included in base fee of $29
+        // First 10 hours are included in base fee of $29
         const baseCost = 29;
         let usageFee = 0;
-        if (volume > 10000) {
-            // $0.0018 per run for simple, scaling with complexity multiplier
-            usageFee = (volume - 10000) * 0.0018 * complexityMult;
+        if (volume > 10) {
+            // $4.00 per hour for simple, scaling with complexity multiplier
+            usageFee = (volume - 10) * 4.0 * complexityMult;
         }
 
         // 3. Compute Support Flat Fee
@@ -55,14 +55,14 @@ export function initEstimator() {
         supportOutput.textContent = '$' + supportFee.toLocaleString() + '/mo';
 
         // 6. Cluster Status Tag
-        if (volume < 50000) {
-            clusterOutput.textContent = 'Shared Edge Node';
+        if (volume < 40) {
+            clusterOutput.textContent = 'Shared Render Queue';
             clusterOutput.className = 'px-3 py-1 border border-white/10 bg-white/5 rounded-full text-[10px] font-mono font-semibold text-white/50';
-        } else if (volume < 500000) {
-            clusterOutput.textContent = 'Dedicated VPC Instance';
+        } else if (volume < 80) {
+            clusterOutput.textContent = 'Dedicated GPU Instance';
             clusterOutput.className = 'px-3 py-1 border border-purple-500/20 bg-purple-500/10 rounded-full text-[10px] font-mono font-semibold text-purple-300';
         } else {
-            clusterOutput.textContent = 'High-Availability Multi-Region';
+            clusterOutput.textContent = 'High-Availability Multi-Region Render';
             clusterOutput.className = 'px-3 py-1 border border-green-500/20 bg-green-500/10 rounded-full text-[10px] font-mono font-semibold text-green-300 animate-pulse';
         }
     }

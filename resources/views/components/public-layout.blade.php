@@ -88,12 +88,11 @@
                 <div class="capsule-nav-inner flex items-center gap-2 px-2 py-2">
 
                     <!-- Logo Pill — GradientBlinds backdrop -->
-                    <div class="capsule-nav-logo-pill relative overflow-hidden flex-shrink-0">
-                        <!-- WebGL canvas injected here by JS -->
-                        <div id="nav-blinds-mount" class="absolute inset-0 rounded-[inherit] overflow-hidden"></div>
-                        <a href="{{ route('home') }}" class="relative z-10 flex items-center gap-2 px-4 py-2 group">
+                    <!-- Logo Pill -->
+                    <div class="capsule-nav-logo-pill relative flex-shrink-0">
+                        <a href="{{ route('home') }}" class="relative z-10 flex items-center gap-2 group" style="padding: 10px 20px 8px 16px;">
                             <x-application-logo class="h-5 w-auto text-white drop-shadow-sm" />
-                            <span class="font-display font-bold text-sm text-white tracking-tight whitespace-nowrap">
+                            <span class="font-display font-bold text-sm text-white tracking-tight whitespace-nowrap" style="transform: translateY(-0.5px);">
                                 {{ \App\Models\Setting::get('site_name', 'AutomateIQ') }}
                             </span>
                         </a>
@@ -137,79 +136,60 @@
                         </svg>
                     </button>
                 </div>
-            </nav>
-
-
-            <!-- Mobile Menu Overlay -->
-            <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 md:hidden" x-cloak>
-                <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @click="open = false"></div>
-                <div class="absolute inset-y-0 left-0 w-80 max-w-[85vw] z-50">
-                    <div x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
-                        x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-x-0"
-                        x-transition:leave-end="-translate-x-full"
-                        class="h-full bg-surface border-r border-border p-6 flex flex-col justify-between overflow-y-auto">
-                        <div>
-                            <div class="flex items-center justify-between">
-                                <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                                    <x-application-logo class="h-7 w-auto text-primary" />
-                                    <span class="font-bold text-lg text-text">AutomateIQ</span>
-                                </a>
-                                <button type="button" @click="open = false"
-                                    class="p-2 text-text-muted hover:text-text rounded-md transition">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="mt-8 space-y-4">
-                                <a href="{{ route('tools.index') }}" @click="open = false"
-                                    class="block py-2 text-base font-medium text-text-muted hover:text-text transition">Tools</a>
-                                <a href="{{ route('workflows.index') }}" @click="open = false"
-                                    class="block py-2 text-base font-medium text-text-muted hover:text-text transition">Workflows</a>
-                                <a href="{{ route('pricing') }}" @click="open = false"
-                                    class="block py-2 text-base font-medium text-text-muted hover:text-text transition">Pricing</a>
-                                <a href="{{ route('blog.index') }}" @click="open = false"
-                                    class="block py-2 text-base font-medium text-text-muted hover:text-text transition">Blog</a>
-                            </div>
-                        </div>
-                        <div class="border-t border-border pt-6">
-                            <div class="flex items-center justify-between text-sm text-text-muted mb-6">
-                                <span>Theme</span>
-                                <x-theme-switcher :activeTheme="$activeTheme" />
-                            </div>
-                            @if (Route::has('login'))
-                                @auth
-                                    <x-ui.badge variant="accent"
-                                        class="w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg mb-4">
-                                        <span class="text-text">Credits</span>
-                                        <span class="font-bold text-primary">{{ number_format(Auth::user()->credits) }}</span>
-                                    </x-ui.badge>
-                                    <x-ui.button variant="primary" size="lg" class="w-full mb-3" href="{{ $creditLink }}"
-                                        @click="open = false">Buy Credits</x-ui.button>
-                                    <x-ui.button variant="secondary" size="lg" class="w-full" href="{{ url('/dashboard') }}"
-                                        @click="open = false">Dashboard</x-ui.button>
-                                @else
-                                    <x-ui.button variant="ghost" size="lg" class="w-full mb-3" href="{{ route('login') }}"
-                                        @click="open = false">Log in</x-ui.button>
-                                    @if (Route::has('register'))
-                                        <x-ui.button variant="primary" size="lg" class="w-full" href="{{ route('register') }}"
-                                            @click="open = false">Get Started</x-ui.button>
-                                    @endif
-                                @endauth
-                            @endif
-                        </div>
+            <!-- Mobile Menu Dropdown -->
+            <div x-show="open" x-cloak
+                x-transition:enter="transition ease-out duration-200 origin-top"
+                x-transition:enter-start="opacity-0 -translate-y-4 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-150 origin-top"
+                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 -translate-y-4 scale-95"
+                class="absolute top-[calc(100%+0.5rem)] left-0 right-0 z-50 md:hidden overflow-hidden rounded-2xl bg-surface border border-border shadow-2xl shadow-black/50">
+                <div class="p-6 flex flex-col max-h-[75vh] overflow-y-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <a href="{{ route('home') }}" class="flex items-center gap-2 group">
+                            <x-application-logo class="h-6 w-auto text-primary" />
+                            <span class="font-bold text-base text-text">AutomateIQ</span>
+                        </a>
+                        <button type="button" @click="open = false" class="p-2 text-text-muted hover:text-text rounded-md transition bg-surface-raised">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
-                </div>
+                    <div class="space-y-2 mb-8">
+                        <a href="{{ route('tools.index') }}" @click="open = false" class="block px-4 py-3 text-base font-semibold text-text-muted hover:text-text hover:bg-surface-raised rounded-xl transition">Tools</a>
+                        <a href="{{ route('workflows.index') }}" @click="open = false" class="block px-4 py-3 text-base font-semibold text-text-muted hover:text-text hover:bg-surface-raised rounded-xl transition">Workflows</a>
+                        <a href="{{ route('pricing') }}" @click="open = false" class="block px-4 py-3 text-base font-semibold text-text-muted hover:text-text hover:bg-surface-raised rounded-xl transition">Pricing</a>
+                        <a href="{{ route('blog.index') }}" @click="open = false" class="block px-4 py-3 text-base font-semibold text-text-muted hover:text-text hover:bg-surface-raised rounded-xl transition">Blog</a>
+                    </div>
+                    <div class="border-t border-border pt-6">
+                        <div class="flex items-center justify-between text-sm text-text-muted mb-6 px-2">
+                            <span class="font-medium">Theme</span>
+                            <x-theme-switcher :activeTheme="$activeTheme" />
+                        </div>
+                        @if (Route::has('login'))
+                            @auth
+                                <x-ui.badge variant="accent" class="w-full flex items-center justify-between px-4 py-3 text-sm rounded-xl mb-4">
+                                    <span class="text-text font-medium">Credits</span>
+                                    <span class="font-bold text-primary text-base">{{ number_format(Auth::user()->credits) }}</span>
+                                </x-ui.badge>
+                                <x-ui.button variant="primary" size="lg" class="w-full mb-3 shadow-lg shadow-primary/20" href="{{ $creditLink }}" @click="open = false">Buy Credits</x-ui.button>
+                                <x-ui.button variant="secondary" size="lg" class="w-full" href="{{ url('/dashboard') }}" @click="open = false">Dashboard</x-ui.button>
+                            @else
+                                <x-ui.button variant="ghost" size="lg" class="w-full mb-3 bg-surface-raised hover:bg-surface-raised/80" href="{{ route('login') }}" @click="open = false">Log in</x-ui.button>
+                                @if (Route::has('register'))
+                                    <x-ui.button variant="primary" size="lg" class="w-full shadow-lg shadow-primary/20" href="{{ route('register') }}" @click="open = false">Get Started</x-ui.button>
+                                @endif
+                            @endauth
+                        @endif
+                    </div>
             </div>
+            </nav>
         </div>
 
         <!-- Page Content -->
-        <main class="flex-grow pt-24">
+        <main id="swup" class="transition-fade flex-grow pt-24">
             <div class="px-4 sm:px-6 lg:px-8">
                 <x-flash-alerts />
             </div>

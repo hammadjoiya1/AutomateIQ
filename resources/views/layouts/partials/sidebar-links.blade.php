@@ -28,7 +28,7 @@
 
 <li class="text-xs font-bold leading-6 text-text-muted uppercase tracking-wider mt-6 mb-2 px-2">Build</li>
 <li>
-    <a href="{{ route('tools.index') }}"
+    <a href="{{ route('tools.index', ['layout' => 'dashboard']) }}"
         class="group flex items-center gap-x-3 rounded-control-sm p-2.5 text-sm font-semibold transition-all {{ request()->routeIs('tools.*') && !request()->routeIs('tools.history') ? 'bg-primary/10 text-primary' : 'text-text-muted hover:text-text hover:bg-surface/50' }}">
         <svg class="h-5 w-5 shrink-0 transition-colors {{ request()->routeIs('tools.*') && !request()->routeIs('tools.history') ? 'text-primary' : 'text-text-muted group-hover:text-primary' }}"
             fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

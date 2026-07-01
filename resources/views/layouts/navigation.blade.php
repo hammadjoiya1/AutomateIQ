@@ -62,7 +62,7 @@
                                 d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     </div>
-                    <span class="font-bold text-sm counter-animated">{{ number_format(Auth::user()->credits) }}</span>
+                    <span class="font-bold text-sm counter-animated">{{ number_format(Auth::user()->credits) }} Credits</span>
                 </a>
 
                 <x-theme-switcher />

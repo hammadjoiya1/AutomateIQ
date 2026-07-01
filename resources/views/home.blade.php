@@ -27,6 +27,8 @@
     <script>
         window.addEventListener('error', function(e) {
             if (e.message && e.message.indexOf('ResizeObserver') !== -1) return;
+            if (e.filename && e.filename.indexOf('chrome-extension://') !== -1) return;
+            if (e.error && e.error.stack && e.error.stack.indexOf('chrome-extension') !== -1) return;
             var div = document.createElement('div');
             div.style.cssText = 'position:fixed;top:0;left:0;right:0;background:var(--danger);color:white;padding:15px;z-index:99999;font-family:monospace;font-size:12px;white-space:pre-wrap;box-shadow:0 4px 12px rgba(0,0,0,0.5);';
             div.textContent = 'JS Error: ' + e.message + '\nFile: ' + e.filename + '\nLine: ' + e.lineno + ':' + e.colno + '\nStack: ' + (e.error ? e.error.stack : 'N/A');
@@ -46,9 +48,10 @@
     <!-- Fine Grid overlay for satin background finish -->
     <div class="fixed inset-0 -z-10 bg-grid-pattern opacity-[0.02] pointer-events-none"></div>
 
-    <!-- Global Mouse Aura -->
+    <!-- Global Mouse Aura — lime accent -->
     <div id="global-aura"
-        class="fixed top-0 left-0 w-96 h-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none z-[-1] opacity-50 mix-blend-screen transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500">
+        class="fixed top-0 left-0 w-96 h-96 rounded-full blur-[100px] pointer-events-none z-[-1] opacity-40 mix-blend-screen transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500"
+        style="background: rgba(var(--primary-rgb), 0.12)">
     </div>
 
     <!-- Interactive Physics Canvas Grid Background -->
@@ -61,12 +64,11 @@
         <nav class="capsule-nav fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl transition-all duration-300">
             <div class="capsule-nav-inner flex items-center gap-2 px-2 py-2">
 
-                <!-- Logo Pill with GradientBlinds WebGL effect -->
-                <div class="capsule-nav-logo-pill relative overflow-hidden flex-shrink-0" style="z-index: 1;">
-                    <div id="nav-blinds-mount" class="absolute inset-0 rounded-[inherit] overflow-hidden pointer-events-none" style="z-index: 0;"></div>
-                    <a href="{{ route('home') }}" class="relative flex items-center gap-2 px-4 py-2 group" style="z-index: 10;">
+                <!-- Logo Pill -->
+                <div class="capsule-nav-logo-pill relative flex-shrink-0" style="z-index: 1;">
+                    <a href="{{ route('home') }}" class="relative flex items-center gap-2 group" style="padding: 10px 20px 8px 16px; z-index: 10;">
                         <x-application-logo class="h-5 w-auto text-white drop-shadow-sm" />
-                        <span class="font-display font-bold text-sm text-white tracking-tight whitespace-nowrap">AutomateIQ</span>
+                        <span class="font-display font-bold text-sm text-white tracking-tight whitespace-nowrap" style="transform: translateY(-0.5px);">AutomateIQ</span>
                     </a>
                 </div>
 
@@ -104,109 +106,134 @@
                     </svg>
                 </button>
             </div>
-        </nav>
-
-        <!-- Mobile Drawer -->
-        <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150"
-            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-            class="fixed inset-0 z-50 md:hidden" x-cloak>
-            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @click="open = false"></div>
-            <div class="absolute inset-y-0 left-0 w-80 max-w-[85vw] z-50">
-                <div x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full"
-                    x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
-                    class="h-full bg-[var(--color-bg)] border-r border-border p-6 flex flex-col justify-between overflow-y-auto">
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <x-application-logo class="h-7 w-auto text-primary" />
-                                <span class="font-bold text-lg text-text">AutomateIQ</span>
-                            </div>
-                            <button type="button" @click="open = false" class="p-2 text-text/60 hover:text-text rounded-md transition">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="mt-8 space-y-1">
-                            <a href="{{ route('tools.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-text-muted hover:text-white hover:bg-white/5 rounded-lg transition">Tools</a>
-                            <a href="{{ route('workflows.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-text-muted hover:text-white hover:bg-white/5 rounded-lg transition">Workflows</a>
-                            <a href="{{ route('pricing') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-text-muted hover:text-white hover:bg-white/5 rounded-lg transition">Pricing</a>
-                            <a href="{{ route('blog.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-text-muted hover:text-white hover:bg-white/5 rounded-lg transition">Blog</a>
-                        </div>
+            <!-- Mobile Menu Dropdown -->
+            <div x-show="open" x-cloak
+                x-transition:enter="transition ease-out duration-200 origin-top"
+                x-transition:enter-start="opacity-0 -translate-y-4 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-150 origin-top"
+                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 -translate-y-4 scale-95"
+                class="absolute top-[calc(100%+0.5rem)] left-0 right-0 z-50 md:hidden overflow-hidden rounded-2xl bg-surface border border-border shadow-2xl shadow-black/50">
+                <div class="p-6 flex flex-col max-h-[75vh] overflow-y-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <a href="{{ route('home') }}" class="flex items-center gap-2 group">
+                            <x-application-logo class="h-6 w-auto text-primary" />
+                            <span class="font-bold text-base text-text">AutomateIQ</span>
+                        </a>
+                        <button type="button" @click="open = false" class="p-2 text-text-muted hover:text-text rounded-md transition bg-surface-raised">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
-                    <div class="border-t border-border pt-6 space-y-3">
-                        <div class="flex items-center justify-between text-sm text-text-muted">
-                            <span>Theme</span>
+                    <div class="space-y-2 mb-8">
+                        <a href="{{ route('tools.index') }}" @click="open = false" class="block px-4 py-3 text-base font-semibold text-text-muted hover:text-text hover:bg-surface-raised rounded-xl transition">Tools</a>
+                        <a href="{{ route('workflows.index') }}" @click="open = false" class="block px-4 py-3 text-base font-semibold text-text-muted hover:text-text hover:bg-surface-raised rounded-xl transition">Workflows</a>
+                        <a href="{{ route('pricing') }}" @click="open = false" class="block px-4 py-3 text-base font-semibold text-text-muted hover:text-text hover:bg-surface-raised rounded-xl transition">Pricing</a>
+                        <a href="{{ route('blog.index') }}" @click="open = false" class="block px-4 py-3 text-base font-semibold text-text-muted hover:text-text hover:bg-surface-raised rounded-xl transition">Blog</a>
+                    </div>
+                    <div class="border-t border-border pt-6">
+                        <div class="flex items-center justify-between text-sm text-text-muted mb-6 px-2">
+                            <span class="font-medium">Theme</span>
                             <x-theme-switcher />
                         </div>
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ url('/dashboard') }}" @click="open = false" class="block text-center py-3 bg-surface text-black rounded-full font-bold text-sm">Dashboard</a>
+                                <x-ui.badge variant="accent" class="w-full flex items-center justify-between px-4 py-3 text-sm rounded-xl mb-4">
+                                    <span class="text-text font-medium">Credits</span>
+                                    <span class="font-bold text-primary text-base">{{ number_format(Auth::user()->credits) }}</span>
+                                </x-ui.badge>
+                                <x-ui.button variant="secondary" size="lg" class="w-full" href="{{ url('/dashboard') }}" @click="open = false">Dashboard</x-ui.button>
                             @else
-                                <a href="{{ route('login') }}" @click="open = false" class="block text-center py-3 text-text-muted hover:text-white font-medium text-sm">Log in</a>
+                                <x-ui.button variant="ghost" size="lg" class="w-full mb-3 bg-surface-raised hover:bg-surface-raised/80" href="{{ route('login') }}" @click="open = false">Log in</x-ui.button>
                                 @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" @click="open = false" class="block text-center py-3 bg-surface text-black rounded-full font-bold text-sm">Get Started</a>
+                                    <x-ui.button variant="primary" size="lg" class="w-full shadow-lg shadow-primary/20" href="{{ route('register') }}" @click="open = false">Get Started</x-ui.button>
                                 @endif
                             @endauth
                         @endif
                     </div>
                 </div>
             </div>
-        </div>
+        </nav>
     </div>
-
+    </div>
     <!-- Hero Section -->
     <section class="relative pt-36 pb-24 lg:pt-52 lg:pb-36 overflow-hidden">
-        <!-- Hero Background: GradientBlinds -->
-        <div id="hero-blinds-mount" class="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden" aria-hidden="true"></div>
+        <!-- Drifting Blobs Background -->
+        <canvas id="drifting-blobs-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-60"></canvas>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <!-- v2.0 Badge -->
-            <div
-                class="hero-text-reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface/5 border border-border text-white/70 text-xs font-semibold mb-8">
+            <!-- Eyebrow label / v2.0 Badge -->
+            <div class="fu inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold mb-8"
+                style="animation-delay: 0s; background: rgba(var(--primary-rgb), 0.06); border-color: rgba(var(--primary-rgb), 0.2); color: var(--color-text-muted);">
                 <span class="relative flex h-2 w-2">
-                    <span
-                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-surface opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-surface"></span>
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background: var(--color-accent);"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2" style="background: var(--color-accent);"></span>
                 </span>
                 ⚡ AutomateIQ v2.0 is now live
             </div>
 
-            <!-- Title -->
-            <h1 class="hero-text-reveal text-gradient-hero text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-none"
-                style="transition-delay: 0.1s;">
-                Automate Your Growth, <br>
-                <span>Scale Your Workflows</span>
-            </h1>
-
-            <!-- Subtitle -->
-            <p class="hero-text-reveal text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-12 leading-relaxed"
-                style="transition-delay: 0.2s;">
-                The all‑in‑one intelligent automation platform to streamline operations, orchestrate processes, 
-                and scale your business without the overhead.
-            </p>
-
-            <!-- CTA Actions -->
-            <div class="hero-text-reveal flex flex-col sm:flex-row gap-4 justify-center items-center"
-                style="transition-delay: 0.3s;">
-                <a href="{{ route('register') }}" class="btn-glow magnetic-btn">
-                    Start Free Trial
-                    <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                    </svg>
-                </a>
-                <a href="#features" class="btn-ghost-strat magnetic-btn">Book Demo</a>
+            <!-- Headline Stacked Lines -->
+            <div class="flex flex-col items-center justify-center mb-8 font-display">
+                <h1 class="fu text-5xl md:text-7xl font-extrabold tracking-tight leading-none uppercase" style="animation-delay: 0.15s; margin-bottom: 0.12em;">Build.</h1>
+                <h1 class="fu text-5xl md:text-7xl font-extrabold tracking-tight leading-none uppercase text-[var(--color-accent)]" style="animation-delay: 0.28s; margin-bottom: 0.12em;">Automate.</h1>
+                <h1 class="fu text-5xl md:text-7xl font-extrabold tracking-tight leading-none uppercase text-white" style="animation-delay: 0.41s; margin-bottom: 0.12em;">Scale.</h1>
             </div>
 
-            <!-- Dashboard Mockup (Perspective + Scroll-flattening) -->
+            <!-- Subtext -->
+            <p class="fu text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-12 leading-relaxed" style="animation-delay: 0.56s;">
+                Hooks, scripts, scenes, and repurposing — one system instead of six loud ones.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="fu flex flex-col sm:flex-row gap-4 justify-center items-center" style="animation-delay: 0.7s;">
+                @guest
+                    <a href="{{ route('register') }}" class="btn-glow magnetic-btn">
+                        Start Free Trial
+                        <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </a>
+                    <a href="#process" class="btn-ghost-strat magnetic-btn">See How It Works</a>
+                @else
+                    <a href="{{ route('dashboard') ?? '/dashboard' }}" class="btn-glow magnetic-btn">
+                        Go to Dashboard
+                        <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </a>
+                    <a href="{{ route('dashboard') ?? '/dashboard' }}" class="btn-ghost-strat magnetic-btn">Create New Workflow</a>
+                @endguest
+            </div>
+
+            <!-- Stats Row -->
+            <div class="fu max-w-5xl mx-auto mt-16" style="animation-delay: 0.85s;">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+                    <div class="stat-card">
+                        <div class="stat-number count-up text-white" data-prefix="+" data-suffix="x" data-value="12">+12x</div>
+                        <div class="stat-label">Throughput Increase</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number count-up text-white" data-prefix="-" data-suffix="%" data-value="85">-85%</div>
+                        <div class="stat-label">Operational Cost</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number count-up text-white" data-prefix="< " data-suffix="s" data-value="1.2">&lt; 1.2s</div>
+                        <div class="stat-label">API Response Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number count-up text-white" data-suffix="%" data-value="99.99">99.99%</div>
+                        <div class="stat-label">Uptime SLA Guarantee</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Mockup -->
             <div class="scroll-reveal mt-20 relative max-w-5xl mx-auto" style="transition-delay: 0.4s;">
                 <div class="absolute inset-0 bg-surface/[0.03] blur-3xl -z-10 rounded-full opacity-40"></div>
 
-                <div
-                    class="dashboard-mockup-3d terminal-window relative rounded-2xl border border-border shadow-2xl overflow-hidden bg-[var(--color-bg)] aspect-[16/10] sm:aspect-[16/9] text-left">
+                <div class="dashboard-mockup-3d terminal-window relative rounded-2xl border border-border shadow-2xl overflow-hidden bg-[var(--color-bg)] aspect-[16/10] sm:aspect-[16/9] text-left">
                     <!-- Terminal Header -->
                     <div class="terminal-header flex items-center justify-between px-4 py-3 border-b border-border bg-surface/[0.02]">
                         <div class="terminal-dots flex gap-1.5">
@@ -227,35 +254,8 @@
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="py-16 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 scroll-reveal-stagger">
-                <div class="hero-text-reveal stat-card">
-                    <div class="stat-number count-up text-white" data-prefix="+" data-suffix="x" data-value="12">+12x
-                    </div>
-                    <div class="stat-label">Throughput Increase</div>
-                </div>
-                <div class="hero-text-reveal stat-card">
-                    <div class="stat-number count-up text-white" data-prefix="-" data-suffix="%" data-value="85">-85%
-                    </div>
-                    <div class="stat-label">Operational Cost</div>
-                </div>
-                <div class="hero-text-reveal stat-card">
-                    <div class="stat-number count-up text-white" data-prefix="< " data-suffix="s" data-value="1.2">&lt;
-                        1.2s</div>
-                    <div class="stat-label">API Response Time</div>
-                </div>
-                <div class="hero-text-reveal stat-card">
-                    <div class="stat-number count-up text-white" data-suffix="%" data-value="99.99">99.99%</div>
-                    <div class="stat-label">Uptime SLA Guarantee</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Testimonials Section -->
-    <section class="py-24 relative overflow-hidden">
+    <section class="py-24 relative overflow-hidden section-scroll-fade">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <!-- Testimonial content -->
@@ -318,87 +318,107 @@
         </div>
     </section>
 
-    <!-- Features Grid -->
-    <section id="features" class="py-24 relative overflow-hidden">
+    <!-- Featured Creator Tools -->
+    <section id="features" class="py-24 relative overflow-hidden section-scroll-fade">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16 hero-text-reveal">
-                <div class="section-badge mb-4">⚡ SaaS Architecture</div>
-                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Built for High‑Scale Operations</h2>
-                <p class="text-text-muted text-lg">A unified workflow engine built to replace manual scripts with event-driven automation.</p>
+                <div class="section-badge mb-4">🛠️ AI WORKSPACE</div>
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Featured Creator Tools</h2>
+                <p class="text-text-muted text-lg">Power your production with high-appeal vertical video generators, caption builders, and repurposing scripts.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 scroll-reveal-stagger">
-                <div class="strat-card spotlight-card hero-text-reveal strat-card-shimmer">
-                    <div class="strat-card-icon">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-2">AI Workflow Orchestrator</h3>
-                    <p class="text-text-muted text-sm">Design and automate multi-step processes with logical triggers, loops, and conditional branches.</p>
-                </div>
-                <div class="strat-card spotlight-card hero-text-reveal">
-                    <div class="strat-card-icon">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-2">Real‑Time Processing</h3>
-                    <p class="text-text-muted text-sm">Connect custom data feeds and stream execution steps through advanced logic arrays with ultra‑low latency.</p>
-                </div>
-                <div class="strat-card spotlight-card hero-text-reveal">
-                    <div class="strat-card-icon">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-2">Asset Generation API</h3>
-                    <p class="text-text-muted text-sm">Programmatically generate high-converting visual assets, data visualizations, and structured media outputs.</p>
-                </div>
-                <div class="strat-card spotlight-card hero-text-reveal">
-                    <div class="strat-card-icon">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-2">Pipeline Scaling</h3>
-                    <p class="text-text-muted text-sm">High-throughput task queues built to ingest thousands of operations per second with automatic retries.</p>
-                </div>
-                <div class="strat-card spotlight-card hero-text-reveal">
-                    <div class="strat-card-icon">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-2">Enterprise Security</h3>
-                    <p class="text-text-muted text-sm">End-to-end data encryption, role-based access control, and complete compliance logging audit trials.</p>
-                </div>
-                <div class="strat-card spotlight-card hero-text-reveal">
-                    <div class="strat-card-icon">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-2">Pre-built Connectors</h3>
-                    <p class="text-text-muted text-sm">Integrate seamlessly with Slack, Salesforce, Google Workspace, AWS, and 500+ databases.</p>
-                </div>
+            <div id="features-cards-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 scroll-reveal-stagger">
+                <!-- YouTube Hook Generator -->
+                <a href="{{ route('tools.show', 'youtube-hook-generator') }}" class="group block h-full cursor-pointer">
+                    <x-ui.card padding="p-6" class="strat-card spotlight-card border border-border flex flex-col h-full" :hoverEffect="true">
+                        <div class="h-12 w-12 rounded-xl bg-surface border border-border flex items-center justify-center text-primary group-hover:text-white group-hover:bg-primary transition-all duration-300 shadow-sm mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l-4 3v-6l4 3z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4h10a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-text mb-2 group-hover:text-primary transition-colors">YouTube Hook Generator</h3>
+                        <p class="text-sm text-text-muted flex-grow">Generates attention-grabbing opening hooks for videos.</p>
+                    </x-ui.card>
+                </a>
+
+                <!-- Scene Splitter (Video Factory) -->
+                <a href="{{ route('tools.show', 'scene-splitter-video-factory') }}" class="group block h-full cursor-pointer">
+                    <x-ui.card padding="p-6" class="strat-card spotlight-card border border-border flex flex-col h-full" :hoverEffect="true">
+                        <div class="h-12 w-12 rounded-xl bg-surface border border-border flex items-center justify-center text-primary group-hover:text-white group-hover:bg-primary transition-all duration-300 shadow-sm mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.121 14.121L19 19m-4.879-4.879L19 9.12M12 12a3 3 0 11-6 0 3 3 0 016 0zm0 0a3 3 0 116 0 3 3 0 01-6 0zm-3-3L12 12m-3 3L12 12" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-text mb-2 group-hover:text-primary transition-colors">Scene Splitter (Video Factory)</h3>
+                        <p class="text-sm text-text-muted flex-grow">Automatically segments scripts/videos into separate scenes.</p>
+                    </x-ui.card>
+                </a>
+
+                <!-- Caption Generator -->
+                <a href="{{ route('tools.show', 'caption-generator') }}" class="group block h-full cursor-pointer">
+                    <x-ui.card padding="p-6" class="strat-card spotlight-card border border-border flex flex-col h-full" :hoverEffect="true">
+                        <div class="h-12 w-12 rounded-xl bg-surface border border-border flex items-center justify-center text-primary group-hover:text-white group-hover:bg-primary transition-all duration-300 shadow-sm mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-text mb-2 group-hover:text-primary transition-colors">Caption Generator</h3>
+                        <p class="text-sm text-text-muted flex-grow">Drafts engaging captions for Instagram, TikTok, and YouTube Shorts.</p>
+                    </x-ui.card>
+                </a>
+
+                <!-- Repurpose: Newsletter -->
+                <a href="{{ route('tools.show', 'repurpose-newsletter') }}" class="group block h-full cursor-pointer">
+                    <x-ui.card padding="p-6" class="strat-card spotlight-card border border-border flex flex-col h-full" :hoverEffect="true">
+                        <div class="h-12 w-12 rounded-xl bg-surface border border-border flex items-center justify-center text-primary group-hover:text-white group-hover:bg-primary transition-all duration-300 shadow-sm mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-text mb-2 group-hover:text-primary transition-colors">Repurpose: Newsletter</h3>
+                        <p class="text-sm text-text-muted flex-grow">Builds full newsletters from articles, transcripts, or notes.</p>
+                    </x-ui.card>
+                </a>
+
+                <!-- Blog Outline Generator -->
+                <a href="{{ route('tools.show', 'blog-outline-generator') }}" class="group block h-full cursor-pointer">
+                    <x-ui.card padding="p-6" class="strat-card spotlight-card border border-border flex flex-col h-full" :hoverEffect="true">
+                        <div class="h-12 w-12 rounded-xl bg-surface border border-border flex items-center justify-center text-primary group-hover:text-white group-hover:bg-primary transition-all duration-300 shadow-sm mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-text mb-2 group-hover:text-primary transition-colors">Blog Outline Generator</h3>
+                        <p class="text-sm text-text-muted flex-grow">Outlines articles with structure, headings, and SEO directions.</p>
+                    </x-ui.card>
+                </a>
+
+                <!-- AI Video Generator -->
+                <a href="{{ route('tools.show', 'ai-video-generator') }}" class="group block h-full cursor-pointer">
+                    <x-ui.card padding="p-6" class="strat-card spotlight-card border border-border flex flex-col h-full" :hoverEffect="true">
+                        <div class="h-12 w-12 rounded-xl bg-surface border border-border flex items-center justify-center text-primary group-hover:text-white group-hover:bg-primary transition-all duration-300 shadow-sm mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 10.5l-9 9M13.5 4.5l-3 3M16.5 7.5l-3 3M6 20h.01M9 17h.01M12 14h.01M3 6l3-3m0 0l3 3M6 3v9" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-text mb-2 group-hover:text-primary transition-colors">AI Video Generator</h3>
+                        <p class="text-sm text-text-muted flex-grow">Orchestrates AI-driven video production.</p>
+                    </x-ui.card>
+                </a>
+            </div>
+
+            <div class="text-center mt-16 hero-text-reveal">
+                <a href="{{ route('tools.index') }}" class="btn-ghost-strat group inline-flex items-center gap-2">
+                    View all 17 tools
+                    <span class="inline-block transition-transform group-hover:translate-x-1">&rarr;</span>
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Process Section -->
-    <section id="process" class="py-24 relative overflow-hidden bg-surface/[0.01]">
+    <section id="process" class="py-24 relative overflow-hidden bg-surface/[0.01] section-scroll-fade">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-20 hero-text-reveal">
                 <div class="section-badge mb-4">🔧 Deployment</div>
@@ -413,12 +433,12 @@
                     <div class="timeline-number">1</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         <div>
-                             <h3 class="text-2xl font-bold text-white mb-3">Define Your Trigger</h3>
-                             <p class="text-text-muted text-sm leading-relaxed">Select from webhooks, API events, or database changes to initiate your automated pipelines.</p>
+                             <h3 class="text-2xl font-bold text-white mb-3">Ingest &amp; Analyze</h3>
+                             <p class="text-text-muted text-sm leading-relaxed">Connect your podcast, YouTube channel, or raw footage. Our AI analyzes the content to find the most engaging hooks and moments.</p>
                         </div>
                         <div
                             class="bg-surface/5 border border-border rounded-xl p-4 aspect-video flex items-center justify-center font-bold text-white/20">
-                            Visual Event Trigger Editor
+                            Content Ingestion Pipeline
                         </div>
                     </div>
                 </div>
@@ -428,11 +448,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         <div
                             class="order-2 md:order-1 bg-surface/5 border border-border rounded-xl p-4 aspect-video flex items-center justify-center font-bold text-white/20">
-                            Interactive Canvas Designer
+                            AI Script Generator
                         </div>
                         <div class="order-1 md:order-2">
-                             <h3 class="text-2xl font-bold text-white mb-3">Design the Workflow</h3>
-                             <p class="text-text-muted text-sm leading-relaxed">Map steps, connect AI modules, and set up logic branches using our intuitive console.</p>
+                             <h3 class="text-2xl font-bold text-white mb-3">Generate Scripts &amp; Scenes</h3>
+                             <p class="text-text-muted text-sm leading-relaxed">Automatically generate optimized scripts, viral hooks, and scene breakdowns tailored for TikTok, Reels, and Shorts.</p>
                         </div>
                     </div>
                 </div>
@@ -441,12 +461,12 @@
                     <div class="timeline-number">3</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         <div>
-                             <h3 class="text-2xl font-bold text-white mb-3">Monitor &amp; Orchestrate</h3>
-                             <p class="text-text-muted text-sm leading-relaxed">Deploy with one click and monitor task executions, logs, and data processing rates in real time.</p>
+                             <h3 class="text-2xl font-bold text-white mb-3">Schedule &amp; Distribute</h3>
+                             <p class="text-text-muted text-sm leading-relaxed">Review the repurposed assets and automatically schedule them across your social platforms from one unified dashboard.</p>
                         </div>
                         <div
                             class="bg-surface/5 border border-border rounded-xl p-4 aspect-video flex items-center justify-center font-bold text-white/20">
-                            Real-Time Execution Console
+                            Multi-Platform Scheduler
                         </div>
                     </div>
                 </div>
@@ -455,7 +475,7 @@
     </section>
 
     <!-- AI Pipeline & SLA Cost Estimator Section -->
-    <section id="estimator" class="py-24 relative overflow-hidden bg-surface/[0.01] border-y border-border">
+    <section id="estimator" class="py-24 relative overflow-hidden bg-surface/[0.01] border-y border-border section-scroll-fade">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-16 hero-text-reveal">
                 <div class="section-badge mb-4">🧮 Project Sizing</div>
@@ -472,51 +492,51 @@
                     <!-- Volume Slider -->
                     <div>
                         <div class="flex justify-between items-center mb-4">
-                            <label class="text-sm font-semibold text-white/90">Monthly Executions</label>
-                            <span id="estimator-volume-label" class="text-sm font-mono font-bold text-primary">100,000 Runs</span>
+                            <label class="text-sm font-semibold text-white/90">Hours of Video Processed</label>
+                            <span id="estimator-volume-label" class="text-sm font-mono font-bold text-primary">30 Hours</span>
                         </div>
-                        <input id="estimator-volume" type="range" min="10000" max="1000000" step="10000" value="100000" class="premium-slider w-full">
+                        <input id="estimator-volume" type="range" min="10" max="100" step="10" value="30" class="premium-slider w-full">
                         <div class="flex justify-between text-[10px] text-white/30 font-mono mt-2">
-                            <span>10K Runs</span>
-                            <span>500K Runs</span>
-                            <span>1M Runs</span>
+                            <span>10 Hours</span>
+                            <span>50 Hours</span>
+                            <span>100 Hours</span>
                         </div>
                     </div>
 
                     <!-- Complexity Options -->
                     <div>
-                        <label class="block text-sm font-semibold text-white/90 mb-3">Pipeline Complexity</label>
+                        <label class="block text-sm font-semibold text-white/90 mb-3">Repurposing Strategy</label>
                         <div class="grid grid-cols-3 gap-3">
                             <button type="button" data-estimator-complexity="simple" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-border text-text-muted">
-                                Simple
-                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">1-3 Actions</span>
+                                Short-Form
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">Reels/TikTok</span>
                             </button>
                             <button type="button" data-estimator-complexity="advanced" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition active border-primary bg-primary/10 text-white">
-                                Advanced
-                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">Multi-Agent</span>
+                                Full Episode
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">YT + Shorts</span>
                             </button>
                             <button type="button" data-estimator-complexity="enterprise" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-border text-text-muted">
-                                Enterprise
-                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">Complex SLA</span>
+                                Content Engine
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">Full Distro</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Support Level Options -->
                     <div>
-                        <label class="block text-sm font-semibold text-white/90 mb-3">SLA Support Level</label>
+                        <label class="block text-sm font-semibold text-white/90 mb-3">Rendering Support Level</label>
                         <div class="grid grid-cols-3 gap-3">
                             <button type="button" data-estimator-support="standard" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-border text-text-muted">
                                 Standard
-                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">Community</span>
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">720p Render</span>
                             </button>
                             <button type="button" data-estimator-support="business" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition active border-primary bg-primary/10 text-white">
-                                Business
-                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">8x5 Priority</span>
+                                Priority
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">4K Render</span>
                             </button>
                             <button type="button" data-estimator-support="enterprise" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-border text-text-muted">
                                 Dedicated
-                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">24/7 Phone</span>
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">Account Manager</span>
                             </button>
                         </div>
                     </div>
@@ -549,7 +569,7 @@
     </section>
 
     <!-- Pricing Section -->
-    <section id="pricing" class="py-24 relative overflow-hidden">
+    <section id="pricing" class="py-24 relative overflow-hidden section-scroll-fade">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-16 hero-text-reveal">
                 <div class="section-badge mb-4">💎 Flexible Tiers</div>
@@ -571,7 +591,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                100 operations / month
+                                5 hours of video processing
                             </li>
                             <li class="flex items-center gap-3 text-sm text-text-muted font-medium font-sans">
                                 <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor"
@@ -579,7 +599,15 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                Core workflow editor
+                                Standard 720p exports
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-text-muted font-medium font-sans">
+                                <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Basic script generation
                             </li>
                         </ul>
                     </div>
@@ -588,36 +616,38 @@
                 </div>
 
                 <!-- Pro Plan -->
-                <div class="hero-text-reveal pricing-card-strat spotlight-card featured flex flex-col justify-between">
+                <div
+                    class="hero-text-reveal pricing-card-strat pricing-highlight spotlight-card flex flex-col justify-between border-primary/40 relative shadow-[0_0_40px_rgba(var(--primary-rgb),0.1)]">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-black text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest">
+                        Popular
+                    </div>
                     <div>
                         <div class="flex justify-between items-center">
-                            <h3 class="text-lg font-semibold text-white font-display">Scale SaaS</h3>
-                            <span
-                                class="text-[10px] bg-surface/10 px-2.5 py-1 rounded-full text-white font-bold uppercase tracking-wider font-mono">Popular</span>
+                            <h3 class="text-lg font-bold text-white font-display">Creator Pro</h3>
                         </div>
                         <div class="text-5xl font-extrabold text-white mt-4">$29</div>
                         <div class="text-xs text-white/40 mt-1 font-medium font-sans">per month</div>
                         <ul class="space-y-4 mt-8">
-                            <li class="flex items-center gap-3 text-sm text-text-muted font-semibold font-sans">
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <li class="flex items-center gap-3 text-sm text-white font-medium font-sans">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                10,000 operations / month
+                                30 hours of video processing
                             </li>
-                            <li class="flex items-center gap-3 text-sm text-text-muted font-semibold font-sans">
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <li class="flex items-center gap-3 text-sm text-white font-medium font-sans">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                Advanced AI API keys
+                                4K exports & Viral hook gen
                             </li>
-                            <li class="flex items-center gap-3 text-sm text-text-muted font-semibold font-sans">
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <li class="flex items-center gap-3 text-sm text-white font-medium font-sans">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                Priority multi-step queues
+                                Multi-platform scheduling
                             </li>
                         </ul>
                     </div>
@@ -627,7 +657,7 @@
                 <!-- Enterprise Plan -->
                 <div class="hero-text-reveal pricing-card-strat spotlight-card flex flex-col justify-between">
                     <div>
-                        <h3 class="text-lg font-semibold text-text-muted font-display">Enterprise</h3>
+                        <h3 class="text-lg font-semibold text-text-muted font-display">Agency / Enterprise</h3>
                         <div class="text-5xl font-extrabold text-white mt-4">$99</div>
                         <div class="text-xs text-white/40 mt-1 font-medium font-sans">per month</div>
                         <ul class="space-y-4 mt-8">
@@ -637,7 +667,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                Unlimited monthly operations
+                                Unlimited video processing
                             </li>
                             <li class="flex items-center gap-3 text-sm text-text-muted font-medium font-sans">
                                 <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor"
@@ -645,7 +675,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                Dedicated high-speed queues
+                                Priority rendering queues
                             </li>
                             <li class="flex items-center gap-3 text-sm text-text-muted font-medium font-sans">
                                 <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor"
@@ -653,7 +683,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                Custom SLA &amp; SSO compliance
+                                Custom branding & API access
                             </li>
                         </ul>
                     </div>
@@ -665,7 +695,7 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-24 relative overflow-hidden bg-surface/[0.01]">
+    <section class="py-24 relative overflow-hidden bg-surface/[0.01] section-scroll-fade">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 hero-text-reveal">
             <div class="cta-icon-glow">
                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -674,22 +704,21 @@
                     </path>
                 </svg>
             </div>
-            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Ready to Scale Your SaaS Operations?</h2>
-            <p class="text-text-muted text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-                Connect with our Solutions Architects for a custom walkthrough, custom SLA compliance terms, and enterprise pipeline sizing.
-            </p>
-            <a href="#" class="btn-glow">
-                Book Solutions Call
-                <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6">
-                    </path>
-                </svg>
-            </a>
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Ready to Dominate Your Content Strategy?</h2>
+            <p class="text-text-muted text-lg mb-10 max-w-2xl mx-auto">Connect your channels and start automatically repurposing your long-form videos into viral clips today.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="{{ route('register') }}" class="btn-glow magnetic-btn">
+                    Start Repurposing Today
+                    <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                </a>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer-strat py-16 relative">
+    <footer class="footer-strat py-16 relative section-scroll-fade">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-12 items-start">
                 <div class="col-span-1 md:col-span-2">
@@ -753,6 +782,117 @@
     <!-- Interactive Canvas Spotlight & Advanced Motion Effects -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Hero Background Canvas animation
+            (function() {
+                const canvas = document.getElementById('hero-bg-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let w, h;
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+                function resize() {
+                    const rect = canvas.getBoundingClientRect();
+                    w = rect.width;
+                    h = rect.height;
+                    canvas.width = w * dpr;
+                    canvas.height = h * dpr;
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                }
+                resize();
+                window.addEventListener('resize', resize);
+
+                // Helper to fetch theme RGB string
+                function getThemeColorRgb(cssVar) {
+                    const hex = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+                    if (!hex) return '127,127,127';
+                    const clean = hex.replace('#', '');
+                    if (clean.length === 3) {
+                        const r = parseInt(clean[0] + clean[0], 16);
+                        const g = parseInt(clean[1] + clean[1], 16);
+                        const b = parseInt(clean[2] + clean[2], 16);
+                        return `${r},${g},${b}`;
+                    } else if (clean.length === 6) {
+                        const r = parseInt(clean.slice(0, 2), 16);
+                        const g = parseInt(clean.slice(2, 4), 16);
+                        const b = parseInt(clean.slice(4, 6), 16);
+                        return `${r},${g},${b}`;
+                    }
+                    return '127,127,127';
+                }
+
+                let t = 0;
+                function draw() {
+                    t += 0.006;
+                    ctx.clearRect(0, 0, w, h);
+
+                    // Read background from themes.css (dynamic light/dark)
+                    const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim() || '#1A1816';
+                    ctx.fillStyle = bgColor;
+                    ctx.fillRect(0, 0, w, h);
+
+                    // Scroll-based reactivity
+                    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                    const pageScrollProgress = maxScroll > 0 ? Math.min(Math.max(window.scrollY / maxScroll, 0), 1) : 0;
+                    
+                    const driftAmt = 0.12 + pageScrollProgress * 0.25;
+                    const radVal = Math.min(w, h) * (0.5 + pageScrollProgress * 0.3);
+                    const radVal2 = Math.min(w, h) * (0.45 + pageScrollProgress * 0.3);
+
+                    const accentRgb = getThemeColorRgb('--color-accent');
+                    const signalRgb = getThemeColorRgb('--color-signal');
+
+                    // First blob (accent)
+                    const bx = w * (0.3 + Math.sin(t) * driftAmt);
+                    const by = h * (0.35 + Math.cos(t * 0.8) * driftAmt);
+                    const g = ctx.createRadialGradient(bx, by, 0, bx, by, radVal);
+                    g.addColorStop(0, `rgba(${accentRgb}, 0.16)`);
+                    g.addColorStop(1, `rgba(${accentRgb}, 0)`);
+                    ctx.fillStyle = g;
+                    ctx.fillRect(0, 0, w, h);
+
+                    // Second blob (signal)
+                    const bx2 = w * (0.72 - Math.cos(t * 0.7) * driftAmt);
+                    const by2 = h * (0.6 - Math.sin(t * 0.9) * driftAmt);
+                    const g2 = ctx.createRadialGradient(bx2, by2, 0, bx2, by2, radVal2);
+                    g2.addColorStop(0, `rgba(${signalRgb}, 0.09)`);
+                    g2.addColorStop(1, `rgba(${signalRgb}, 0)`);
+                    ctx.fillStyle = g2;
+                    ctx.fillRect(0, 0, w, h);
+
+                    requestAnimationFrame(draw);
+                }
+                draw();
+            })();
+
+            // Feature/Tool Cards Scroll Mask Reveal
+            (function() {
+                const grid = document.getElementById('features-cards-grid');
+                if (!grid) return;
+
+                function updateMask() {
+                    const rect = grid.getBoundingClientRect();
+                    const viewHeight = window.innerHeight;
+                    
+                    // Math to calculate progress of grid transit through viewport
+                    const entryPoint = viewHeight;
+                    const exitPoint = 100;
+                    
+                    const totalDist = entryPoint - exitPoint;
+                    const currentDist = entryPoint - rect.top;
+                    
+                    let scrollProgress = totalDist > 0 ? currentDist / totalDist : 0;
+                    scrollProgress = Math.min(Math.max(scrollProgress, 0), 1);
+                    
+                    const revealPct = scrollProgress * 130;
+                    grid.style.maskImage = `linear-gradient(to right, black ${revealPct}%, transparent ${revealPct + 15}%)`;
+                    grid.style.webkitMaskImage = `linear-gradient(to right, black ${revealPct}%, transparent ${revealPct + 15}%)`;
+                }
+
+                window.addEventListener('scroll', updateMask, { passive: true });
+                window.addEventListener('resize', updateMask);
+                updateMask();
+            })();
+
             // Bento Grid Mouse Spotlight Effect
             document.addEventListener('mousemove', (e) => {
                 document.querySelectorAll('.strat-card, .stat-card').forEach(card => {
@@ -764,18 +904,56 @@
                 });
             });
 
-            // Initialize 3D Vanilla Tilt on cards
-            if (typeof VanillaTilt !== 'undefined') {
-                VanillaTilt.init(document.querySelectorAll(".strat-card:not(.no-tilt)"), {
-                    max: 8,
-                    speed: 800,
-                    glare: true,
-                    "max-glare": 0.15,
-                    scale: 1.02,
-                    perspective: 1200,
-                    gyroscope: true
+
+
+            // Primary CTA — Magnetic Pull
+            (function() {
+                const magneticBtns = document.querySelectorAll('.magnetic-btn');
+                
+                magneticBtns.forEach(btn => {
+                    let currentX = 0;
+                    let currentY = 0;
+                    let targetX = 0;
+                    let targetY = 0;
+                    
+                    window.addEventListener('mousemove', (e) => {
+                        const rect = btn.getBoundingClientRect();
+                        const btnCenterX = rect.left + window.scrollX + rect.width / 2;
+                        const btnCenterY = rect.top + window.scrollY + rect.height / 2;
+                        
+                        const mouseX = e.pageX;
+                        const mouseY = e.pageY;
+                        
+                        const dist = Math.hypot(mouseX - btnCenterX, mouseY - btnCenterY);
+                        
+                        if (dist < 90) {
+                            const diffX = mouseX - btnCenterX;
+                            const diffY = mouseY - btnCenterY;
+                            targetX = diffX * 0.4;
+                            targetY = diffY * 0.4;
+                        } else {
+                            targetX = 0;
+                            targetY = 0;
+                        }
+                    });
+                    
+                    btn.addEventListener('mouseleave', () => {
+                        targetX = 0;
+                        targetY = 0;
+                    });
+                    
+                    function updatePhysics() {
+                        currentX += (targetX - currentX) * 0.18;
+                        currentY += (targetY - currentY) * 0.18;
+                        
+                        btn.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+                        requestAnimationFrame(updatePhysics);
+                    }
+                    updatePhysics();
                 });
-            }
+            })();
+
+
 
             // Velocity-Deforming Global Mouse Aura (Spring Physics Lerp)
             const aura = document.getElementById('global-aura');

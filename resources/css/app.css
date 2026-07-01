@@ -9,6 +9,51 @@
  * AutomateIQ - Stripe-Inspired Excellence
  */
 
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fu {
+  opacity: 0;
+  animation: fadeUp 0.7s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
+.section-scroll-fade {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(24px);
+    transition: opacity 0.8s cubic-bezier(.22, 1, .36, 1),
+                filter 0.8s cubic-bezier(.22, 1, .36, 1),
+                transform 0.8s cubic-bezier(.22, 1, .36, 1);
+    will-change: opacity, filter, transform;
+}
+.section-scroll-fade.is-revealed {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+}
+
+.category-scroll-fade {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s cubic-bezier(.22, 1, .36, 1),
+                transform 0.8s cubic-bezier(.22, 1, .36, 1);
+    will-change: opacity, transform;
+}
+.category-scroll-fade.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes cardFadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.category-card-reveal {
+  opacity: 0;
+  animation: cardFadeUp 0.6s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
 @layer base {
 
     /* Premium Typography */
@@ -25,7 +70,7 @@
 
     /* Custom Selection Color */
     ::selection {
-        background: rgba(255, 75, 31, 0.25);
+        background: rgba(var(--primary-rgb), 0.2);
         color: inherit;
     }
 
@@ -60,14 +105,14 @@
     box-shadow:
         0 80px 160px -20px rgba(0, 0, 0, 0.9),
         0 0 0 1px rgba(255, 255, 255, 0.04),
-        0 40px 80px -20px rgba(255, 75, 31, 0.08);
+        0 40px 80px -20px rgba(var(--primary-rgb), 0.08);
 }
 
 .dashboard-mockup-3d:hover {
     box-shadow:
         0 100px 200px -20px rgba(0, 0, 0, 0.95),
         0 0 0 1px rgba(255, 255, 255, 0.07),
-        0 60px 100px -20px rgba(255, 75, 31, 0.15);
+        0 60px 100px -20px rgba(var(--primary-rgb), 0.15);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -94,12 +139,11 @@
         0 1px 0 rgba(255, 255, 255, 0.06) inset;
 }
 
-/* Logo pill — has the GradientBlinds WebGL effect */
 .capsule-nav-logo-pill {
     border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.04); /* fallback before WebGL loads */
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--primary-hover) 100%);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* Nav links */
@@ -174,21 +218,25 @@
         transform-origin: bottom center;
     }
 
-    /* Signal / success states */
-    .text-signal {
-        color: var(--color-signal);
+    /* Success states (renamed from signal) */
+    .text-signal,
+    .text-success {
+        color: var(--color-success);
     }
 
-    .bg-signal {
-        background-color: var(--color-signal);
+    .bg-signal,
+    .bg-success {
+        background-color: var(--color-success);
     }
 
-    .border-signal {
-        border-color: var(--color-signal);
+    .border-signal,
+    .border-success {
+        border-color: var(--color-success);
     }
 
     .text-signal-dim {
-        color: var(--color-signal-dim);
+        opacity: 0.6;
+        color: var(--color-success);
     }
 
     /* Accent / live states */
@@ -240,10 +288,11 @@
         color: var(--color-accent);
     }
 
-    .workflow-node-dot.is-signal {
-        background: var(--color-signal-dim);
-        border-color: var(--color-signal);
-        color: var(--color-signal);
+    .workflow-node-dot.is-signal,
+    .workflow-node-dot.is-success {
+        background: rgba(var(--color-success, 110, 231, 183), 0.12);
+        border-color: var(--color-success);
+        color: var(--color-success);
     }
 
     .workflow-connector-wrap {
@@ -276,7 +325,7 @@
        ═══════════════════════════════════════════════════════════════ */
 
     .glass-panel {
-        background: rgba(255, 255, 255, 0.7);
+        background-color: var(--color-surface);
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
         border: 1px solid var(--color-border);
@@ -2415,7 +2464,7 @@
     background: var(--color-accent);
     color: #ffffff;
     border-color: var(--color-accent);
-    box-shadow: 0 4px 20px rgba(255, 75, 31, 0.25);
+    box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.25);
 }
 
 /* Credits badge in nav */
@@ -2469,7 +2518,7 @@
     background: var(--color-accent);
     color: #ffffff;
     border-color: var(--color-accent);
-    box-shadow: 0 4px 20px rgba(255, 75, 31, 0.2);
+    box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.2);
 }
 
 [data-theme="light"] .nav-credits-badge {
@@ -2736,7 +2785,7 @@
 .ambient-glow-1 {
     width: 600px;
     height: 600px;
-    background: rgba(255, 75, 31, 0.06);
+    background: rgba(var(--primary-rgb), 0.05);
     top: -200px;
     right: -200px;
     animation: ambientFloat1 20s ease-in-out infinite;
@@ -2745,7 +2794,7 @@
 .ambient-glow-2 {
     width: 500px;
     height: 500px;
-    background: rgba(0, 217, 163, 0.04);
+    background: rgba(110, 231, 183, 0.03);
     bottom: -150px;
     left: -150px;
     animation: ambientFloat2 25s ease-in-out infinite;
@@ -2754,7 +2803,7 @@
 .ambient-glow-3 {
     width: 400px;
     height: 400px;
-    background: rgba(255, 75, 31, 0.03);
+    background: rgba(var(--primary-rgb), 0.025);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -2817,20 +2866,20 @@
     padding: 1rem 2.5rem;
     border-radius: var(--radius-sm);
     background: var(--color-accent);
-    color: #ffffff;
+    color: #0C0C0C;
     font-weight: 700;
     font-size: 1rem;
     border: none;
     cursor: pointer;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
         box-shadow 0.3s ease;
-    box-shadow: 0 4px 20px rgba(255, 75, 31, 0.25);
+    box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.3);
 }
 
 .btn-glow:hover {
     transform: scale(1.03);
-    box-shadow: 0 8px 40px rgba(255, 75, 31, 0.35),
-        0 0 60px rgba(255, 75, 31, 0.1);
+    box-shadow: 0 8px 40px rgba(var(--primary-rgb), 0.45),
+        0 0 60px rgba(var(--primary-rgb), 0.15);
 }
 
 .btn-glow:active {
@@ -3042,12 +3091,12 @@
 .pricing-card-strat.featured {
     border-color: var(--color-accent);
     background: var(--color-surface-raised);
-    box-shadow: 0 0 80px -20px rgba(255, 75, 31, 0.2);
+    box-shadow: 0 0 80px -20px rgba(var(--primary-rgb), 0.2);
 }
 
 /* --- Gradient Text Utility --- */
 .text-gradient-primary {
-    background: linear-gradient(135deg, var(--color-accent), var(--color-signal));
+    background: linear-gradient(135deg, var(--color-accent), var(--color-success));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -3099,7 +3148,7 @@
 [data-theme="light"] .pricing-card-strat.featured {
     background: rgba(255, 255, 255, 0.8);
     border-color: var(--color-accent);
-    box-shadow: 0 0 80px -20px rgba(255, 75, 31, 0.2);
+    box-shadow: 0 0 80px -20px rgba(var(--primary-rgb), 0.2);
 }
 
 [data-theme="light"] .testimonial-card {
@@ -3110,23 +3159,23 @@
 [data-theme="light"] .btn-glow {
     background: var(--color-accent);
     color: #ffffff;
-    box-shadow: 0 4px 20px rgba(255, 75, 31, 0.3);
+    box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.3);
 }
 
 [data-theme="light"] .btn-glow:hover {
-    box-shadow: 0 8px 40px rgba(255, 75, 31, 0.4),
-        0 0 60px rgba(255, 75, 31, 0.15);
+    box-shadow: 0 8px 40px rgba(var(--primary-rgb), 0.4),
+        0 0 60px rgba(var(--primary-rgb), 0.15);
 }
 
 [data-theme="light"] .btn-ghost-strat {
-    color: var(--text, #1a1a2e);
+    color: var(--text, #141412);
     border-color: rgba(0, 0, 0, 0.15);
 }
 
 [data-theme="light"] .btn-ghost-strat:hover {
     color: var(--color-accent);
     border-color: var(--color-accent);
-    background: rgba(255, 75, 31, 0.05);
+    background: rgba(var(--primary-rgb), 0.06);
 }
 
 [data-theme="light"] .floating-nav {
@@ -3139,13 +3188,13 @@
 [data-theme="light"] .floating-nav .btn-primary-white {
     background: var(--color-accent) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(255, 75, 31, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3) !important;
 }
 
 [data-theme="light"] .timeline-number {
     background: rgba(0, 0, 0, 0.04);
     border-color: rgba(0, 0, 0, 0.1);
-    color: var(--text, #1a1a2e);
+    color: var(--text, #141412);
 }
 
 [data-theme="light"] .timeline-line {
@@ -3153,15 +3202,15 @@
 }
 
 [data-theme="light"] .ambient-glow-1 {
-    background: rgba(255, 75, 31, 0.05);
+    background: rgba(var(--primary-rgb), 0.04);
 }
 
 [data-theme="light"] .ambient-glow-2 {
-    background: rgba(0, 217, 163, 0.03);
+    background: rgba(47, 158, 110, 0.03);
 }
 
 [data-theme="light"] .ambient-glow-3 {
-    background: rgba(255, 75, 31, 0.025);
+    background: rgba(var(--primary-rgb), 0.02);
 }
 
 [data-theme="light"].welcome-dark-bg {
@@ -3503,3 +3552,23 @@
     transform: scale(1.15);
     background-color: var(--primary);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO BLOBS (Drifting radial gradients)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Ambient persistent glow on non-hero pages */
+.ambient-bg-glow {
+    position: fixed;
+    top: -20vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80vw;
+    max-width: 800px;
+    height: 50vh;
+    background: radial-gradient(ellipse, rgba(var(--primary-rgb), 0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+    will-change: opacity;
+}
+.trix-button::before { filter: invert(0.8); }

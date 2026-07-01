@@ -26,4 +26,10 @@ class SettingController extends Controller
 
         return back()->with('success', 'Settings updated.');
     }
+
+    public function legalPages()
+    {
+        $settings = \DB::table('settings')->pluck('value', 'key');
+        return view('admin.settings.legal', compact('settings'));
+    }
 }

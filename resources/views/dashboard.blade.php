@@ -49,7 +49,7 @@
                     of your workspace.</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
-                <x-ui.button variant="primary" href="{{ route('tools.index') }}" data-analytics-event="cta_new_generation">
+                <x-ui.button variant="primary" href="{{ route('tools.index', ['layout' => 'dashboard']) }}" data-analytics-event="cta_new_generation">
                     <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     New Generation
                 </x-ui.button>
@@ -138,7 +138,7 @@
                                     </div>
                                     <h4 class="font-bold text-text mb-2">No generations yet</h4>
                                     <p class="text-sm text-text-muted mb-4">Start generating content using our AI tools.</p>
-                                    <x-ui.button variant="primary" href="{{ route('tools.index') }}">Try a Tool</x-ui.button>
+                                    <x-ui.button variant="primary" href="{{ route('tools.index', ['layout' => 'dashboard']) }}">Try a Tool</x-ui.button>
                                 </x-ui.card>
                             </div>
                         @endforelse
@@ -249,11 +249,12 @@
     <!-- Include ApexCharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
+        (function() {
             const getThemeColor = (varName, fallback) => {
                 return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
             };
-            const accentColor = getThemeColor('--color-accent', '#E08A66');
-            const surfaceColor = getThemeColor('--color-surface-raised', '#2C2822');
+            const accentColor = getThemeColor('--color-accent', '#D4FF3D');
+            const surfaceColor = getThemeColor('--color-surface-raised', '#1F1F1F');
 
             var options = {
                 series: [{{ $subscriptionUsed }}, {{ max(0, $subscriptionCredits) }}],
@@ -294,7 +295,7 @@
                 },
                 stroke: {
                     show: true,
-                    colors: [getThemeColor('--color-border', '#3A352E')],
+                    colors: [getThemeColor('--color-border', '#2A2A2A')],
                     width: 2
                 },
                 legend: {
@@ -317,8 +318,11 @@
                 options.tooltip.theme = 'light';
             }
 
-            var chart = new ApexCharts(document.querySelector("#creditUsageChart"), options);
-            chart.render();
-        });
+            const chartEl = document.querySelector("#creditUsageChart");
+            if (chartEl && typeof ApexCharts !== 'undefined') {
+                var chart = new ApexCharts(chartEl, options);
+                chart.render();
+            }
+        })();
     </script>
 </x-app-layout>

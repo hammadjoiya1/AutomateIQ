@@ -49,7 +49,7 @@ class ToolController extends Controller
             });
         }
 
-        $tools = $query->with(['tags', 'category'])->latest()->paginate(12);
+        $tools = $query->with(['tags', 'category'])->latest()->get();
         $categories = Category::where('type', 'tool')->get();
         $tags = Tag::orderBy('name')->get();
 

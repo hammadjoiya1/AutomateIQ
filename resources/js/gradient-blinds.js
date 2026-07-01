@@ -18,7 +18,7 @@ function hexToRGB(hex) {
 }
 
 function prepStops(stops) {
-    const base = (stops && stops.length ? stops : ['#E08A66', '#EFA184']).slice(0, MAX_COLORS);
+    const base = (stops && stops.length ? stops : ['#D4FF3D', '#BCDF35']).slice(0, MAX_COLORS);
     if (base.length === 1) base.push(base[0]);
     while (base.length < MAX_COLORS) base.push(base[base.length - 1]);
     const arr = base.map(hexToRGB);
@@ -124,7 +124,7 @@ void main(){
  */
 export function mountGradientBlinds(container, opts = {}) {
     const {
-        gradientColors   = ['#E08A66', '#EFA184'],
+        gradientColors   = ['#D4FF3D', '#BCDF35'],
         angle            = 0,
         noise            = 0.25,
         blindCount       = 12,

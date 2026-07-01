@@ -1,14 +1,15 @@
 @php
+    $layout = (request()->layout === 'dashboard' && Auth::check()) ? 'app-layout' : 'public-layout';
     $trialActive = Auth::check() && Auth::user()->trial_ends_at && now()->lt(Auth::user()->trial_ends_at);
     $isPro = Auth::check() && (in_array(Auth::user()->plan, ['pro', 'team']) || $trialActive);
 @endphp
-<x-app-layout :meta-title="$tool->name . ' — AI Tool'" :meta-description="\Illuminate\Support\Str::limit($tool->description, 160)">
+<x-dynamic-component :component="$layout" :meta-title="$tool->name . ' — AI Tool'" :meta-description="\Illuminate\Support\Str::limit($tool->description, 160)">
     <div class="py-6 animate-fade-in" x-data="toolRunner(@js($tool->input_schema ?? []), '{{ $tool->tool_type }}', @js($presets ?? []), {{ $isFavorite ? 'true' : 'false' }})">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-4">
             <!-- Breadcrumbs -->
             <nav class="flex mb-8 text-sm" aria-label="Breadcrumb">
                 <ol class="flex items-center space-x-2">
-                    <li><a href="{{ route('tools.index') }}"
+                    <li><a href="{{ route('tools.index', ['layout' => request()->layout]) }}"
                             class="text-text-muted hover:text-primary transition-colors">Tools</a></li>
                     <li><svg class="w-4 h-4 text-text-muted/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
@@ -797,4 +798,4 @@
             }
         </script>
     </div>
-</x-app-layout>
+</x-dynamic-component>

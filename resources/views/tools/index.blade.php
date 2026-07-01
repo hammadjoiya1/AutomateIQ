@@ -1,4 +1,7 @@
-<x-app-layout>
+@php
+    $layout = (request()->layout === 'dashboard' && Auth::check()) ? 'app-layout' : 'public-layout';
+@endphp
+<x-dynamic-component :component="$layout">
     <div class="py-8 animate-fade-in">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Header section with centered search -->
@@ -8,7 +11,7 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                     </span>
-                    {{ $tools->total() }} AI Tools Available
+                    {{ $tools->count() }} AI Tools Available
                 </x-ui.badge>
                 <h1 class="text-3xl md:text-4xl font-display font-bold text-text tracking-tight mb-4">
                     Automate your <span class="text-primary">creative workflow</span>
@@ -35,8 +38,8 @@
                     @if(request()->tag)
                         <input type="hidden" name="tag" value="{{ request()->tag }}">
                     @endif
-                    @if(request()->favorite)
-                        <input type="hidden" name="favorite" value="{{ request()->favorite }}">
+                    @if(request()->layout)
+                        <input type="hidden" name="layout" value="{{ request()->layout }}">
                     @endif
                 </form>
             </div>
@@ -44,18 +47,18 @@
             <!-- Categories Filter -->
             <div class="mb-10 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
                 <div class="flex gap-2 justify-start md:justify-center min-w-max">
-                    <a href="{{ route('tools.index', ['search' => request()->search, 'tag' => request()->tag, 'favorite' => request()->favorite]) }}"
+                    <a href="{{ route('tools.index', ['layout' => request()->layout, 'search' => request()->search, 'tag' => request()->tag, 'favorite' => request()->favorite]) }}"
                         class="px-4 py-2 rounded-control-sm text-sm font-semibold transition-all {{ !request()->category ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-surface border border-border text-text-muted hover:text-text hover:bg-surface/80' }}">
                         All Tools
                     </a>
                     @foreach($categories as $category)
-                        <a href="{{ route('tools.index', ['category' => $category->slug, 'search' => request()->search, 'tag' => request()->tag, 'favorite' => request()->favorite]) }}"
+                        <a href="{{ route('tools.index', ['layout' => request()->layout, 'category' => $category->slug, 'search' => request()->search, 'tag' => request()->tag, 'favorite' => request()->favorite]) }}"
                             class="px-4 py-2 rounded-control-sm text-sm font-semibold transition-all {{ request()->category === $category->slug ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-surface border border-border text-text-muted hover:text-text hover:bg-surface/80' }}">
                             {{ $category->name }}
                         </a>
                     @endforeach
                     @auth
-                        <a href="{{ route('tools.index', ['favorite' => request()->favorite ? null : 1, 'search' => request()->search, 'category' => request()->category, 'tag' => request()->tag]) }}"
+                        <a href="{{ route('tools.index', ['layout' => request()->layout, 'favorite' => request()->favorite ? null : 1, 'search' => request()->search, 'category' => request()->category, 'tag' => request()->tag]) }}"
                             class="px-4 py-2 rounded-control-sm text-sm font-semibold transition-all {{ request()->favorite ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-surface border border-border text-text-muted hover:text-text hover:bg-surface/80' }}">
                             Favorites
                         </a>
@@ -66,12 +69,12 @@
             @if($tags->isNotEmpty())
                 <div class="mb-10 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
                     <div class="flex gap-2 justify-start md:justify-center min-w-max">
-                        <a href="{{ route('tools.index', ['search' => request()->search, 'category' => request()->category, 'favorite' => request()->favorite]) }}"
+                        <a href="{{ route('tools.index', ['layout' => request()->layout, 'search' => request()->search, 'category' => request()->category, 'favorite' => request()->favorite]) }}"
                             class="px-3 py-1.5 rounded-control-sm text-xs font-semibold transition-all {{ !request()->tag ? 'bg-surface border border-border text-text' : 'bg-surface/50 border border-border text-text-muted hover:text-text' }}">
                             All Tags
                         </a>
                         @foreach($tags as $tag)
-                            <a href="{{ route('tools.index', ['tag' => $tag->slug, 'search' => request()->search, 'category' => request()->category, 'favorite' => request()->favorite]) }}"
+                            <a href="{{ route('tools.index', ['layout' => request()->layout, 'tag' => $tag->slug, 'search' => request()->search, 'category' => request()->category, 'favorite' => request()->favorite]) }}"
                                 class="px-3 py-1.5 rounded-control-sm text-xs font-semibold transition-all {{ request()->tag === $tag->slug ? 'bg-primary/20 text-primary border border-primary/30' : 'bg-surface border border-border text-text-muted hover:text-text' }}">
                                 {{ $tag->name }}
                             </a>
@@ -80,60 +83,153 @@
                 </div>
             @endif
 
-            <!-- Tools Grid -->
-            @if($tools->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-                    @foreach($tools as $tool)
-                        <a href="{{ route('tools.show', $tool->slug) }}" class="group block h-full">
-                            <x-ui.card padding="p-6" class="h-full relative overflow-hidden transition-all duration-300 group-hover:translate-y-[-4px] group-hover:border-primary/30" :hoverEffect="true">
-                                <!-- Hover Glow Effect -->
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            <!-- Grouped Tools Categories -->
+            @php
+                $videoSlugs = ['youtube-hook-generator', 'viral-video-ideas-generator', 'script-generator-short', 'ai-video-generator', 'scene-splitter-video-factory'];
+                $socialSlugs = ['caption-generator', 'hashtag-generator', 'tweet-thread-generator', 'repurpose-twitter-thread', 'repurpose-linkedin-post', 'repurpose-newsletter'];
+                $writingSlugs = ['blog-outline-generator', 'seo-title-generator', 'product-description-generator', 'motivational-quote-generator', 'story-generator'];
+                $utilitySlugs = ['prompt-builder-tool'];
+
+                $videoTools = $tools->filter(fn($t) => in_array($t->slug, $videoSlugs));
+                $socialTools = $tools->filter(fn($t) => in_array($t->slug, $socialSlugs));
+                $writingTools = $tools->filter(fn($t) => in_array($t->slug, $writingSlugs));
+                $utilityTools = $tools->filter(fn($t) => in_array($t->slug, $utilitySlugs));
+
+                $categoriesList = [
+                    ['title' => 'Video & Script Creation', 'tools' => $videoTools],
+                    ['title' => 'Social Media & Repurposing', 'tools' => $socialTools],
+                    ['title' => 'Writing & Content Marketing', 'tools' => $writingTools],
+                    ['title' => 'Utility', 'tools' => $utilityTools]
+                ];
+
+                $toolIcons = [
+                    'youtube-hook-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l-4 3v-6l4 3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4h10a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3z" />
+                        </svg>
+                    ',
+                    'viral-video-ideas-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    ',
+                    'script-generator-short' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    ',
+                    'ai-video-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 10.5l-9 9M13.5 4.5l-3 3M16.5 7.5l-3 3M6 20h.01M9 17h.01M12 14h.01M3 6l3-3m0 0l3 3M6 3v9" />
+                        </svg>
+                    ',
+                    'scene-splitter-video-factory' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.121 14.121L19 19m-4.879-4.879L19 9.12M12 12a3 3 0 11-6 0 3 3 0 016 0zm0 0a3 3 0 116 0 3 3 0 01-6 0zm-3-3L12 12m-3 3L12 12" />
+                        </svg>
+                    ',
+                    'caption-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    ',
+                    'hashtag-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                        </svg>
+                    ',
+                    'tweet-thread-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5" />
+                        </svg>
+                    ',
+                    'repurpose-twitter-thread' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v16h16V4H4zm4 4h8M8 12h8m-8 4h5" />
+                        </svg>
+                    ',
+                    'repurpose-linkedin-post' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    ',
+                    'repurpose-newsletter' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    ',
+                    'blog-outline-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                        </svg>
+                    ',
+                    'seo-title-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    ',
+                    'product-description-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.5 9.5a2.25 2.25 0 003.182 0l5.178-5.178a2.25 2.25 0 000-3.182l-9.5-9.5A2.25 2.25 0 009.568 3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 6h.008v.008H6V6z" />
+                        </svg>
+                    ',
+                    'motivational-quote-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    ',
+                    'story-generator' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    ',
+                    'prompt-builder-tool' => '
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    '
+                ];
+
+                $hasAnyTools = false;
+                foreach($categoriesList as $cat) {
+                    if($cat['tools']->isNotEmpty()) $hasAnyTools = true;
+                }
+            @endphp
+
+            @if($hasAnyTools)
+                <div class="space-y-16">
+                    @foreach($categoriesList as $cat)
+                        @if($cat['tools']->isNotEmpty())
+                            <div class="category-scroll-fade">
+                                <!-- Category Title Header in monospaced uppercase -->
+                                <h3 class="font-mono text-xs uppercase tracking-widest text-[var(--color-accent)] mb-8 px-4 font-bold">
+                                    // {{ $cat['title'] }}
+                                </h3>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-12">
+                                    @foreach($cat['tools']->values() as $index => $tool)
+                                        <a href="{{ route('tools.show', ['slug' => $tool->slug, 'layout' => request()->layout]) }}" 
+                                           class="group block h-full cursor-pointer category-card-reveal"
+                                           style="animation-delay: {{ $index * 60 }}ms;">
+                                            <x-ui.card padding="p-6" class="strat-card spotlight-card border border-border flex flex-col h-full" :hoverEffect="true">
+                                                <div class="h-12 w-12 rounded-xl bg-surface border border-border flex items-center justify-center text-primary group-hover:text-white group-hover:bg-primary transition-all duration-300 shadow-sm mb-6">
+                                                    {!! $toolIcons[$tool->slug] ?? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="1.5"/></svg>' !!}
+                                                </div>
+                                                <h4 class="text-lg font-semibold text-text mb-2 group-hover:text-primary transition-colors">
+                                                    {{ $tool->name }}
+                                                </h4>
+                                                <p class="text-sm text-text-muted flex-grow">
+                                                    {{ $tool->description }}
+                                                </p>
+                                            </x-ui.card>
+                                        </a>
+                                    @endforeach
                                 </div>
-
-                                <div class="relative z-10 flex flex-col h-full">
-                                    <div class="flex items-start justify-between mb-6">
-                                        <div data-card-icon
-                                            class="h-12 w-12 rounded-control-sm bg-surface border border-border flex items-center justify-center text-primary group-hover:text-white group-hover:bg-primary transition-all duration-300 shadow-sm">
-                                            <!-- Dynamic Icon Logic (Placeholder) -->
-                                            <span class="font-bold text-lg">{{ substr($tool->name, 0, 1) }}</span>
-                                        </div>
-                                        @if($tool->is_featured)
-                                            <span
-                                                class="inline-flex items-center px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold bg-warning/10 text-warning border border-warning/20">
-                                                Featured
-                                            </span>
-                                        @endif
-                                    </div>
-
-                                    <h3 class="text-xl font-bold text-text mb-2 group-hover:text-primary transition-colors">
-                                        {{ $tool->name }}
-                                    </h3>
-                                    <p class="text-sm text-text-muted line-clamp-3 mb-6 flex-grow">{{ $tool->description }}</p>
-
-                                    <div class="pt-4 border-t border-border flex items-center justify-between text-sm">
-                                        <span
-                                            class="text-text-muted group-hover:text-text transition-colors font-semibold">{{ $tool->category->name ?? 'Utility' }}</span>
-                                        @if($tool->tags->isNotEmpty())
-                                            <span class="text-xs text-text-muted">{{ $tool->tags->pluck('name')->implode(' • ') }}</span>
-                                        @endif
-                                        <div
-                                            class="flex items-center text-primary font-bold group-hover:translate-x-1 transition-transform duration-300">
-                                            Try Now <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </x-ui.card>
-                        </a>
+                            </div>
+                        @endif
                     @endforeach
-                </div>
-
-                <div class="mt-12 px-4">
-                    {{ $tools->links() }}
                 </div>
             @else
                 <x-ui.card padding="py-24 px-4" class="text-center mx-4 border-dashed" :hoverEffect="false">
@@ -150,4 +246,4 @@
             @endif
         </div>
     </div>
-</x-app-layout>
+</x-dynamic-component>

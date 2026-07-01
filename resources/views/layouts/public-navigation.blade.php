@@ -24,6 +24,30 @@
                 <x-theme-switcher />
 
                 @auth
+                    @php
+                        $creditLink = route('pricing');
+                        foreach (['starter', 'growth', 'scale'] as $packKey) {
+                            $settingUrl = \App\Models\Setting::get("lemonsqueezy.topup_checkout_urls.{$packKey}", null);
+                            $configUrls = config('lemonsqueezy.topup_checkout_urls', []);
+                            $url = $settingUrl ?: ($configUrls[$packKey] ?? null);
+                            if ($url) {
+                                $creditLink = route('billing.topup', $packKey);
+                                break;
+                            }
+                        }
+                    @endphp
+                    <a href="{{ $creditLink }}"
+                        class="hidden sm:flex items-center gap-2 mr-4 px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group btn-shine"
+                        title="Buy more credits">
+                        <div
+                            class="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <span class="font-bold text-sm counter-animated">{{ number_format(Auth::user()->credits) }} Credits</span>
+                    </a>
                     <a href="{{ route('dashboard') }}" class="btn-premium text-sm">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}"
