@@ -55,13 +55,13 @@
                 <template x-for="s in [1, 2, 3, 4, 5]">
                     <div class="flex items-center flex-1 last:flex-none">
                         <div 
-                            :class="step >= s ? 'bg-primary border-primary text-white' : 'bg-background border-white/10 text-text/40'"
+                            :class="step >= s ? 'bg-primary border-primary text-white' : 'bg-background border-border text-text/40'"
                             class="w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all duration-300 shadow-md text-sm"
                             x-text="s"
                         ></div>
                         <div 
                             x-show="s < 5"
-                            :class="step > s ? 'bg-primary' : 'bg-white/10'"
+                            :class="step > s ? 'bg-primary' : 'bg-surface/10'"
                             class="h-0.5 flex-1 mx-2 transition-all duration-300"
                         ></div>
                     </div>
@@ -77,7 +77,7 @@
         </div>
 
         <!-- Onboarding Cards Container -->
-        <div class="card p-8 border border-white/5 bg-surface/50 backdrop-blur-md rounded-3xl shadow-2xl relative overflow-hidden min-h-[480px] flex flex-col justify-between">
+        <div class="card p-8 border border-border bg-surface/50 backdrop-blur-md rounded-3xl shadow-2xl relative overflow-hidden min-h-[480px] flex flex-col justify-between">
             
             <!-- Glow Accents -->
             <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -106,7 +106,7 @@
                     <p class="text-text/70 leading-relaxed text-sm">
                         Welcome to <strong>AutomateIQ</strong>, the ultimate faceless AI video automation pipeline. Let us guide you through our core workflow so you can launch your first automation immediately.
                     </p>
-                    <div class="p-4 bg-background/40 border border-white/5 rounded-2xl flex items-center gap-4 text-left">
+                    <div class="p-4 bg-background/40 border border-border rounded-2xl flex items-center gap-4 text-left">
                         <div class="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
                         <div class="text-xs text-text/60">
                             Your account is loaded with subscription credits to start running tools and generating videos immediately!
@@ -123,18 +123,18 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start mt-6">
                         <!-- Tool inputs mockup -->
-                        <div class="space-y-4 bg-background/30 p-5 rounded-2xl border border-white/5">
+                        <div class="space-y-4 bg-background/30 p-5 rounded-2xl border border-border">
                             <div>
                                 <label class="block text-xs font-semibold text-text/70 mb-1.5">Target Niche</label>
                                 <div class="grid grid-cols-3 gap-2">
-                                    <button @click="niche = 'fitness'" :class="niche === 'fitness' ? 'btn-primary text-xs py-1.5' : 'bg-surface/50 border border-white/5 text-text/60 text-xs py-1.5'" class="rounded-xl font-medium transition">Fitness</button>
-                                    <button @click="niche = 'saas'" :class="niche === 'saas' ? 'btn-primary text-xs py-1.5' : 'bg-surface/50 border border-white/5 text-text/60 text-xs py-1.5'" class="rounded-xl font-medium transition">Tech/SaaS</button>
-                                    <button @click="niche = 'finance'" :class="niche === 'finance' ? 'btn-primary text-xs py-1.5' : 'bg-surface/50 border border-white/5 text-text/60 text-xs py-1.5'" class="rounded-xl font-medium transition">Finance</button>
+                                    <button @click="niche = 'fitness'" :class="niche === 'fitness' ? 'btn-primary text-xs py-1.5' : 'bg-surface/50 border border-border text-text/60 text-xs py-1.5'" class="rounded-xl font-medium transition">Fitness</button>
+                                    <button @click="niche = 'saas'" :class="niche === 'saas' ? 'btn-primary text-xs py-1.5' : 'bg-surface/50 border border-border text-text/60 text-xs py-1.5'" class="rounded-xl font-medium transition">Tech/SaaS</button>
+                                    <button @click="niche = 'finance'" :class="niche === 'finance' ? 'btn-primary text-xs py-1.5' : 'bg-surface/50 border border-border text-text/60 text-xs py-1.5'" class="rounded-xl font-medium transition">Finance</button>
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-text/70 mb-1.5">Product or Topic (Optional)</label>
-                                <input type="text" x-model="product" placeholder="e.g. Fat Loss Formula, Coding Course" class="w-full bg-surface border border-white/10 rounded-xl px-3 py-2 text-xs text-text placeholder:text-text/30">
+                                <input type="text" x-model="product" placeholder="e.g. Fat Loss Formula, Coding Course" class="w-full bg-surface border border-border rounded-xl px-3 py-2 text-xs text-text placeholder:text-text/30">
                             </div>
                             <button @click="generateHook()" :disabled="loading" class="btn btn-primary btn-sm w-full py-2.5 flex items-center justify-center gap-2">
                                 <span x-show="!loading">Generate Hook</span>
@@ -143,7 +143,7 @@
                         </div>
 
                         <!-- Generation Output Monitor -->
-                        <div class="h-[210px] bg-background/50 border border-white/5 rounded-2xl p-5 flex flex-col justify-between relative shadow-inner">
+                        <div class="h-[210px] bg-background/50 border border-border rounded-2xl p-5 flex flex-col justify-between relative shadow-inner">
                             <div class="absolute top-3 left-4 text-[9px] uppercase tracking-wider font-semibold text-text/30">AI Live Terminal</div>
                             <div class="flex-grow flex items-center justify-center mt-3 text-xs leading-relaxed text-text/80 font-mono">
                                 <span x-show="!loading && !simulatedOutput && !typing" class="text-text/40 italic">Your generated script hook will appear here...</span>
@@ -151,7 +151,7 @@
                                 <span x-show="simulatedOutput" x-text="simulatedOutput"></span>
                                 <span x-show="typing" class="w-1.5 h-4 bg-primary inline-block ml-0.5 animate-pulse"></span>
                             </div>
-                            <div class="pt-3 border-t border-white/5 flex justify-between items-center text-[10px] text-text/50">
+                            <div class="pt-3 border-t border-border flex justify-between items-center text-[10px] text-text/50">
                                 <span>Status: <strong x-text="hookGenerated ? 'Generated' : (loading ? 'Running' : 'Idle')"></strong></span>
                                 <span x-show="hookGenerated" class="text-emerald-500 font-semibold flex items-center gap-1">✓ Complete</span>
                             </div>
@@ -166,16 +166,16 @@
                         <p class="text-text/60 text-xs mt-1">Organize and save your highest performing creations in collections to use later.</p>
                     </div>
 
-                    <div class="bg-background/30 border border-white/5 p-6 rounded-3xl max-w-lg mx-auto space-y-6">
+                    <div class="bg-background/30 border border-border p-6 rounded-3xl max-w-lg mx-auto space-y-6">
                         <!-- Simulated Saved Hook snippet -->
-                        <div class="p-4 rounded-xl bg-surface border border-white/5 relative shadow-md">
+                        <div class="p-4 rounded-xl bg-surface border border-border relative shadow-md">
                             <p class="text-xs font-mono text-text/80 leading-relaxed" x-text="simulatedOutput || '🏋️‍♂️ Hard truth: Your workouts are useless if you\'re not doing this one simple thing... Here is the 30-second daily fix.'"></p>
                             <div class="absolute -bottom-2.5 -right-2 bg-primary/20 border border-primary/30 text-primary text-[9px] px-2 py-0.5 rounded-full font-bold uppercase">Hook Asset</div>
                         </div>
 
                         <!-- Collection targets -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                            <div :class="savedToLibrary ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-white/5 bg-background/50'" class="p-3 border rounded-2xl flex items-center gap-3 transition-colors">
+                            <div :class="savedToLibrary ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-border bg-background/50'" class="p-3 border rounded-2xl flex items-center gap-3 transition-colors">
                                 <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
                                 </div>
@@ -184,7 +184,7 @@
                                     <div class="text-[10px] text-text/50" x-text="savedToLibrary ? '1 Item' : '0 Items'"></div>
                                 </div>
                             </div>
-                            <div class="p-3 border border-white/5 bg-background/50 rounded-2xl flex items-center gap-3 opacity-60">
+                            <div class="p-3 border border-border bg-background/50 rounded-2xl flex items-center gap-3 opacity-60">
                                 <div class="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
                                 </div>
@@ -209,10 +209,10 @@
                         <p class="text-text/60 text-xs mt-1">Connect your library collections to scheduling triggers to post automatically.</p>
                     </div>
 
-                    <div class="bg-background/30 border border-white/5 p-6 rounded-3xl max-w-md mx-auto space-y-6">
-                        <div class="flex items-center justify-between p-4 bg-surface rounded-2xl border border-white/5 shadow-md">
+                    <div class="bg-background/30 border border-border p-6 rounded-3xl max-w-md mx-auto space-y-6">
+                        <div class="flex items-center justify-between p-4 bg-surface rounded-2xl border border-border shadow-md">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                                <div class="w-10 h-10 rounded-xl bg-accent/10 text-indigo-400 flex items-center justify-center">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 </div>
                                 <div class="text-left">
@@ -222,9 +222,9 @@
                             </div>
                             <!-- Switch -->
                             <button @click="workflowEnabled = !workflowEnabled" 
-                                    :class="workflowEnabled ? 'bg-primary justify-end' : 'bg-gray-700 justify-start'" 
+                                    :class="workflowEnabled ? 'bg-primary justify-end' : 'bg-surface-raised justify-start'" 
                                     class="w-12 h-6 rounded-full p-0.5 flex items-center transition-colors focus:outline-none">
-                                <span class="bg-white w-5 h-5 rounded-full shadow transition-transform duration-300"></span>
+                                <span class="bg-surface w-5 h-5 rounded-full shadow transition-transform duration-300"></span>
                             </button>
                         </div>
 
@@ -232,9 +232,9 @@
                         <div class="flex flex-col items-center gap-2 py-4">
                             <div class="text-xs font-semibold text-text/60">Automated Pipeline Flow</div>
                             <div class="flex items-center justify-center gap-4 text-xs font-mono text-text/70 mt-2">
-                                <span class="bg-background px-3 py-1.5 rounded-lg border border-white/5">Saved Hook</span>
+                                <span class="bg-background px-3 py-1.5 rounded-lg border border-border">Saved Hook</span>
                                 <span class="text-primary font-bold">➔</span>
-                                <span :class="workflowEnabled ? 'border-primary text-primary' : 'border-white/5 opacity-50'" class="bg-background px-3 py-1.5 rounded-lg border transition">TikTok Auto-Schedule</span>
+                                <span :class="workflowEnabled ? 'border-primary text-primary' : 'border-border opacity-50'" class="bg-background px-3 py-1.5 rounded-lg border transition">TikTok Auto-Schedule</span>
                             </div>
                         </div>
                     </div>
@@ -250,12 +250,12 @@
                         You have successfully completed the walkthrough! You are ready to start generating real high-fidelity videos and building automated workflows.
                     </p>
 
-                    <div class="p-6 bg-background/50 border border-white/5 rounded-3xl max-w-md mx-auto grid grid-cols-2 gap-4 text-left">
+                    <div class="p-6 bg-background/50 border border-border rounded-3xl max-w-md mx-auto grid grid-cols-2 gap-4 text-left">
                         <div class="space-y-1">
                             <span class="text-[10px] text-text/50 font-bold uppercase tracking-wider">Plan Access</span>
                             <div class="text-lg font-bold text-primary capitalize">{{ Auth::user()->plan }} Plan</div>
                         </div>
-                        <div class="space-y-1 border-l border-white/5 pl-4">
+                        <div class="space-y-1 border-l border-border pl-4">
                             <span class="text-[10px] text-text/50 font-bold uppercase tracking-wider">Starting Balance</span>
                             <div class="text-lg font-bold text-text">{{ number_format(Auth::user()->credits) }} Credits</div>
                         </div>
@@ -265,7 +265,7 @@
             </div>
 
             <!-- Footer Action Buttons -->
-            <div class="pt-6 border-t border-white/5 flex items-center justify-between">
+            <div class="pt-6 border-t border-border flex items-center justify-between">
                 <button 
                     x-show="step > 1" 
                     @click="step--" 
@@ -293,7 +293,7 @@
                         x-show="step === 2" 
                         @click="step = 3" 
                         :disabled="!hookGenerated"
-                        :class="hookGenerated ? 'btn-primary' : 'bg-surface border border-white/5 text-text/40 cursor-not-allowed opacity-50'"
+                        :class="hookGenerated ? 'btn-primary' : 'bg-surface border border-border text-text/40 cursor-not-allowed opacity-50'"
                         class="btn px-8 py-3 rounded-xl text-xs font-bold flex items-center gap-1.5 transition"
                     >
                         Next Step
@@ -305,7 +305,7 @@
                         x-show="step === 3" 
                         @click="step = 4" 
                         :disabled="!savedToLibrary"
-                        :class="savedToLibrary ? 'btn-primary' : 'bg-surface border border-white/5 text-text/40 cursor-not-allowed opacity-50'"
+                        :class="savedToLibrary ? 'btn-primary' : 'bg-surface border border-border text-text/40 cursor-not-allowed opacity-50'"
                         class="btn px-8 py-3 rounded-xl text-xs font-bold flex items-center gap-1.5 transition"
                     >
                         Next Step

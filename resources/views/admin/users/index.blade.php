@@ -10,7 +10,7 @@
         </div>
     </div>
 
-    <div class="card overflow-hidden border border-white/5">
+    <div class="card overflow-hidden border border-border">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead class="text-xs text-text-muted uppercase bg-surface/50 border-b border-border">
@@ -40,17 +40,17 @@
                             </td>
                             <td class="px-6 py-4">
                                 <span
-                                    class="px-2 py-1 rounded-full text-xs font-bold {{ $user->role === 'admin' ? 'bg-purple-500/10 text-purple-500' : 'bg-gray-500/10 text-gray-500' }}">
+                                    class="px-2 py-1 rounded-full text-xs font-bold {{ $user->role === 'admin' ? 'bg-accent/10 text-accent' : 'bg-surface-raised0/10 text-text-muted' }}">
                                     {{ ucfirst($user->role) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4">
                                 @if($user->is_banned)
                                     <span
-                                        class="px-2 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">Banned</span>
+                                        class="px-2 py-1 rounded-full text-xs font-bold bg-danger/10 text-danger">Banned</span>
                                 @else
                                     <span
-                                        class="px-2 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-500">Active</span>
+                                        class="px-2 py-1 rounded-full text-xs font-bold bg-success/10 text-success">Active</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-text-muted">{{ ucfirst($user->plan) }}</td>
@@ -64,14 +64,14 @@
                                                 x-data @submit.prevent="$dispatch('confirm', { message: 'Unban this user?', form: $el })">
                                                 @csrf
                                                 <button type="submit"
-                                                    class="text-green-500 hover:text-green-400 text-xs font-bold">Unban</button>
+                                                    class="text-success hover:text-success text-xs font-bold">Unban</button>
                                             </form>
                                         @else
                                             <form action="{{ route('admin.users.ban', $user) }}" method="POST"
                                                 x-data @submit.prevent="$dispatch('confirm', { message: 'Ban this user?', form: $el })">
                                                 @csrf
                                                 <button type="submit"
-                                                    class="text-red-500 hover:text-red-400 text-xs font-bold">Ban</button>
+                                                    class="text-danger hover:text-danger text-xs font-bold">Ban</button>
                                             </form>
                                         @endif
                                         <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
@@ -79,7 +79,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="text-red-500 hover:text-red-400 text-xs font-bold">Delete</button>
+                                                class="text-danger hover:text-danger text-xs font-bold">Delete</button>
                                         </form>
                                         @if($user->role !== 'admin')
                                             <form action="{{ route('admin.users.impersonate', $user) }}" method="POST"

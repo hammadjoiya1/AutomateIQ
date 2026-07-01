@@ -39,7 +39,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- User Profile & Edit -->
-        <div class="card p-6 border border-white/5 space-y-6">
+        <div class="card p-6 border border-border space-y-6">
             <div class="text-center">
                 <div
                     class="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-4xl mx-auto mb-4">
@@ -96,17 +96,17 @@
         <!-- Activity Stats -->
         <div class="col-span-2 space-y-6">
             <div class="grid grid-cols-2 gap-4">
-                <div class="card p-4 border border-white/5 bg-surface/50 text-center">
+                <div class="card p-4 border border-border bg-surface/50 text-center">
                     <div class="text-2xl font-bold text-text">{{ $stats['total_runs'] }}</div>
                     <div class="text-xs text-text-muted">Total Tool Runs</div>
                 </div>
-                <div class="card p-4 border border-white/5 bg-surface/50 text-center">
+                <div class="card p-4 border border-border bg-surface/50 text-center">
                     <div class="text-sm font-bold text-text">{{ $stats['last_login'] }}</div>
                     <div class="text-xs text-text-muted">Last Activity</div>
                 </div>
             </div>
 
-            <div class="card p-6 border border-white/5">
+            <div class="card p-6 border border-border">
                 <h3 class="font-bold text-lg text-text mb-4">Recent Tool Runs</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">
@@ -123,7 +123,7 @@
                                     <td class="px-4 py-3">{{ $run->tool->name }}</td>
                                     <td class="px-4 py-3">
                                         <span
-                                            class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $run->status === 'completed' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500' }}">
+                                            class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $run->status === 'completed' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
                                             {{ ucfirst($run->status) }}
                                         </span>
                                     </td>

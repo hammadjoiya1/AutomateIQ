@@ -6,7 +6,7 @@
     <div class="space-y-4">
         @forelse($messages as $message)
             <div
-                class="card p-6 border border-white/5 bg-surface {{ $message->is_read ? 'opacity-75' : 'border-primary/20' }}">
+                class="card p-6 border border-border bg-surface {{ $message->is_read ? 'opacity-75' : 'border-primary/20' }}">
                 <div class="flex justify-between items-start mb-2">
                     <div>
                         <h3 class="font-bold text-lg text-text">{{ $message->subject ?? 'No Subject' }}</h3>
@@ -29,7 +29,7 @@
                         x-data @submit.prevent="$dispatch('confirm', { message: 'Delete message?', form: $el })">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="text-red-500 hover:text-red-400 text-sm font-medium">Delete</button>
+                        <button type="submit" class="text-danger hover:text-danger text-sm font-medium">Delete</button>
                     </form>
                 </div>
             </div>

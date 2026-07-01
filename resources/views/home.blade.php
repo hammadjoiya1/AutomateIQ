@@ -116,7 +116,7 @@
                 <div x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full"
                     x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-150"
                     x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
-                    class="h-full bg-[var(--color-bg)] border-r border-white/10 p-6 flex flex-col justify-between overflow-y-auto">
+                    class="h-full bg-[var(--color-bg)] border-r border-border p-6 flex flex-col justify-between overflow-y-auto">
                     <div>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
@@ -130,24 +130,24 @@
                             </button>
                         </div>
                         <div class="mt-8 space-y-1">
-                            <a href="{{ route('tools.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition">Tools</a>
-                            <a href="{{ route('workflows.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition">Workflows</a>
-                            <a href="{{ route('pricing') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition">Pricing</a>
-                            <a href="{{ route('blog.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition">Blog</a>
+                            <a href="{{ route('tools.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-text-muted hover:text-white hover:bg-white/5 rounded-lg transition">Tools</a>
+                            <a href="{{ route('workflows.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-text-muted hover:text-white hover:bg-white/5 rounded-lg transition">Workflows</a>
+                            <a href="{{ route('pricing') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-text-muted hover:text-white hover:bg-white/5 rounded-lg transition">Pricing</a>
+                            <a href="{{ route('blog.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-text-muted hover:text-white hover:bg-white/5 rounded-lg transition">Blog</a>
                         </div>
                     </div>
-                    <div class="border-t border-white/10 pt-6 space-y-3">
-                        <div class="flex items-center justify-between text-sm text-white/60">
+                    <div class="border-t border-border pt-6 space-y-3">
+                        <div class="flex items-center justify-between text-sm text-text-muted">
                             <span>Theme</span>
                             <x-theme-switcher />
                         </div>
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ url('/dashboard') }}" @click="open = false" class="block text-center py-3 bg-white text-black rounded-full font-bold text-sm">Dashboard</a>
+                                <a href="{{ url('/dashboard') }}" @click="open = false" class="block text-center py-3 bg-surface text-black rounded-full font-bold text-sm">Dashboard</a>
                             @else
-                                <a href="{{ route('login') }}" @click="open = false" class="block text-center py-3 text-white/60 hover:text-white font-medium text-sm">Log in</a>
+                                <a href="{{ route('login') }}" @click="open = false" class="block text-center py-3 text-text-muted hover:text-white font-medium text-sm">Log in</a>
                                 @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" @click="open = false" class="block text-center py-3 bg-white text-black rounded-full font-bold text-sm">Get Started</a>
+                                    <a href="{{ route('register') }}" @click="open = false" class="block text-center py-3 bg-surface text-black rounded-full font-bold text-sm">Get Started</a>
                                 @endif
                             @endauth
                         @endif
@@ -165,11 +165,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <!-- v2.0 Badge -->
             <div
-                class="hero-text-reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-semibold mb-8">
+                class="hero-text-reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface/5 border border-border text-white/70 text-xs font-semibold mb-8">
                 <span class="relative flex h-2 w-2">
                     <span
-                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-surface opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-surface"></span>
                 </span>
                 ⚡ AutomateIQ v2.0 is now live
             </div>
@@ -182,7 +182,7 @@
             </h1>
 
             <!-- Subtitle -->
-            <p class="hero-text-reveal text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-12 leading-relaxed"
+            <p class="hero-text-reveal text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-12 leading-relaxed"
                 style="transition-delay: 0.2s;">
                 The all‑in‑one intelligent automation platform to streamline operations, orchestrate processes, 
                 and scale your business without the overhead.
@@ -203,12 +203,12 @@
 
             <!-- Dashboard Mockup (Perspective + Scroll-flattening) -->
             <div class="scroll-reveal mt-20 relative max-w-5xl mx-auto" style="transition-delay: 0.4s;">
-                <div class="absolute inset-0 bg-white/[0.03] blur-3xl -z-10 rounded-full opacity-40"></div>
+                <div class="absolute inset-0 bg-surface/[0.03] blur-3xl -z-10 rounded-full opacity-40"></div>
 
                 <div
-                    class="dashboard-mockup-3d terminal-window relative rounded-2xl border border-white/[0.06] shadow-2xl overflow-hidden bg-[var(--color-bg)] aspect-[16/10] sm:aspect-[16/9] text-left">
+                    class="dashboard-mockup-3d terminal-window relative rounded-2xl border border-border shadow-2xl overflow-hidden bg-[var(--color-bg)] aspect-[16/10] sm:aspect-[16/9] text-left">
                     <!-- Terminal Header -->
-                    <div class="terminal-header flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+                    <div class="terminal-header flex items-center justify-between px-4 py-3 border-b border-border bg-surface/[0.02]">
                         <div class="terminal-dots flex gap-1.5">
                             <div class="terminal-dot terminal-dot-red w-2.5 h-2.5 rounded-full"></div>
                             <div class="terminal-dot terminal-dot-yellow w-2.5 h-2.5 rounded-full"></div>
@@ -219,7 +219,7 @@
                     </div>
 
                     <!-- Terminal Body -->
-                    <div class="terminal-body-sim flex-1 p-6 font-mono text-xs text-white/80 overflow-y-auto leading-relaxed select-none">
+                    <div class="terminal-body-sim flex-1 p-6 font-mono text-xs text-text-muted overflow-y-auto leading-relaxed select-none">
                         <!-- Simulated CLI typewriter output goes here -->
                     </div>
                 </div>
@@ -286,12 +286,12 @@
                                     d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                         </div>
-                        <p class="text-lg text-white/80 leading-relaxed italic mb-6">
+                        <p class="text-lg text-text-muted leading-relaxed italic mb-6">
                             "AutomateIQ integrated directly into our core tech stack. We've automated our entire lead pipeline and visual asset generation, reducing manual data entry to absolute zero."
                         </p>
                         <div class="flex items-center gap-3">
                             <div
-                                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-white">
+                                class="w-10 h-10 rounded-full bg-surface/10 flex items-center justify-center font-bold text-white">
                                 JT</div>
                             <div>
                                 <div class="text-sm font-semibold text-white">Jordan Taylor</div>
@@ -305,12 +305,12 @@
                 <div class="hero-text-reveal space-y-6">
                     <div class="strat-card">
                         <div class="text-5xl font-black text-white count-up" data-suffix="%" data-value="99.9">99.9%</div>
-                        <div class="text-sm text-white/50 mt-2 font-medium">SLA Compliance &amp; Pipeline Guarantee</div>
+                        <div class="text-sm text-text-muted mt-2 font-medium">SLA Compliance &amp; Pipeline Guarantee</div>
                     </div>
                     <div class="strat-card">
                         <div class="text-5xl font-black text-white count-up" data-prefix="+" data-value="45">+45M
                         </div>
-                        <div class="text-sm text-white/50 mt-2 font-medium">API Tasks Processed Seamlessly
+                        <div class="text-sm text-text-muted mt-2 font-medium">API Tasks Processed Seamlessly
                         </div>
                     </div>
                 </div>
@@ -324,7 +324,7 @@
             <div class="text-center max-w-3xl mx-auto mb-16 hero-text-reveal">
                 <div class="section-badge mb-4">⚡ SaaS Architecture</div>
                 <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Built for High‑Scale Operations</h2>
-                <p class="text-white/50 text-lg">A unified workflow engine built to replace manual scripts with event-driven automation.</p>
+                <p class="text-text-muted text-lg">A unified workflow engine built to replace manual scripts with event-driven automation.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 scroll-reveal-stagger">
@@ -337,7 +337,7 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-2">AI Workflow Orchestrator</h3>
-                    <p class="text-white/50 text-sm">Design and automate multi-step processes with logical triggers, loops, and conditional branches.</p>
+                    <p class="text-text-muted text-sm">Design and automate multi-step processes with logical triggers, loops, and conditional branches.</p>
                 </div>
                 <div class="strat-card spotlight-card hero-text-reveal">
                     <div class="strat-card-icon">
@@ -348,7 +348,7 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-2">Real‑Time Processing</h3>
-                    <p class="text-white/50 text-sm">Connect custom data feeds and stream execution steps through advanced logic arrays with ultra‑low latency.</p>
+                    <p class="text-text-muted text-sm">Connect custom data feeds and stream execution steps through advanced logic arrays with ultra‑low latency.</p>
                 </div>
                 <div class="strat-card spotlight-card hero-text-reveal">
                     <div class="strat-card-icon">
@@ -359,7 +359,7 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-2">Asset Generation API</h3>
-                    <p class="text-white/50 text-sm">Programmatically generate high-converting visual assets, data visualizations, and structured media outputs.</p>
+                    <p class="text-text-muted text-sm">Programmatically generate high-converting visual assets, data visualizations, and structured media outputs.</p>
                 </div>
                 <div class="strat-card spotlight-card hero-text-reveal">
                     <div class="strat-card-icon">
@@ -370,7 +370,7 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-2">Pipeline Scaling</h3>
-                    <p class="text-white/50 text-sm">High-throughput task queues built to ingest thousands of operations per second with automatic retries.</p>
+                    <p class="text-text-muted text-sm">High-throughput task queues built to ingest thousands of operations per second with automatic retries.</p>
                 </div>
                 <div class="strat-card spotlight-card hero-text-reveal">
                     <div class="strat-card-icon">
@@ -381,7 +381,7 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-2">Enterprise Security</h3>
-                    <p class="text-white/50 text-sm">End-to-end data encryption, role-based access control, and complete compliance logging audit trials.</p>
+                    <p class="text-text-muted text-sm">End-to-end data encryption, role-based access control, and complete compliance logging audit trials.</p>
                 </div>
                 <div class="strat-card spotlight-card hero-text-reveal">
                     <div class="strat-card-icon">
@@ -391,19 +391,19 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-2">Pre-built Connectors</h3>
-                    <p class="text-white/50 text-sm">Integrate seamlessly with Slack, Salesforce, Google Workspace, AWS, and 500+ databases.</p>
+                    <p class="text-text-muted text-sm">Integrate seamlessly with Slack, Salesforce, Google Workspace, AWS, and 500+ databases.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Process Section -->
-    <section id="process" class="py-24 relative overflow-hidden bg-white/[0.01]">
+    <section id="process" class="py-24 relative overflow-hidden bg-surface/[0.01]">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-20 hero-text-reveal">
                 <div class="section-badge mb-4">🔧 Deployment</div>
                 <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Simple 3‑Step Setup</h2>
-                <p class="text-white/50 text-lg">Go from concept to production-ready automation in minutes.</p>
+                <p class="text-text-muted text-lg">Go from concept to production-ready automation in minutes.</p>
             </div>
 
             <div class="timeline-container scroll-reveal-stagger">
@@ -414,10 +414,10 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         <div>
                              <h3 class="text-2xl font-bold text-white mb-3">Define Your Trigger</h3>
-                             <p class="text-white/50 text-sm leading-relaxed">Select from webhooks, API events, or database changes to initiate your automated pipelines.</p>
+                             <p class="text-text-muted text-sm leading-relaxed">Select from webhooks, API events, or database changes to initiate your automated pipelines.</p>
                         </div>
                         <div
-                            class="bg-white/5 border border-white/5 rounded-xl p-4 aspect-video flex items-center justify-center font-bold text-white/20">
+                            class="bg-surface/5 border border-border rounded-xl p-4 aspect-video flex items-center justify-center font-bold text-white/20">
                             Visual Event Trigger Editor
                         </div>
                     </div>
@@ -427,12 +427,12 @@
                     <div class="timeline-number">2</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         <div
-                            class="order-2 md:order-1 bg-white/5 border border-white/5 rounded-xl p-4 aspect-video flex items-center justify-center font-bold text-white/20">
+                            class="order-2 md:order-1 bg-surface/5 border border-border rounded-xl p-4 aspect-video flex items-center justify-center font-bold text-white/20">
                             Interactive Canvas Designer
                         </div>
                         <div class="order-1 md:order-2">
                              <h3 class="text-2xl font-bold text-white mb-3">Design the Workflow</h3>
-                             <p class="text-white/50 text-sm leading-relaxed">Map steps, connect AI modules, and set up logic branches using our intuitive console.</p>
+                             <p class="text-text-muted text-sm leading-relaxed">Map steps, connect AI modules, and set up logic branches using our intuitive console.</p>
                         </div>
                     </div>
                 </div>
@@ -442,10 +442,10 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         <div>
                              <h3 class="text-2xl font-bold text-white mb-3">Monitor &amp; Orchestrate</h3>
-                             <p class="text-white/50 text-sm leading-relaxed">Deploy with one click and monitor task executions, logs, and data processing rates in real time.</p>
+                             <p class="text-text-muted text-sm leading-relaxed">Deploy with one click and monitor task executions, logs, and data processing rates in real time.</p>
                         </div>
                         <div
-                            class="bg-white/5 border border-white/5 rounded-xl p-4 aspect-video flex items-center justify-center font-bold text-white/20">
+                            class="bg-surface/5 border border-border rounded-xl p-4 aspect-video flex items-center justify-center font-bold text-white/20">
                             Real-Time Execution Console
                         </div>
                     </div>
@@ -455,15 +455,15 @@
     </section>
 
     <!-- AI Pipeline & SLA Cost Estimator Section -->
-    <section id="estimator" class="py-24 relative overflow-hidden bg-white/[0.01] border-y border-white/5">
+    <section id="estimator" class="py-24 relative overflow-hidden bg-surface/[0.01] border-y border-border">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-16 hero-text-reveal">
                 <div class="section-badge mb-4">🧮 Project Sizing</div>
                 <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Pipeline Cost Estimator</h2>
-                <p class="text-white/50 text-lg font-medium">Estimate your customized multi-step AI workflow scaling budgets instantly.</p>
+                <p class="text-text-muted text-lg font-medium">Estimate your customized multi-step AI workflow scaling budgets instantly.</p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-12 items-center bg-[var(--color-bg)] border border-white/[0.06] rounded-2xl p-8 md:p-12 relative overflow-hidden">
+            <div class="grid md:grid-cols-2 gap-12 items-center bg-[var(--color-bg)] border border-border rounded-2xl p-8 md:p-12 relative overflow-hidden">
                 <!-- Grid decorative pattern -->
                 <div class="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none"></div>
 
@@ -487,7 +487,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-white/90 mb-3">Pipeline Complexity</label>
                         <div class="grid grid-cols-3 gap-3">
-                            <button type="button" data-estimator-complexity="simple" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-white/5 text-white/60">
+                            <button type="button" data-estimator-complexity="simple" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-border text-text-muted">
                                 Simple
                                 <span class="block text-[9px] font-normal text-white/40 mt-0.5">1-3 Actions</span>
                             </button>
@@ -495,7 +495,7 @@
                                 Advanced
                                 <span class="block text-[9px] font-normal text-white/40 mt-0.5">Multi-Agent</span>
                             </button>
-                            <button type="button" data-estimator-complexity="enterprise" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-white/5 text-white/60">
+                            <button type="button" data-estimator-complexity="enterprise" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-border text-text-muted">
                                 Enterprise
                                 <span class="block text-[9px] font-normal text-white/40 mt-0.5">Complex SLA</span>
                             </button>
@@ -506,7 +506,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-white/90 mb-3">SLA Support Level</label>
                         <div class="grid grid-cols-3 gap-3">
-                            <button type="button" data-estimator-support="standard" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-white/5 text-white/60">
+                            <button type="button" data-estimator-support="standard" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-border text-text-muted">
                                 Standard
                                 <span class="block text-[9px] font-normal text-white/40 mt-0.5">Community</span>
                             </button>
@@ -514,7 +514,7 @@
                                 Business
                                 <span class="block text-[9px] font-normal text-white/40 mt-0.5">8x5 Priority</span>
                             </button>
-                            <button type="button" data-estimator-support="enterprise" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-white/5 text-white/60">
+                            <button type="button" data-estimator-support="enterprise" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-border text-text-muted">
                                 Dedicated
                                 <span class="block text-[9px] font-normal text-white/40 mt-0.5">24/7 Phone</span>
                             </button>
@@ -523,22 +523,22 @@
                 </div>
 
                 <!-- Right Column: Visual Breakdown Output -->
-                <div class="flex flex-col justify-between h-full border border-white/5 bg-white/[0.01] rounded-xl p-8 text-center space-y-6 relative z-10">
+                <div class="flex flex-col justify-between h-full border border-border bg-surface/[0.01] rounded-xl p-8 text-center space-y-6 relative z-10">
                     <div>
-                        <span id="estimator-cluster-output" class="px-3 py-1 border border-white/10 bg-white/5 rounded-full text-[10px] font-mono font-semibold text-white/50">Dedicated VPC Instance</span>
+                        <span id="estimator-cluster-output" class="px-3 py-1 border border-border bg-surface/5 rounded-full text-[10px] font-mono font-semibold text-text-muted">Dedicated VPC Instance</span>
                         <div class="text-[10px] text-white/40 uppercase tracking-widest font-mono mt-6">Estimated Cost</div>
                         <div id="estimator-cost-output" class="text-5xl font-extrabold text-white mt-2 font-display">$289</div>
                         <div class="text-xs text-white/40 mt-1">per month (billed annually)</div>
                     </div>
 
-                    <div class="border-t border-white/5 pt-6 text-left space-y-3 font-mono text-[11px]">
+                    <div class="border-t border-border pt-6 text-left space-y-3 font-mono text-[11px]">
                         <div class="flex justify-between">
                             <span class="text-white/40">Workflow Runs Charge:</span>
-                            <span id="estimator-runs-output" class="text-white/80 font-bold">$190/mo</span>
+                            <span id="estimator-runs-output" class="text-text-muted font-bold">$190/mo</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-white/40">SLA Support Coverage:</span>
-                            <span id="estimator-support-output" class="text-white/80 font-bold">$99/mo</span>
+                            <span id="estimator-support-output" class="text-text-muted font-bold">$99/mo</span>
                         </div>
                     </div>
 
@@ -554,27 +554,27 @@
             <div class="text-center max-w-3xl mx-auto mb-16 hero-text-reveal">
                 <div class="section-badge mb-4">💎 Flexible Tiers</div>
                 <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Simple, transparent pricing</h2>
-                <p class="text-white/50 text-lg font-medium">Scale pricing transparently based on your execution volumes.</p>
+                <p class="text-text-muted text-lg font-medium">Scale pricing transparently based on your execution volumes.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8 items-stretch scroll-reveal-stagger">
                 <!-- Free Plan -->
                 <div class="hero-text-reveal pricing-card-strat spotlight-card flex flex-col justify-between">
                     <div>
-                        <h3 class="text-lg font-semibold text-white/60 font-display">Starter</h3>
+                        <h3 class="text-lg font-semibold text-text-muted font-display">Starter</h3>
                         <div class="text-5xl font-extrabold text-white mt-4">$0</div>
                         <div class="text-xs text-white/40 mt-1 font-medium font-sans">per month</div>
                         <ul class="space-y-4 mt-8">
-                            <li class="flex items-center gap-3 text-sm text-white/60 font-medium font-sans">
-                                <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor"
+                            <li class="flex items-center gap-3 text-sm text-text-muted font-medium font-sans">
+                                <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
                                 100 operations / month
                             </li>
-                            <li class="flex items-center gap-3 text-sm text-white/60 font-medium font-sans">
-                                <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor"
+                            <li class="flex items-center gap-3 text-sm text-text-muted font-medium font-sans">
+                                <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
@@ -593,26 +593,26 @@
                         <div class="flex justify-between items-center">
                             <h3 class="text-lg font-semibold text-white font-display">Scale SaaS</h3>
                             <span
-                                class="text-[10px] bg-white/10 px-2.5 py-1 rounded-full text-white font-bold uppercase tracking-wider font-mono">Popular</span>
+                                class="text-[10px] bg-surface/10 px-2.5 py-1 rounded-full text-white font-bold uppercase tracking-wider font-mono">Popular</span>
                         </div>
                         <div class="text-5xl font-extrabold text-white mt-4">$29</div>
                         <div class="text-xs text-white/40 mt-1 font-medium font-sans">per month</div>
                         <ul class="space-y-4 mt-8">
-                            <li class="flex items-center gap-3 text-sm text-white/80 font-semibold font-sans">
+                            <li class="flex items-center gap-3 text-sm text-text-muted font-semibold font-sans">
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
                                 10,000 operations / month
                             </li>
-                            <li class="flex items-center gap-3 text-sm text-white/80 font-semibold font-sans">
+                            <li class="flex items-center gap-3 text-sm text-text-muted font-semibold font-sans">
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
                                 Advanced AI API keys
                             </li>
-                            <li class="flex items-center gap-3 text-sm text-white/80 font-semibold font-sans">
+                            <li class="flex items-center gap-3 text-sm text-text-muted font-semibold font-sans">
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
@@ -627,28 +627,28 @@
                 <!-- Enterprise Plan -->
                 <div class="hero-text-reveal pricing-card-strat spotlight-card flex flex-col justify-between">
                     <div>
-                        <h3 class="text-lg font-semibold text-white/60 font-display">Enterprise</h3>
+                        <h3 class="text-lg font-semibold text-text-muted font-display">Enterprise</h3>
                         <div class="text-5xl font-extrabold text-white mt-4">$99</div>
                         <div class="text-xs text-white/40 mt-1 font-medium font-sans">per month</div>
                         <ul class="space-y-4 mt-8">
-                            <li class="flex items-center gap-3 text-sm text-white/60 font-medium font-sans">
-                                <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor"
+                            <li class="flex items-center gap-3 text-sm text-text-muted font-medium font-sans">
+                                <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
                                 Unlimited monthly operations
                             </li>
-                            <li class="flex items-center gap-3 text-sm text-white/60 font-medium font-sans">
-                                <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor"
+                            <li class="flex items-center gap-3 text-sm text-text-muted font-medium font-sans">
+                                <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
                                 Dedicated high-speed queues
                             </li>
-                            <li class="flex items-center gap-3 text-sm text-white/60 font-medium font-sans">
-                                <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor"
+                            <li class="flex items-center gap-3 text-sm text-text-muted font-medium font-sans">
+                                <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
@@ -665,7 +665,7 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-24 relative overflow-hidden bg-white/[0.01]">
+    <section class="py-24 relative overflow-hidden bg-surface/[0.01]">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 hero-text-reveal">
             <div class="cta-icon-glow">
                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -675,7 +675,7 @@
                 </svg>
             </div>
             <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Ready to Scale Your SaaS Operations?</h2>
-            <p class="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+            <p class="text-text-muted text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
                 Connect with our Solutions Architects for a custom walkthrough, custom SLA compliance terms, and enterprise pipeline sizing.
             </p>
             <a href="#" class="btn-glow">
@@ -703,7 +703,7 @@
                     <div class="flex gap-3">
                         @if ($twitter = \App\Models\Setting::get('social_twitter'))
                             <a href="{{ $twitter }}"
-                                class="footer-social-icon text-white/50 hover:text-white transition-colors">
+                                class="footer-social-icon text-text-muted hover:text-white transition-colors">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                     <path
                                         d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
@@ -712,7 +712,7 @@
                         @endif
                         @if ($facebook = \App\Models\Setting::get('social_facebook'))
                             <a href="{{ $facebook }}"
-                                class="footer-social-icon text-white/50 hover:text-white transition-colors">
+                                class="footer-social-icon text-text-muted hover:text-white transition-colors">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                     <path
                                         d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
@@ -737,7 +737,7 @@
                 </div>
             </div>
             <div
-                class="border-t border-white/5 mt-16 pt-8 text-center text-sm text-white/40 flex flex-col sm:flex-row justify-between gap-4 font-medium font-sans">
+                class="border-t border-border mt-16 pt-8 text-center text-sm text-white/40 flex flex-col sm:flex-row justify-between gap-4 font-medium font-sans">
                 <div>
                     {{ \App\Models\Setting::get('footer_text', '© ' . date('Y') . ' AutomateIQ. All rights reserved.') }}
                 </div>

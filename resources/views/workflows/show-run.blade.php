@@ -47,7 +47,7 @@
                                             x-text="item.status === 'success' ? 'Success' : 'Failed'"></span>
                                     </div>
                                     <template x-if="item.output">
-                                        <pre class="mt-4 whitespace-pre-wrap text-sm text-text/80 bg-surface/60 border border-white/5 rounded-lg p-4" x-text="item.output"></pre>
+                                        <pre class="mt-4 whitespace-pre-wrap text-sm text-text/80 bg-surface/60 border border-border rounded-lg p-4" x-text="item.output"></pre>
                                     </template>
                                     <template x-if="item.error">
                                         <div class="mt-4 text-sm text-danger" x-text="item.error"></div>

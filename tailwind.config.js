@@ -18,15 +18,22 @@ export default {
                 mono: ['Space Mono', ...defaultTheme.fontFamily.mono],
             },
             colors: {
+                bg: 'var(--color-bg)',
+                surface: 'var(--color-surface)',
+                'surface-raised': 'var(--color-surface-raised)',
+                border: 'var(--color-border)',
+                text: 'var(--color-text)',
+                'text-muted': 'var(--color-text-muted)',
+                accent: 'var(--color-accent)',
+                'accent-hover': 'var(--primary-hover)',
+                'accent-tint': 'var(--color-accent-dim)',
+                success: 'var(--color-signal)',
+                warning: 'var(--color-warn)',
+                danger: 'var(--danger)',
+
+                // Legacy aliases for compatibility
                 background: 'var(--bg)',
-                surface: 'var(--bg-2)',
                 card: 'var(--card)',
-
-                text: 'var(--text)',
-                'text-muted': 'var(--muted-text)',
-
-                border: 'var(--border)',
-
                 primary: {
                     DEFAULT: 'var(--primary)',
                     hover: 'var(--primary-hover)',
@@ -35,20 +42,12 @@ export default {
                     DEFAULT: 'var(--secondary)',
                     hover: 'var(--secondary-hover)',
                 },
-
-                danger: 'var(--danger)',
-                success: 'var(--success)',
-                warning: 'var(--warning)',
-
                 signal: 'var(--color-signal)',
                 'signal-dim': 'var(--color-signal-dim)',
                 'accent-dim': 'var(--color-accent-dim)',
-
                 input: 'var(--input-bg)',
                 'input-text': 'var(--input-text)',
                 ring: 'var(--focus-ring)',
-
-                accent: 'var(--color-accent)',
             },
             keyframes: {
                 'fade-in-up': {

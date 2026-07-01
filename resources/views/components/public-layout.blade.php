@@ -76,7 +76,7 @@
                 <span>You are currently impersonating <strong>{{ Auth::user()->name }}</strong>.</span>
                 <form action="{{ route('impersonate.leave') }}" method="POST" class="inline">
                     @csrf
-                    <button type="submit" class="underline hover:text-white/80 transition-colors">Leave
+                    <button type="submit" class="underline hover:text-text-muted transition-colors">Leave
                         Impersonation</button>
                 </form>
             </div>
@@ -151,7 +151,7 @@
                         x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
                         x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-x-0"
                         x-transition:leave-end="-translate-x-full"
-                        class="h-full bg-surface border-r border-white/10 p-6 flex flex-col justify-between overflow-y-auto">
+                        class="h-full bg-surface border-r border-border p-6 flex flex-col justify-between overflow-y-auto">
                         <div>
                             <div class="flex items-center justify-between">
                                 <a href="{{ route('home') }}" class="flex items-center gap-2 group">
@@ -177,7 +177,7 @@
                                     class="block py-2 text-base font-medium text-text-muted hover:text-text transition">Blog</a>
                             </div>
                         </div>
-                        <div class="border-t border-white/10 pt-6">
+                        <div class="border-t border-border pt-6">
                             <div class="flex items-center justify-between text-sm text-text-muted mb-6">
                                 <span>Theme</span>
                                 <x-theme-switcher :activeTheme="$activeTheme" />
@@ -282,7 +282,7 @@
                     </div>
                 </div>
                 <div
-                    class="border-t border-white/5 mt-16 pt-8 text-center text-sm text-text-muted flex flex-col sm:flex-row justify-between gap-4 font-medium font-sans">
+                    class="border-t border-border mt-16 pt-8 text-center text-sm text-text-muted flex flex-col sm:flex-row justify-between gap-4 font-medium font-sans">
                     <div>
                         {{ \App\Models\Setting::get('footer_text', '© ' . date('Y') . ' AutomateIQ. All rights reserved.') }}
                     </div>

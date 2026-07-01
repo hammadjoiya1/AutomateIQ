@@ -53,7 +53,7 @@
                         @endif
 
                         <!-- Basic Info -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 bg-surface/30 p-6 rounded-2xl border border-white/5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 bg-surface/30 p-6 rounded-2xl border border-border">
                             <div class="floating-label group relative">
                                 <input type="text" name="name" id="name" required
                                     class="w-full rounded-xl border border-primary/20 bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 px-4 py-3 transition-colors peer placeholder-transparent"
@@ -83,15 +83,15 @@
                                 </div>
                                 <div class="text-sm text-text">Idea &rarr; Hook &rarr; Script &rarr; Scenes &rarr; Repurpose</div>
                             </div>
-                            <button type="button" class="btn btn-sm btn-secondary border border-white/10 group-hover:border-primary/50 transition-colors">Use this pipeline</button>
+                            <button type="button" class="btn btn-sm btn-secondary border border-border group-hover:border-primary/50 transition-colors">Use this pipeline</button>
                         </div>
 
                         <!-- Node Canvas -->
                         <div class="mb-8">
-                            <div class="relative rounded-3xl border border-white/10 bg-[#0f172a] shadow-inner overflow-hidden" style="min-height: 400px;">
+                            <div class="relative rounded-3xl border border-border bg-surface-raised shadow-inner overflow-hidden" style="min-height: 400px;">
                                 <!-- Grid Background -->
-                                <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px); background-size: 20px 20px;"></div>
-                                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.3),transparent_60%)]"></div>
+                                <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 20px 20px;"></div>
+                                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_50%,var(--color-accent-dim),transparent_60%)]"></div>
 
                                 <!-- Horizontal Pipeline Scroll Area -->
                                 <div class="relative w-full h-full overflow-x-auto no-scrollbar py-20 px-10 flex items-center" id="canvas-container">
@@ -101,19 +101,19 @@
                                                 <!-- Node Card -->
                                                 <div 
                                                     class="relative w-72 rounded-2xl border-2 transition-all cursor-pointer shadow-xl z-10 flex flex-col"
-                                                    :class="selectedIndex === index ? 'border-primary bg-surface/90 shadow-primary/20 scale-105' : 'border-white/10 bg-surface/70 hover:border-white/30 hover:bg-surface/80'"
+                                                    :class="selectedIndex === index ? 'border-primary bg-surface/90 shadow-primary/20 scale-105' : 'border-border bg-surface/70 hover:border-white/30 hover:bg-surface/80'"
                                                     @click="selectStep(index)">
                                                     
                                                     <!-- Node Header -->
-                                                    <div class="p-4 border-b border-white/5 flex items-center justify-between" :class="selectedIndex === index ? 'bg-primary/10' : 'bg-black/20'">
+                                                    <div class="p-4 border-b border-border flex items-center justify-between" :class="selectedIndex === index ? 'bg-primary/10' : 'bg-black/20'">
                                                         <div class="flex items-center gap-3">
                                                             <div class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-sm"
-                                                                :class="selectedIndex === index ? 'bg-primary text-white' : 'bg-white/10 text-text-muted'">
+                                                                :class="selectedIndex === index ? 'bg-primary text-white' : 'bg-surface/10 text-text-muted'">
                                                                 <span x-text="index + 1"></span>
                                                             </div>
                                                             <div class="font-bold text-sm text-text truncate" x-text="getToolLabel(step.tool_id) || 'Unconfigured Node'"></div>
                                                         </div>
-                                                        <button type="button" @click.stop="removeStep(index)" class="text-text-muted hover:text-red-500 transition-colors p-1" title="Delete Node">
+                                                        <button type="button" @click.stop="removeStep(index)" class="text-text-muted hover:text-danger transition-colors p-1" title="Delete Node">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                                         </button>
                                                     </div>
@@ -129,7 +129,7 @@
                                                                 Tool
                                                             </span>
                                                             <span class="text-text-muted" x-show="!step.tool_id">Required</span>
-                                                            <span class="text-green-500" x-show="step.tool_id">Configured</span>
+                                                            <span class="text-success" x-show="step.tool_id">Configured</span>
                                                         </div>
                                                     </div>
                                                     
@@ -184,7 +184,7 @@
                                     <div>
                                         <label class="block text-xs font-bold text-text-muted uppercase tracking-wide mb-3">Assigned Tool</label>
                                         <div class="relative">
-                                            <select class="w-full appearance-none rounded-xl border border-white/10 bg-background text-text px-4 py-3.5 focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all font-semibold"
+                                            <select class="w-full appearance-none rounded-xl border border-border bg-background text-text px-4 py-3.5 focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all font-semibold"
                                                 x-model="steps[selectedIndex].tool_id">
                                                 <option value="">Select an AI Tool to execute...</option>
                                                 @foreach($tools as $tool)
@@ -199,7 +199,7 @@
 
                                     <div>
                                         <label class="block text-xs font-bold text-text-muted uppercase tracking-wide mb-3">Input Parameters</label>
-                                        <input type="text" class="w-full rounded-xl border border-white/10 bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3.5 px-4 transition-all"
+                                        <input type="text" class="w-full rounded-xl border border-border bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3.5 px-4 transition-all"
                                             placeholder="e.g. Generate 5 ideas about fitness"
                                             x-model="steps[selectedIndex].input">
                                         <p class="text-xs text-text-muted mt-2">Static input used when this node executes.</p>
@@ -223,7 +223,7 @@
                             </div>
                         </template>
 
-                        <div class="border-t border-white/10 pt-8 flex justify-end gap-4">
+                        <div class="border-t border-border pt-8 flex justify-end gap-4">
                             <a href="{{ route('workflows.index') }}"
                                 class="btn btn-ghost hover:bg-surface text-text-muted transition-colors">Cancel</a>
                             <button type="submit"

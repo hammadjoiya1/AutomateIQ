@@ -11,7 +11,7 @@
             <div class="grid lg:grid-cols-3 gap-8">
                 <!-- Form Area -->
                 <div class="lg:col-span-1">
-                    <div class="card p-6 bg-surface/50 border border-white/5 rounded-3xl sticky top-24">
+                    <div class="card p-6 bg-surface/50 border border-border rounded-3xl sticky top-24">
                         <h3 class="text-lg font-bold text-text mb-6">Generation Parameters</h3>
                         
                         <form method="POST" action="{{ route('admin.blog.generate') }}" @submit="loading = true">
@@ -21,24 +21,24 @@
                                 <div>
                                     <label class="block text-xs font-bold text-text-muted uppercase tracking-wide mb-2">Topic / Title</label>
                                     <input type="text" name="topic" required
-                                        class="w-full rounded-xl border border-white/10 bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3 px-4 transition-all"
+                                        class="w-full rounded-xl border border-border bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3 px-4 transition-all"
                                         placeholder="e.g. 10 ways to automate your agency" value="{{ old('topic') }}">
                                     @error('topic')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        <p class="text-danger text-xs mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
 
                                 <div>
                                     <label class="block text-xs font-bold text-text-muted uppercase tracking-wide mb-2">Target Keywords</label>
                                     <input type="text" name="keywords"
-                                        class="w-full rounded-xl border border-white/10 bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3 px-4 transition-all"
+                                        class="w-full rounded-xl border border-border bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3 px-4 transition-all"
                                         placeholder="e.g. automation, agency scaling, ai tools" value="{{ old('keywords') }}">
                                     <p class="text-xs text-text-muted mt-1">Comma-separated for SEO.</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-xs font-bold text-text-muted uppercase tracking-wide mb-2">Tone of Voice</label>
-                                    <select name="tone" class="w-full appearance-none rounded-xl border border-white/10 bg-background text-text px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all font-semibold">
+                                    <select name="tone" class="w-full appearance-none rounded-xl border border-border bg-background text-text px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all font-semibold">
                                         <option value="Professional" {{ old('tone') == 'Professional' ? 'selected' : '' }}>Professional</option>
                                         <option value="Conversational" {{ old('tone') == 'Conversational' ? 'selected' : '' }}>Conversational</option>
                                         <option value="Authoritative" {{ old('tone') == 'Authoritative' ? 'selected' : '' }}>Authoritative</option>
@@ -66,7 +66,7 @@
                 <div class="lg:col-span-2 space-y-6">
                     @if(session('generated_content'))
                         <!-- Visual Preview -->
-                        <div class="card p-8 border border-white/5 bg-surface/50 rounded-3xl overflow-hidden relative">
+                        <div class="card p-8 border border-border bg-surface/50 rounded-3xl overflow-hidden relative">
                             <div class="absolute top-0 right-0 bg-primary/10 text-primary font-bold text-xs px-4 py-2 rounded-bl-xl border-b border-l border-primary/20">
                                 Live Preview
                             </div>
@@ -76,7 +76,7 @@
                         </div>
 
                         <!-- Actions Area -->
-                        <div class="card p-6 border border-white/5 bg-surface/50 rounded-3xl" x-data="{ copySuccess: false }">
+                        <div class="card p-6 border border-border bg-surface/50 rounded-3xl" x-data="{ copySuccess: false }">
                             <h3 class="text-lg font-bold text-text mb-4">Post Actions</h3>
                             <div class="flex gap-4">
                                 <!-- Copy Button -->
@@ -85,9 +85,9 @@
                                         copySuccess = true;
                                         setTimeout(() => copySuccess = false, 2000);
                                     " 
-                                    class="btn bg-background border border-white/10 hover:bg-white/5 transition-colors flex items-center gap-2 text-text">
+                                    class="btn bg-background border border-border hover:bg-white/5 transition-colors flex items-center gap-2 text-text">
                                     <span x-show="!copySuccess">Copy Text</span>
-                                    <span x-show="copySuccess" class="text-green-500">Copied!</span>
+                                    <span x-show="copySuccess" class="text-success">Copied!</span>
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                                 </button>
 
@@ -104,7 +104,7 @@
                             </div>
                         </div>
                     @else
-                        <div class="card p-12 border border-white/5 bg-surface/30 rounded-3xl flex flex-col items-center justify-center text-center h-full min-h-[400px]">
+                        <div class="card p-12 border border-border bg-surface/30 rounded-3xl flex flex-col items-center justify-center text-center h-full min-h-[400px]">
                             <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 animate-float">
                                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
                             </div>

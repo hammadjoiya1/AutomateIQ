@@ -3,7 +3,7 @@
         <h1 class="text-3xl font-display font-bold text-text">Activity Logs</h1>
     </div>
 
-    <div class="card overflow-hidden border border-white/5">
+    <div class="card overflow-hidden border border-border">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead class="text-xs text-text-muted uppercase bg-surface/50 border-b border-border">
@@ -23,7 +23,7 @@
                             <td class="px-6 py-4 text-text-muted">{{ $run->tool->name }}</td>
                             <td class="px-6 py-4">
                                 <span
-                                    class="px-2 py-1 rounded-full text-xs font-bold {{ $run->status === 'completed' ? 'bg-green-500/10 text-green-500' : ($run->status === 'failed' ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500') }}">
+                                    class="px-2 py-1 rounded-full text-xs font-bold {{ $run->status === 'completed' ? 'bg-success/10 text-success' : ($run->status === 'failed' ? 'bg-danger/10 text-danger' : 'bg-accent/10 text-accent') }}">
                                     {{ ucfirst($run->status) }}
                                 </span>
                             </td>

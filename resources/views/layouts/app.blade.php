@@ -35,7 +35,7 @@
             <span>You are currently impersonating <strong>{{ Auth::user()->name }}</strong>.</span>
             <form action="{{ route('impersonate.leave') }}" method="POST" class="inline">
                 @csrf
-                <button type="submit" class="underline hover:text-white/80 transition-colors">Leave Impersonation</button>
+                <button type="submit" class="underline hover:text-text-muted transition-colors">Leave Impersonation</button>
             </form>
         </div>
     @endif
@@ -56,7 +56,7 @@
             <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300"
                 x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                 x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm"></div>
+                x-transition:leave-end="opacity-0" class="fixed inset-0 bg-bg/80 backdrop-blur-sm"></div>
 
             <div class="fixed inset-0 flex">
                 <div x-show="sidebarOpen" x-transition:enter="transition ease-in-out duration-300 transform"
@@ -75,7 +75,7 @@
                     </div>
 
                     <div
-                        class="flex grow flex-col gap-y-5 overflow-y-auto glass-panel border-r border-white/5 px-6 pb-4">
+                        class="flex grow flex-col gap-y-5 overflow-y-auto glass-panel border-r border-border px-6 pb-4">
                         <div class="flex h-16 shrink-0 items-center justify-between gap-2">
                             <a href="{{ route('home') }}" class="flex items-center gap-2">
                                 <x-application-logo class="h-8 w-auto text-primary" />
@@ -107,7 +107,7 @@
         <!-- Static sidebar for desktop -->
         <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col p-4">
             <div
-                class="flex grow flex-col gap-y-5 overflow-y-auto card h-full rounded-2xl px-6 pb-4 border border-white/5 shadow-2xl">
+                class="flex grow flex-col gap-y-5 overflow-y-auto card h-full rounded-2xl px-6 pb-4 border border-border shadow-2xl">
                 <div class="flex h-16 shrink-0 items-center mt-2 gap-2">
                     <a href="{{ route('home') }}" class="flex items-center gap-2 group">
                         <x-application-logo
@@ -134,7 +134,7 @@
         <div class="lg:pl-72 flex flex-col w-full min-h-screen">
             <!-- Top bar -->
             <div
-                class="sticky top-4 z-40 flex h-16 shrink-0 items-center gap-x-4 glass-panel mx-4 sm:mx-6 lg:mx-8 rounded-xl px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 border border-white/5">
+                class="sticky top-4 z-40 flex h-16 shrink-0 items-center gap-x-4 glass-panel mx-4 sm:mx-6 lg:mx-8 rounded-xl px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 border border-border">
                 <button type="button" @click="sidebarOpen = true" class="-m-2.5 p-2.5 text-text lg:hidden">
                     <span class="sr-only">Open sidebar</span>
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -199,7 +199,7 @@
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit"
-                                    class="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 transition-colors">Sign
+                                    class="block w-full text-left px-4 py-2 text-sm text-danger hover:bg-danger/10 transition-colors">Sign
                                     out</button>
                             </form>
                         </div>

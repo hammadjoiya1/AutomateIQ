@@ -51,7 +51,7 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}"
-        class="hidden sm:hidden glass-panel mt-2 rounded-xl border border-white/10 overflow-hidden">
+        class="hidden sm:hidden glass-panel mt-2 rounded-xl border border-border overflow-hidden">
         <div class="pt-2 pb-3 space-y-1 px-2">
             <x-responsive-nav-link :href="route('tools.index')" :active="request()->routeIs('tools.*')"
                 class="rounded-lg hover:bg-white/5 text-text">
@@ -60,9 +60,9 @@
         </div>
 
         <!-- Mobile Auth/Settings -->
-        <div class="pt-4 pb-4 border-t border-white/10 px-4 space-y-3">
+        <div class="pt-4 pb-4 border-t border-border px-4 space-y-3">
             <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-400">Theme</span>
+                <span class="text-sm text-text-muted">Theme</span>
                 <x-theme-switcher />
             </div>
 

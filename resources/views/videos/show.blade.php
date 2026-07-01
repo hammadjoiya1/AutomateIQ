@@ -14,27 +14,27 @@
             <div class="card p-6">
                 {{-- Status Banner --}}
                 @if($project->status === 'completed')
-                    <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-6">
+                    <div class="bg-success/10 border border-success/30 rounded-lg p-4 mb-6">
                         <div class="flex items-center gap-3">
-                            <svg class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="w-6 h-6 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <div>
-                                <p class="font-bold text-green-500">Video Complete!</p>
+                                <p class="font-bold text-success">Video Complete!</p>
                                 <p class="text-sm text-muted-text">Your video is ready to watch and download.</p>
                             </div>
                         </div>
                     </div>
                 @elseif($project->status === 'failed')
-                    <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6">
+                    <div class="bg-danger/10 border border-danger/30 rounded-lg p-4 mb-6">
                         <div class="flex items-center gap-3">
-                            <svg class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="w-6 h-6 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <div>
-                                <p class="font-bold text-red-500">Generation Failed</p>
+                                <p class="font-bold text-danger">Generation Failed</p>
                                 <p class="text-sm text-muted-text">Something went wrong. Please try again.</p>
                             </div>
                         </div>
@@ -86,11 +86,11 @@
                                     </div>
                                     <div>
                                         @if($scene->status === 'completed')
-                                            <span class="badge bg-green-500/10 text-green-500 border-green-500/20 text-xs">Ready</span>
+                                            <span class="badge bg-success/10 text-success border-success/20 text-xs">Ready</span>
                                         @elseif($scene->status === 'failed')
-                                            <span class="badge bg-red-500/10 text-red-500 border-red-500/20 text-xs">Failed</span>
+                                            <span class="badge bg-danger/10 text-danger border-danger/20 text-xs">Failed</span>
                                         @else
-                                            <span class="badge bg-blue-500/10 text-blue-500 border-blue-500/20 text-xs animate-pulse">Generating...</span>
+                                            <span class="badge bg-accent/10 text-accent border-accent/20 text-xs animate-pulse">Generating...</span>
                                         @endif
                                     </div>
                                 </div>
@@ -107,10 +107,10 @@
                                         </div>
                                     </div>
                                 @elseif($scene->status === 'failed')
-                                    <div class="aspect-video bg-red-500/5 rounded-lg flex items-center justify-center border border-red-500/10">
+                                    <div class="aspect-video bg-danger/5 rounded-lg flex items-center justify-center border border-danger/10">
                                         <div class="text-center p-4">
-                                            <svg class="w-8 h-8 text-red-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                                            <p class="text-xs text-red-400 font-medium">Generation Failed</p>
+                                            <svg class="w-8 h-8 text-danger mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                            <p class="text-xs text-danger font-medium">Generation Failed</p>
                                         </div>
                                     </div>
                                 @else

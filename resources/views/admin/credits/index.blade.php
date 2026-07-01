@@ -11,7 +11,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             @foreach(['starter' => 'Starter', 'growth' => 'Growth', 'scale' => 'Scale'] as $key => $label)
-                <div class="card p-6 border border-white/5 bg-surface/50">
+                <div class="card p-6 border border-border bg-surface/50">
                     <h3 class="text-lg font-semibold text-text">{{ $label }} Pack</h3>
                     <div class="mt-4 space-y-3">
                         <div>

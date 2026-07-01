@@ -7,7 +7,7 @@
         <a href="{{ route('admin.tools.index') }}" class="btn btn-secondary">Manage Tools</a>
     </div>
 
-    <div class="card overflow-hidden border border-white/5">
+    <div class="card overflow-hidden border border-border">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead class="text-xs text-text-muted uppercase bg-surface/50 border-b border-border">
@@ -26,7 +26,7 @@
                             <td class="px-6 py-4 text-text font-medium">{{ $row['tool']->name }}</td>
                             <td class="px-6 py-4 text-text-muted">{{ $row['total_runs'] }}</td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-500">
+                                <span class="px-2 py-1 rounded-full text-xs font-bold bg-success/10 text-success">
                                     {{ $row['success_rate'] }}%
                                 </span>
                             </td>

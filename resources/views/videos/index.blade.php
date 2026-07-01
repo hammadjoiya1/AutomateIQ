@@ -45,15 +45,15 @@
                                         <div class="absolute top-2 right-2">
                                             @php
                                                 $statusColors = [
-                                                    'draft' => 'bg-gray-500',
+                                                    'draft' => 'bg-surface-raised0',
                                                     'scripting' => 'bg-yellow-500',
-                                                    'generating' => 'bg-blue-500 animate-pulse',
-                                                    'completed' => 'bg-green-500',
-                                                    'failed' => 'bg-red-500',
+                                                    'generating' => 'bg-accent animate-pulse',
+                                                    'completed' => 'bg-success',
+                                                    'failed' => 'bg-danger',
                                                 ];
                                             @endphp
                         <span
-                                                class="px-2 py-1 text-xs text-white rounded-full {{ $statusColors[$project->status] ?? 'bg-gray-500' }}">
+                                                class="px-2 py-1 text-xs text-white rounded-full {{ $statusColors[$project->status] ?? 'bg-surface-raised0' }}">
                                                 {{ ucfirst($project->status) }}
                                             </span>
                                         </div>

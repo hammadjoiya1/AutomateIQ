@@ -1,7 +1,7 @@
 @if(Auth::check() && Auth::user()->isAdmin() && Route::has('admin.dashboard'))
     <li>
         <a href="{{ route('admin.dashboard') }}"
-            class="group flex gap-x-3 rounded-control-sm p-2.5 text-sm font-semibold bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all">
+            class="group flex gap-x-3 rounded-control-sm p-2.5 text-sm font-semibold bg-danger/10 text-danger hover:bg-danger/20 transition-all">
             <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M3.75 6A2.25 2.25 0 016 3.75h12A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6z" />

@@ -66,9 +66,15 @@ function initHeroBlinds() {
 
     if (heroBlindsCleanup) return; // already running
 
+    const getThemeColor = (varName, fallback) => {
+        return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
+    };
+    const accentColor = getThemeColor('--color-accent', '#E08A66');
+    const hoverColor = getThemeColor('--primary-hover', '#EFA184');
+
     import('./gradient-blinds').then(({ mountGradientBlinds }) => {
         heroBlindsCleanup = mountGradientBlinds(mount, {
-            gradientColors: ['#FF9FFC', '#5227FF'],
+            gradientColors: [accentColor, hoverColor],
             angle: 45,
             noise: 0.3,
             blindCount: 12,
@@ -91,9 +97,15 @@ function initNavBlinds() {
     const mount = document.getElementById('nav-blinds-mount');
     if (!mount || navBlindsCleanup) return; // already running
 
+    const getThemeColor = (varName, fallback) => {
+        return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
+    };
+    const accentColor = getThemeColor('--color-accent', '#E08A66');
+    const hoverColor = getThemeColor('--primary-hover', '#EFA184');
+
     import('./gradient-blinds').then(({ mountGradientBlinds }) => {
         navBlindsCleanup = mountGradientBlinds(mount, {
-            gradientColors: ['#a855f7', '#7c3aed', '#4f46e5'],
+            gradientColors: [accentColor, hoverColor],
             angle: 15,
             noise: 0.22,
             blindCount: 12,

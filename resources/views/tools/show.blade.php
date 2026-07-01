@@ -76,7 +76,7 @@
                         <form @submit.prevent="generate" class="space-y-6">
                             <div>
                                 <label for="input" class="label">
-                                    Topic / Prompt <span class="text-red-500">*</span>
+                                    Topic / Prompt <span class="text-danger">*</span>
                                 </label>
                                 <textarea id="input" x-model="form.input" rows="5" class="input resize-none py-3"
                                     placeholder="Describe specifically what you want to generate example: 'A 60-second script about AI automation benefits'..."
@@ -247,11 +247,11 @@
                     <div
                         class="glass-panel rounded-2xl min-h-[600px] flex flex-col relative overflow-hidden ring-1 ring-white/10 group">
                         <!-- Toolbar -->
-                        <div class="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/5">
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-border bg-surface/5">
                             <div class="flex items-center gap-2">
                                 <h2 class="font-display font-semibold text-text">Output</h2>
                                 <span
-                                    class="px-2 py-0.5 rounded text-[10px] bg-green-500/10 text-green-500 border border-green-500/20"
+                                    class="px-2 py-0.5 rounded text-[10px] bg-success/10 text-success border border-success/20"
                                     x-show="output">Generated</span>
                             </div>
                             <div class="flex gap-2">
@@ -311,7 +311,7 @@
                             <!-- Video Output -->
                             <template x-if="output && isVideoUrl(output)">
                                 <div class="animate-fade-in">
-                                    <video class="w-full rounded-xl border border-white/10 bg-black/40" controls playsinline>
+                                    <video class="w-full rounded-xl border border-border bg-black/40" controls playsinline>
                                         <source :src="output" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
@@ -339,7 +339,7 @@
                                     <p class="text-xs text-text/50 mt-4" x-text="'Status: ' + videoStatus"></p>
                                 </template>
                                 <div x-show="videoStatus === 'processing' || videoProgress > 0" class="mt-4 max-w-sm mx-auto">
-                                    <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                    <div class="h-2 rounded-full bg-surface/10 overflow-hidden">
                                         <div class="h-2 bg-primary transition-all duration-500" :style="'width: ' + Math.max(5, videoProgress) + '%'" aria-hidden="true"></div>
                                     </div>
                                     <div class="text-xs text-text/50 mt-2" x-text="videoProgress > 0 ? videoProgress + '%' : 'Warming up AI model...'"></div>
@@ -358,12 +358,12 @@
                                     <p class="text-xs text-text/50 mt-4" x-text="'Status: ' + videoStatus"></p>
                                 </template>
                                 <div x-show="videoStatus === 'processing' || videoProgress > 0" class="mt-4 max-w-sm mx-auto">
-                                    <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                    <div class="h-2 rounded-full bg-surface/10 overflow-hidden">
                                         <div class="h-2 bg-primary transition-all duration-500" :style="'width: ' + Math.max(5, videoProgress) + '%'" aria-hidden="true"></div>
                                     </div>
                                     <div class="text-xs text-text/50 mt-2" x-text="videoProgress > 0 ? videoProgress + '%' : 'Warming up AI model...'"></div>
                                 </div>
-                                <div x-show="videoLogs" class="mt-4 text-left text-xs text-text/50 max-w-lg mx-auto whitespace-pre-wrap bg-white/5 border border-white/10 rounded-lg p-3" x-text="videoLogs"></div>
+                                <div x-show="videoLogs" class="mt-4 text-left text-xs text-text/50 max-w-lg mx-auto whitespace-pre-wrap bg-surface/5 border border-border rounded-lg p-3" x-text="videoLogs"></div>
                             </div>
 
                             <!-- PRODUCTION BOARD (JSON Output) 🏭 -->
@@ -375,7 +375,7 @@
                                     </div>
                                     <template x-for="scene in JSON.parse(output)" :key="scene.scene_number">
                                         <div
-                                            class="bg-surface p-4 rounded-lg border border-white/5 hover:border-primary/30 transition-colors">
+                                            class="bg-surface p-4 rounded-lg border border-border hover:border-primary/30 transition-colors">
                                             <div class="flex justify-between items-start gap-4">
                                                 <div class="flex-1">
                                                     <div class="flex items-center gap-2 mb-2">
@@ -420,7 +420,7 @@
 
                         <!-- Status Bar -->
                         <div
-                            class="px-6 py-3 border-t border-white/5 bg-background/50 backdrop-blur text-xs text-text-muted flex justify-between items-center">
+                            class="px-6 py-3 border-t border-border bg-background/50 backdrop-blur text-xs text-text-muted flex justify-between items-center">
                             <span>Status: <span x-text="loading ? 'Processing...' : 'Ready'"
                                     :class="loading ? 'text-primary' : 'text-text-muted'">Ready</span></span>
                             <span x-text="form.input.length + ' chars'">0 chars</span>

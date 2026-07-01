@@ -15,10 +15,10 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="card p-8 bg-surface border border-white/5 rounded-3xl">
+            <div class="card p-8 bg-surface border border-border rounded-3xl">
                 
                 @if ($errors->any())
-                    <div class="bg-red-500/10 text-red-500 border border-red-500/20 p-4 rounded-xl mb-6">
+                    <div class="bg-danger/10 text-danger border border-danger/20 p-4 rounded-xl mb-6">
                         <ul class="list-disc list-inside text-sm">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -36,14 +36,14 @@
                         <div>
                             <label class="block text-xs font-bold text-text-muted uppercase tracking-wide mb-2">Post Title</label>
                             <input type="text" name="title" required value="{{ old('title', $blogPost->title) }}"
-                                class="w-full rounded-xl border border-white/10 bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3 px-4 transition-all">
+                                class="w-full rounded-xl border border-border bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3 px-4 transition-all">
                         </div>
 
                         <!-- Slug -->
                         <div>
                             <label class="block text-xs font-bold text-text-muted uppercase tracking-wide mb-2">URL Slug</label>
                             <input type="text" name="slug" required value="{{ old('slug', $blogPost->slug) }}"
-                                class="w-full rounded-xl border border-white/10 bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3 px-4 transition-all font-mono text-sm">
+                                class="w-full rounded-xl border border-border bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3 px-4 transition-all font-mono text-sm">
                             <p class="text-xs text-text-muted mt-2">Example: {{ url('/blog/') }}/<span class="text-primary">{{ $blogPost->slug }}</span></p>
                         </div>
 
@@ -52,11 +52,11 @@
                             <label class="block text-xs font-bold text-text-muted uppercase tracking-wide mb-2">Featured Image</label>
                             @if($blogPost->featured_image)
                                 <div class="mb-3">
-                                    <img src="{{ asset('storage/' . $blogPost->featured_image) }}" alt="Current featured image" class="h-32 rounded-lg object-cover border border-white/10">
+                                    <img src="{{ asset('storage/' . $blogPost->featured_image) }}" alt="Current featured image" class="h-32 rounded-lg object-cover border border-border">
                                 </div>
                             @endif
                             <input type="file" name="featured_image" accept="image/*"
-                                class="w-full rounded-xl border border-white/10 bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-2 px-4 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                                class="w-full rounded-xl border border-border bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-2 px-4 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
                         </div>
 
                         <!-- Content -->
@@ -65,16 +65,16 @@
                                 Markdown Content
                             </label>
                             <textarea name="content" required rows="20"
-                                class="w-full rounded-xl border border-white/10 bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3 px-4 transition-all font-mono text-sm no-scrollbar">{{ old('content', $blogPost->content) }}</textarea>
+                                class="w-full rounded-xl border border-border bg-background text-text focus:border-primary focus:ring-1 focus:ring-primary/50 py-3 px-4 transition-all font-mono text-sm no-scrollbar">{{ old('content', $blogPost->content) }}</textarea>
                         </div>
 
                         <!-- Toggles -->
-                        <div class="flex items-center gap-8 py-4 border-t border-white/5">
+                        <div class="flex items-center gap-8 py-4 border-t border-border">
                             <label class="flex items-center gap-3 cursor-pointer group">
                                 <div class="relative flex items-center">
                                     <input type="checkbox" name="is_published" class="peer sr-only" value="1" {{ old('is_published', $blogPost->is_published) ? 'checked' : '' }}>
-                                    <div class="w-11 h-6 bg-background border border-white/10 rounded-full peer peer-checked:bg-primary peer-checked:border-primary transition-colors"></div>
-                                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5 shadow-sm"></div>
+                                    <div class="w-11 h-6 bg-background border border-border rounded-full peer peer-checked:bg-primary peer-checked:border-primary transition-colors"></div>
+                                    <div class="absolute left-1 top-1 w-4 h-4 bg-surface rounded-full transition-transform peer-checked:translate-x-5 shadow-sm"></div>
                                 </div>
                                 <span class="text-sm font-semibold text-text group-hover:text-primary transition-colors">Published Status</span>
                             </label>
@@ -82,15 +82,15 @@
                             <label class="flex items-center gap-3 cursor-pointer group">
                                 <div class="relative flex items-center">
                                     <input type="checkbox" name="is_featured" class="peer sr-only" value="1" {{ old('is_featured', $blogPost->is_featured) ? 'checked' : '' }}>
-                                    <div class="w-11 h-6 bg-background border border-white/10 rounded-full peer peer-checked:bg-primary peer-checked:border-primary transition-colors"></div>
-                                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5 shadow-sm"></div>
+                                    <div class="w-11 h-6 bg-background border border-border rounded-full peer peer-checked:bg-primary peer-checked:border-primary transition-colors"></div>
+                                    <div class="absolute left-1 top-1 w-4 h-4 bg-surface rounded-full transition-transform peer-checked:translate-x-5 shadow-sm"></div>
                                 </div>
                                 <span class="text-sm font-semibold text-text group-hover:text-primary transition-colors">Featured Post</span>
                             </label>
                         </div>
 
                         <!-- Actions -->
-                        <div class="flex items-center justify-end gap-4 pt-6 border-t border-white/5">
+                        <div class="flex items-center justify-end gap-4 pt-6 border-t border-border">
                             <a href="{{ route('admin.blog-posts.index') }}" class="btn btn-ghost text-text-muted hover:text-text">Cancel</a>
                             <button type="submit" class="btn btn-primary shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all">
                                 Save Changes

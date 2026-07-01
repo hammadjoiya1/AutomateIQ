@@ -164,14 +164,14 @@ Scene 3: Close up of the cowboy's face, determined."
                                 </div>
                                 
                                 {{-- Cost Estimator Banner --}}
-                                <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-5 flex items-start gap-4">
-                                    <div class="bg-amber-500/20 text-amber-500 rounded-full p-2 mt-0.5 shadow-sm">
+                                <div class="bg-warning/10 border border-warning/30 rounded-xl p-5 flex items-start gap-4">
+                                    <div class="bg-warning/20 text-warning rounded-full p-2 mt-0.5 shadow-sm">
                                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     </div>
                                     <div class="flex-1">
-                                        <h4 class="font-bold text-amber-500 mb-1">Script Cost Estimation</h4>
+                                        <h4 class="font-bold text-warning mb-1">Script Cost Estimation</h4>
                                         <p class="text-xs text-text-muted mb-3">Generating full scripts requires creating multiple video clips and stitching them together. Costs multiply per scene.</p>
-                                        <div class="flex items-center gap-6 mt-3 pt-3 border-t border-amber-500/20">
+                                        <div class="flex items-center gap-6 mt-3 pt-3 border-t border-warning/20">
                                             <div>
                                                 <span class="block text-[10px] text-text-muted uppercase tracking-wider font-bold">Est. Scenes</span>
                                                 <span class="font-bold text-text text-lg" x-text="estimatedScenes"></span>
@@ -182,11 +182,11 @@ Scene 3: Close up of the cowboy's face, determined."
                                             </div>
                                             <div class="flex-1 text-right">
                                                 <span class="block text-[10px] text-text-muted uppercase tracking-wider font-bold">Total Est. Cost</span>
-                                                <span class="font-bold text-xl" :class="hasEnoughCredits ? 'text-amber-500' : 'text-red-500'" x-text="estimatedCost + ' credits'"></span>
+                                                <span class="font-bold text-xl" :class="hasEnoughCredits ? 'text-warning' : 'text-danger'" x-text="estimatedCost + ' credits'"></span>
                                             </div>
                                         </div>
                                         
-                                        <div x-show="!hasEnoughCredits" class="mt-3 text-xs text-red-500 font-bold flex items-center gap-1" style="display: none;">
+                                        <div x-show="!hasEnoughCredits" class="mt-3 text-xs text-danger font-bold flex items-center gap-1" style="display: none;">
                                             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                                             Insufficient credits for this script. Shorten your script, lower the quality, or upgrade your plan.
                                         </div>
@@ -217,7 +217,7 @@ Scene 3: Close up of the cowboy's face, determined."
                                 <div 
                                     @click="quality = 'standard'"
                                     class="cursor-pointer border-2 rounded-xl p-4 transition-all duration-300 relative overflow-hidden group"
-                                    :class="quality === 'standard' ? 'border-green-500 bg-surface shadow-lg shadow-green-500/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
+                                    :class="quality === 'standard' ? 'border-success bg-surface shadow-lg shadow-green-500/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
                                 >
                                     <div class="flex justify-between items-start mb-2 relative z-10">
                                         <div>
@@ -225,16 +225,16 @@ Scene 3: Close up of the cowboy's face, determined."
                                             <span class="text-xs text-muted-text">LTX Video</span>
                                         </div>
                                         <div class="text-right">
-                                            <span class="block font-bold text-green-500 text-lg">{{ $tiers['standard']['credits'] ?? 2 }} credits</span>
+                                            <span class="block font-bold text-success text-lg">{{ $tiers['standard']['credits'] ?? 2 }} credits</span>
                                             <span class="text-[10px] text-muted-text uppercase tracking-wide">Per Video</span>
                                         </div>
                                     </div>
                                     <div class="w-full bg-bg-2 h-1.5 rounded-full overflow-hidden mb-2">
-                                        <div class="bg-green-500/60 h-full w-[35%]"></div>
+                                        <div class="bg-success/60 h-full w-[35%]"></div>
                                     </div>
                                     <p class="text-xs text-muted-text">{{ $tiers['standard']['description'] ?? 'Fast drafts & testing.' }}</p>
                                     <div x-show="quality === 'standard'" class="absolute -top-1 -right-1" x-transition>
-                                        <div class="bg-green-500 text-white p-1 rounded-bl-lg shadow-sm">
+                                        <div class="bg-success text-white p-1 rounded-bl-lg shadow-sm">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         </div>
                                     </div>
@@ -260,7 +260,7 @@ Scene 3: Close up of the cowboy's face, determined."
                                         <div class="bg-gradient-to-r from-primary to-accent h-full w-[70%]"></div>
                                     </div>
                                     <p class="text-xs text-muted-text">{{ $tiers['hd']['description'] ?? '1080p cinematic quality.' }}</p>
-                                    <div x-show="mode === 'script' && quality === 'hd'" class="mt-2 text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded" style="display: none;">
+                                    <div x-show="mode === 'script' && quality === 'hd'" class="mt-2 text-[10px] font-bold text-warning bg-warning/10 px-2 py-1 rounded" style="display: none;">
                                         Warning: Expensive for long scripts!
                                     </div>
                                     <span class="absolute top-2 left-2 bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full">POPULAR</span>
@@ -275,7 +275,7 @@ Scene 3: Close up of the cowboy's face, determined."
                                 <div 
                                     @click="quality = 'premium'"
                                     class="cursor-pointer border-2 rounded-xl p-4 transition-all duration-300 relative overflow-hidden group"
-                                    :class="quality === 'premium' ? 'border-amber-500 bg-surface shadow-lg shadow-amber-500/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
+                                    :class="quality === 'premium' ? 'border-warning bg-surface shadow-lg shadow-amber-500/10' : 'border-transparent bg-surface/50 hover:bg-surface hover:border-border'"
                                 >
                                     <div class="flex justify-between items-start mb-2 relative z-10">
                                         <div>
@@ -283,7 +283,7 @@ Scene 3: Close up of the cowboy's face, determined."
                                             <span class="text-xs text-muted-text">HunyuanVideo</span>
                                         </div>
                                         <div class="text-right">
-                                            <span class="block font-bold text-amber-500 text-lg">{{ $tiers['premium']['credits'] ?? 25 }} credits</span>
+                                            <span class="block font-bold text-warning text-lg">{{ $tiers['premium']['credits'] ?? 25 }} credits</span>
                                             <span class="text-[10px] text-muted-text uppercase tracking-wide">Per Video</span>
                                         </div>
                                     </div>
@@ -291,11 +291,11 @@ Scene 3: Close up of the cowboy's face, determined."
                                         <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-full w-[95%]"></div>
                                     </div>
                                     <p class="text-xs text-muted-text">{{ $tiers['premium']['description'] ?? 'Highest fidelity. Hollywood-grade.' }}</p>
-                                    <div x-show="mode === 'script' && quality === 'premium'" class="mt-2 text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded" style="display: none;">
+                                    <div x-show="mode === 'script' && quality === 'premium'" class="mt-2 text-[10px] font-bold text-warning bg-warning/10 px-2 py-1 rounded" style="display: none;">
                                         Warning: Extremely expensive for long scripts!
                                     </div>
                                     <div x-show="quality === 'premium'" class="absolute -top-1 -right-1" x-transition>
-                                        <div class="bg-amber-500 text-white p-1 rounded-bl-lg shadow-sm">
+                                        <div class="bg-warning text-white p-1 rounded-bl-lg shadow-sm">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         </div>
                                     </div>
@@ -318,7 +318,7 @@ Scene 3: Close up of the cowboy's face, determined."
                                     ['id' => 'pixar', 'name' => '3D Animation', 'grad' => 'from-blue-400 to-indigo-500'],
                                     ['id' => 'watercolor', 'name' => 'Watercolor', 'grad' => 'from-emerald-300 to-teal-200'],
                                     ['id' => 'comic', 'name' => 'Comic Book', 'grad' => 'from-yellow-400 to-orange-500'],
-                                    ['id' => 'horror', 'name' => 'Dark Horror', 'grad' => 'from-gray-900 to-black border border-red-900'],
+                                    ['id' => 'horror', 'name' => 'Dark Horror', 'grad' => 'from-gray-900 to-black border border-danger'],
                                     ['id' => 'vintage', 'name' => 'Vintage', 'grad' => 'from-amber-200 to-yellow-700'],
                                     ['id' => 'pixel', 'name' => 'Pixel Art', 'grad' => 'from-green-400 to-green-600'],
                                     ['id' => 'painting', 'name' => 'Oil Painting', 'grad' => 'from-amber-700 to-orange-900'],
@@ -342,7 +342,7 @@ Scene 3: Close up of the cowboy's face, determined."
                                     
                                     {{-- Selection Indicator --}}
                                     <div class="absolute top-2 right-2 transition-all duration-300" :class="selectedStyle === '{{ $style['id'] }}' ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'">
-                                        <div class="bg-white text-primary rounded-full p-1 shadow-lg">
+                                        <div class="bg-surface text-primary rounded-full p-1 shadow-lg">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                         </div>
                                     </div>
@@ -393,9 +393,9 @@ Scene 3: Close up of the cowboy's face, determined."
             <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="show = false"></div>
             
             <!-- Modal Content -->
-            <div class="bg-surface border border-red-500/30 rounded-3xl shadow-[0_0_50px_-12px_rgba(239,68,68,0.25)] p-8 max-w-md w-full relative flex flex-col items-center text-center">
+            <div class="bg-surface border border-danger/30 rounded-3xl shadow-[0_0_50px_-12px_rgba(239,68,68,0.25)] p-8 max-w-md w-full relative flex flex-col items-center text-center">
                 <!-- Icon -->
-                <div class="w-20 h-20 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-6 ring-8 ring-red-500/5 shadow-inner">
+                <div class="w-20 h-20 bg-danger/10 text-danger rounded-full flex items-center justify-center mb-6 ring-8 ring-red-500/5 shadow-inner">
                     <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>

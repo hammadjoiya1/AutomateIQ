@@ -198,24 +198,24 @@
                     </div>
 
                     <!-- Right Column: Estimated Costs -->
-                    <div class="lg:col-span-5 p-8 md:p-10 bg-slate-900/50 border-l border-white/5 space-y-6 flex flex-col justify-center">
+                    <div class="lg:col-span-5 p-8 md:p-10 bg-bg/50 border-l border-border space-y-6 flex flex-col justify-center">
                         <div>
                             <h4 class="text-lg font-bold text-text">Estimated Cost</h4>
                             <p class="text-xs text-text/60 mt-1">This is an instant estimation to give you an idea of your potential monthly savings.</p>
                         </div>
 
                         <!-- Card 1: Traditional copywriter -->
-                        <div class="bg-surface/50 border border-white/5 rounded-xl p-4 space-y-1">
+                        <div class="bg-surface/50 border border-border rounded-xl p-4 space-y-1">
                             <span class="text-[10px] text-text/50 font-bold uppercase tracking-wider">Traditional Copywriter / Editor</span>
                             <div class="text-2xl font-extrabold text-text" x-text="'$' + numberFormat(agencyCost)"></div>
-                            <span class="text-[10px] text-red-500 font-semibold block">+ Slow turnaround & high management overhead</span>
+                            <span class="text-[10px] text-danger font-semibold block">+ Slow turnaround & high management overhead</span>
                         </div>
 
                         <!-- Card 2: Regular freelancer -->
-                        <div class="bg-surface/50 border border-white/5 rounded-xl p-4 space-y-1">
+                        <div class="bg-surface/50 border border-border rounded-xl p-4 space-y-1">
                             <span class="text-[10px] text-text/50 font-bold uppercase tracking-wider">Standard Freelancer Mini-Studio</span>
                             <div class="text-2xl font-extrabold text-text" x-text="'$' + numberFormat(freelancerCost)"></div>
-                            <span class="text-[10px] text-red-500 font-semibold block">+ Requires endless review & back‑and‑forth loops</span>
+                            <span class="text-[10px] text-danger font-semibold block">+ Requires endless review & back‑and‑forth loops</span>
                         </div>
 
                         <!-- Card 3: With AutomateIQ -->
@@ -223,7 +223,7 @@
                             <div class="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
                             <span class="text-[10px] text-primary font-bold uppercase tracking-wider block">With AutomateIQ</span>
                             <div class="text-3xl font-black text-text mt-1" x-text="'$' + numberFormat(automateiqCost)"></div>
-                            <span class="text-[10px] text-green-500 font-semibold block mt-1">✓ Instant production & total creative control</span>
+                            <span class="text-[10px] text-success font-semibold block mt-1">✓ Instant production & total creative control</span>
                         </div>
                     </div>
                 </div>
@@ -272,7 +272,7 @@
                         <div class="flex justify-between items-center">
                             <h3 class="text-lg font-semibold text-text font-display">Pro Creator</h3>
                             <span x-show="recommendedPlan === 'pro'" class="text-[10px] bg-primary px-2.5 py-1 rounded-full text-white font-bold uppercase tracking-wider font-mono shadow-lg">Recommended</span>
-                            <span x-show="recommendedPlan !== 'pro'" class="text-[10px] bg-surface border border-white/10 px-2.5 py-1 rounded-full text-text/60 font-bold uppercase tracking-wider font-mono shadow-lg">Popular</span>
+                            <span x-show="recommendedPlan !== 'pro'" class="text-[10px] bg-surface border border-border px-2.5 py-1 rounded-full text-text/60 font-bold uppercase tracking-wider font-mono shadow-lg">Popular</span>
                         </div>
                         <div class="text-5xl font-extrabold text-text mt-4">$29</div>
                         <div class="text-xs text-text/40 mt-1 font-medium font-sans">per month</div>

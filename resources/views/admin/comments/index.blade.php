@@ -46,7 +46,7 @@
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $comment->is_approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $comment->is_approved ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning' }}">
                                             {{ $comment->is_approved ? 'Approved' : 'Pending' }}
                                         </span>
                                     </td>
@@ -57,7 +57,7 @@
                                                     @csrf
                                                     @method('PUT')
                                                     <input type="hidden" name="is_approved" value="1">
-                                                    <button type="submit" class="text-green-500 hover:text-green-700" title="Approve">✓</button>
+                                                    <button type="submit" class="text-success hover:text-success" title="Approve">✓</button>
                                                 </form>
                                             @else
                                                 <form action="{{ route('admin.comments.update', $comment) }}" method="POST">
@@ -73,7 +73,7 @@
                                                 x-data @submit.prevent="$dispatch('confirm', { message: 'Delete this comment?', form: $el })">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700" title="Delete">
+                                                <button type="submit" class="text-danger hover:text-danger" title="Delete">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                     </svg>

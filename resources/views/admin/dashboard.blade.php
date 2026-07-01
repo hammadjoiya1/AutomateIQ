@@ -15,7 +15,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             <!-- Total Users -->
-            <div class="card p-6 border border-white/5 bg-surface/50">
+            <div class="card p-6 border border-border bg-surface/50">
                 <div class="flex items-center justify-between mb-4">
                     <div class="p-3 bg-primary/10 rounded-xl text-primary">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@
             </div>
 
             <!-- Active Tools -->
-            <div class="card p-6 border border-white/5 bg-surface/50">
+            <div class="card p-6 border border-border bg-surface/50">
                 <div class="flex items-center justify-between mb-4">
                     <div class="p-3 bg-accent/10 rounded-xl text-accent">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,9 +47,9 @@
             </div>
 
             <!-- Total Run -->
-            <div class="card p-6 border border-white/5 bg-surface/50">
+            <div class="card p-6 border border-border bg-surface/50">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="p-3 bg-blue-500/10 rounded-xl text-blue-500">
+                    <div class="p-3 bg-accent/10 rounded-xl text-accent">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -61,9 +61,9 @@
             </div>
 
             <!-- Failed Jobs (Health) -->
-            <div class="card p-6 border border-red-500/10 bg-surface/50">
+            <div class="card p-6 border border-danger/10 bg-surface/50">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="p-3 bg-red-500/10 rounded-xl text-red-500">
+                    <div class="p-3 bg-danger/10 rounded-xl text-danger">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
@@ -94,7 +94,7 @@
         <!-- Charts Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Usage Trend Chart -->
-            <div class="lg:col-span-2 card p-6 bg-surface/50 border border-white/5">
+            <div class="lg:col-span-2 card p-6 bg-surface/50 border border-border">
                 <div class="mb-4">
                     <h3 class="font-display font-semibold text-lg text-text">SaaS Performance Trends</h3>
                     <p class="text-xs text-text-muted">Daily generations and user signups over the last 14 days.</p>
@@ -103,7 +103,7 @@
             </div>
 
             <!-- Tool Share Donut Chart -->
-            <div class="card p-6 bg-surface/50 border border-white/5 flex flex-col">
+            <div class="card p-6 bg-surface/50 border border-border flex flex-col">
                 <div class="mb-4">
                     <h3 class="font-display font-semibold text-lg text-text">Tool Distribution</h3>
                     <p class="text-xs text-text-muted">Share of generation runs by tool type.</p>
@@ -143,7 +143,7 @@
                                     <td class="px-6 py-4 text-text-muted">Generated Video</td>
                                     <td class="px-6 py-4">
                                         <span
-                                            class="px-2 py-1 rounded-full text-xs font-bold {{ $activity->status === 'completed' ? 'bg-green-500/10 text-green-500' : ($activity->status === 'failed' ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500 animate-pulse') }}">
+                                            class="px-2 py-1 rounded-full text-xs font-bold {{ $activity->status === 'completed' ? 'bg-success/10 text-success' : ($activity->status === 'failed' ? 'bg-danger/10 text-danger' : 'bg-accent/10 text-accent animate-pulse') }}">
                                             {{ ucfirst($activity->status) }}
                                         </span>
                                     </td>
@@ -163,17 +163,17 @@
                 <div class="card p-6 bg-surface/50">
                     <h3 class="font-display font-semibold text-lg text-text mb-4">System Status</h3>
                     <div class="space-y-3">
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                            <span class="text-sm font-medium text-green-500">API Connection</span>
-                            <span class="text-xs font-bold bg-green-500 text-white px-2 py-0.5 rounded-full">Active</span>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-success/10 border border-success/20">
+                            <span class="text-sm font-medium text-success">API Connection</span>
+                            <span class="text-xs font-bold bg-success text-white px-2 py-0.5 rounded-full">Active</span>
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-lg bg-surface border border-border">
                             <span class="text-sm font-medium text-text-muted">Database</span>
-                            <span class="text-xs font-bold text-green-500">Healthy</span>
+                            <span class="text-xs font-bold text-success">Healthy</span>
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-lg bg-surface border border-border">
                             <span class="text-sm font-medium text-text-muted">Queue Worker</span>
-                            <span class="text-xs font-bold text-green-500">Running</span>
+                            <span class="text-xs font-bold text-success">Running</span>
                         </div>
                     </div>
                 </div>
@@ -220,9 +220,12 @@
         const toolTotals = toolUsage.map(tu => tu.total);
 
         // Dark/Light Mode Colors Configuration
-        const isDark = document.body.getAttribute('data-theme') !== 'light';
-        const textColor = isDark ? '#9ca3af' : '#4b5563';
-        const borderColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+        const getThemeColor = (varName, fallback) => {
+            return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
+        };
+        const textColor = getThemeColor('--color-text-muted', '#9A9184');
+        const borderColor = getThemeColor('--color-border', '#3A352E');
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
 
         // 1. System Usage Trend Chart (Area/Line)
         const usageOptions = {
@@ -245,7 +248,11 @@
                 toolbar: { show: false },
                 background: 'transparent'
             },
-            colors: ['#6366f1', '#ef4444', '#10b981'],
+            colors: [
+                getThemeColor('--color-signal', '#7FBF9B'),
+                getThemeColor('--danger', '#E0685A'),
+                getThemeColor('--color-accent', '#E08A66')
+            ],
             stroke: {
                 width: [2, 2, 3],
                 curve: 'smooth'
@@ -299,7 +306,13 @@
                 background: 'transparent'
             },
             labels: toolLabels.length > 0 ? toolLabels : ['No Runs'],
-            colors: ['#6366f1', '#3b82f6', '#10b981', '#f59e0b', '#ec4899'],
+            colors: [
+                getThemeColor('--color-accent', '#E08A66'),
+                getThemeColor('--primary-hover', '#EFA184'),
+                getThemeColor('--color-signal', '#7FBF9B'),
+                getThemeColor('--color-warn', '#E0A94A'),
+                getThemeColor('--danger', '#E0685A')
+            ],
             stroke: { show: false },
             legend: {
                 position: 'bottom',
@@ -315,7 +328,7 @@
                             name: { show: true, color: textColor },
                             value: {
                                 show: true,
-                                color: isDark ? '#ffffff' : '#111827',
+                                color: getThemeColor('--color-text', '#F5F1E8'),
                                 formatter: function (val) { return val; }
                             },
                             total: {

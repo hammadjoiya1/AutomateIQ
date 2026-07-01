@@ -13,10 +13,10 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="card p-6 bg-surface border border-white/5 rounded-3xl">
+            <div class="card p-6 bg-surface border border-border rounded-3xl">
                 
                 @if (session('success'))
-                    <div class="bg-green-500/10 text-green-500 border border-green-500/20 p-4 rounded-xl mb-6 font-semibold">
+                    <div class="bg-success/10 text-success border border-success/20 p-4 rounded-xl mb-6 font-semibold">
                         {{ session('success') }}
                     </div>
                 @endif
@@ -24,7 +24,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-white/10 text-xs uppercase tracking-wider text-text-muted">
+                            <tr class="border-b border-border text-xs uppercase tracking-wider text-text-muted">
                                 <th class="pb-4 pl-4 font-semibold">Title</th>
                                 <th class="pb-4 font-semibold">Status</th>
                                 <th class="pb-4 font-semibold">Featured</th>
@@ -41,8 +41,8 @@
                                     </td>
                                     <td class="py-4">
                                         @if($post->is_published)
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-500/10 text-green-500 border border-green-500/20">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Published
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-success/10 text-success border border-success/20">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-success"></span> Published
                                             </span>
                                         @else
                                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
@@ -71,7 +71,7 @@
                                             <form action="{{ route('admin.blog-posts.destroy', $post) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this post?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-ghost hover:bg-red-500/10 text-red-500" title="Delete">
+                                                <button type="submit" class="btn btn-sm btn-ghost hover:bg-danger/10 text-danger" title="Delete">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                                 </button>
                                             </form>

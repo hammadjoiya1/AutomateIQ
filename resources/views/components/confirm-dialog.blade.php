@@ -2,7 +2,7 @@
     <div x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="cancel()"></div>
         <div
-            class="relative w-full max-w-md rounded-2xl glass-panel border border-white/10 p-6 shadow-2xl">
+            class="relative w-full max-w-md rounded-2xl glass-panel border border-border p-6 shadow-2xl">
             <div class="text-lg font-semibold text-text">Confirm Action</div>
             <p class="mt-2 text-sm text-text/70" x-text="message"></p>
 

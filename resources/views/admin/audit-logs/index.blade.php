@@ -6,7 +6,7 @@
         </div>
     </div>
 
-    <div class="card overflow-hidden border border-white/5">
+    <div class="card overflow-hidden border border-border">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead class="text-xs text-text-muted uppercase bg-surface/50 border-b border-border">

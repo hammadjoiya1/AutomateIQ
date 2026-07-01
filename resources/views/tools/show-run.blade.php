@@ -30,9 +30,9 @@
 
                                 <!-- VIDEO PLAYER (MP4 Output) 🎥 -->
                                 <div x-show="output && output.startsWith('http') && output.includes('.mp4')"
-                                    class="rounded-lg overflow-hidden border border-white/10 shadow-lg">
+                                    class="rounded-lg overflow-hidden border border-border shadow-lg">
                                     <video x-bind:src="output" controls class="w-full aspect-video bg-black"></video>
-                                    <div class="p-3 bg-surface border-t border-white/5 text-center">
+                                    <div class="p-3 bg-surface border-t border-border text-center">
                                         <a x-bind:href="output" download
                                             class="text-sm text-primary hover:text-primary/80 hover:underline">Download
                                             Video File</a>
@@ -137,7 +137,7 @@
 
                                 <template x-for="scene in scenes" :key="scene.scene_number">
                                     <div
-                                        class="bg-surface p-4 rounded-lg border border-white/5 hover:border-primary/30 transition-colors group">
+                                        class="bg-surface p-4 rounded-lg border border-border hover:border-primary/30 transition-colors group">
                                         <div class="flex justify-between items-start gap-4">
                                             <div class="flex-1">
                                                 <div class="flex items-center gap-2 mb-2">
@@ -194,7 +194,7 @@
                                                 </div>
 
                                                 <div x-show="generating[scene.scene_number] && generating[scene.scene_number] !== 'loading'"
-                                                    class="text-xs text-green-500 font-mono text-right">
+                                                    class="text-xs text-success font-mono text-right">
                                                     <span x-text="generating[scene.scene_number]"></span>
                                                     <br>
                                                     <a href="{{ route('tools.index') }}" target="_blank"

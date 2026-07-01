@@ -20,7 +20,7 @@
                                 autofocus
                                 class="mt-1 block w-full rounded-md border-primary/20 bg-primary/5 text-text focus:border-primary focus:ring focus:ring-primary/50">
                             @error('name')
-                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                <p class="mt-1 text-sm text-danger">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -31,7 +31,7 @@
                                 required
                                 class="mt-1 block w-full rounded-md border-primary/20 bg-primary/5 text-text focus:border-primary focus:ring focus:ring-primary/50">
                             @error('email')
-                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                <p class="mt-1 text-sm text-danger">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -46,7 +46,7 @@
                                 </option>
                             </select>
                             @error('role')
-                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                <p class="mt-1 text-sm text-danger">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -62,7 +62,7 @@
                                 <option value="enterprise" {{ old('plan', $user->plan) === 'enterprise' ? 'selected' : '' }}>Enterprise</option>
                             </select>
                             @error('plan')
-                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                <p class="mt-1 text-sm text-danger">{{ $message }}</p>
                             @enderror
                         </div>
 

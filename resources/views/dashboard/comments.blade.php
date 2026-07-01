@@ -39,7 +39,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $comment->is_approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $comment->is_approved ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning' }}">
                                             {{ $comment->is_approved ? 'Approved' : 'Pending' }}
                                         </span>
                                     </td>

@@ -12,7 +12,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         @foreach($themes as $theme)
             <div
-                class="card p-6 border {{ $theme->is_default ? 'border-primary shadow-lg shadow-primary/10' : 'border-white/5' }} bg-surface flex flex-col items-center text-center transition-all hover:-translate-y-1">
+                class="card p-6 border {{ $theme->is_default ? 'border-primary shadow-lg shadow-primary/10' : 'border-border' }} bg-surface flex flex-col items-center text-center transition-all hover:-translate-y-1">
                 <div
                     class="w-16 h-16 rounded-full flex items-center justify-center text-2xl mb-4 bg-bg-2 border border-border">
                     @if($theme->key == 'light') ☀️
@@ -23,7 +23,7 @@
                 <p class="text-xs text-text-muted mb-4">{{ $theme->key }}</p>
 
                 @if($theme->is_default)
-                    <span class="badge bg-green-500/10 text-green-500 border-green-500/20 px-4 py-1.5 mb-2">Default Theme</span>
+                    <span class="badge bg-success/10 text-success border-success/20 px-4 py-1.5 mb-2">Default Theme</span>
                     <button disabled class="btn btn-sm btn-ghost opacity-50 cursor-not-allowed">Active</button>
                 @else
                     <form action="{{ route('admin.themes.activate', $theme) }}" method="POST" class="w-full mt-auto">

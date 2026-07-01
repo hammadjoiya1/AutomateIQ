@@ -69,7 +69,7 @@
                         </a>
 
                         <!-- Reading Progress Ring -->
-                        <div class="flex flex-col items-center gap-2 py-4 border-y border-white/5 w-full">
+                        <div class="flex flex-col items-center gap-2 py-4 border-y border-border w-full">
                             <div class="relative w-8 h-8 sm:w-16 sm:h-16">
                                 <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                                     <path class="text-white/5" stroke-width="3" stroke="currentColor" fill="none"
@@ -92,7 +92,7 @@
                             <!-- X (Twitter) -->
                             <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($post->title) }}" 
                                target="_blank" rel="noopener noreferrer"
-                               class="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-surface/50 border border-white/5 hover:border-primary/30 flex items-center justify-center text-text-muted hover:text-primary transition-all shadow-md hover:-translate-y-0.5"
+                               class="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-surface/50 border border-border hover:border-primary/30 flex items-center justify-center text-text-muted hover:text-primary transition-all shadow-md hover:-translate-y-0.5"
                                title="Share on X">
                                 <svg class="w-3.5 h-3.5 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                             </a>
@@ -100,14 +100,14 @@
                             <!-- Facebook -->
                             <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" 
                                target="_blank" rel="noopener noreferrer"
-                               class="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-surface/50 border border-white/5 hover:border-primary/30 flex items-center justify-center text-text-muted hover:text-primary transition-all shadow-md hover:-translate-y-0.5"
+                               class="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-surface/50 border border-border hover:border-primary/30 flex items-center justify-center text-text-muted hover:text-primary transition-all shadow-md hover:-translate-y-0.5"
                                title="Share on Facebook">
                                 <svg class="w-3.5 h-3.5 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/></svg>
                             </a>
 
                             <!-- Copy Link -->
                             <button onclick="navigator.clipboard.writeText('{{ request()->url() }}'); alert('Link copied!');"
-                                    class="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-surface/50 border border-white/5 hover:border-primary/30 flex items-center justify-center text-text-muted hover:text-primary transition-all shadow-md hover:-translate-y-0.5"
+                                    class="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-surface/50 border border-border hover:border-primary/30 flex items-center justify-center text-text-muted hover:text-primary transition-all shadow-md hover:-translate-y-0.5"
                                     title="Copy Link">
                                 <svg class="w-3.5 h-3.5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
                             </button>
@@ -155,7 +155,7 @@
                             </h1>
 
                             <!-- Rendered Markdown Content -->
-                            <div class="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none text-text leading-relaxed prose-headings:font-display prose-headings:font-black prose-a:text-primary hover:prose-a:text-primary-hover prose-pre:bg-background/80 prose-pre:border prose-pre:border-white/5 rounded-xl sm:rounded-2xl" id="article-body">
+                            <div class="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none text-text leading-relaxed prose-headings:font-display prose-headings:font-black prose-a:text-primary hover:prose-a:text-primary-hover prose-pre:bg-background/80 prose-pre:border prose-pre:border-border rounded-xl sm:rounded-2xl" id="article-body">
                                 {!! \Illuminate\Support\Str::markdown($post->content ?? '') !!}
                             </div>
                         </div>
@@ -171,10 +171,10 @@
                         </h3>
 
                         <!-- Add Comment form -->
-                        <div class="bg-surface/30 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-white/5 relative overflow-hidden card-3d">
+                        <div class="bg-surface/30 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-border relative overflow-hidden card-3d">
                             <h4 class="text-xs sm:text-lg font-bold text-text mb-3">Leave a Response</h4>
                             @if(session('success'))
-                                <div class="mb-4 text-green-500 font-semibold bg-green-500/10 border border-green-500/20 p-3 sm:p-4 rounded-xl text-xs sm:text-sm">
+                                <div class="mb-4 text-success font-semibold bg-success/10 border border-success/20 p-3 sm:p-4 rounded-xl text-xs sm:text-sm">
                                     {{ session('success') }}
                                 </div>
                             @endif
@@ -186,12 +186,12 @@
                                         <div>
                                             <label class="block text-[9px] sm:text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Name</label>
                                             <input type="text" name="name" required
-                                                   class="w-full rounded-lg sm:rounded-xl border border-white/10 bg-background text-text text-xs sm:text-sm py-2 px-3 sm:py-3 sm:px-4 transition-all">
+                                                   class="w-full rounded-lg sm:rounded-xl border border-border bg-background text-text text-xs sm:text-sm py-2 px-3 sm:py-3 sm:px-4 transition-all">
                                         </div>
                                         <div>
                                             <label class="block text-[9px] sm:text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Email</label>
                                             <input type="email" name="email" required
-                                                   class="w-full rounded-lg sm:rounded-xl border border-white/10 bg-background text-text text-xs sm:text-sm py-2 px-3 sm:py-3 sm:px-4 transition-all">
+                                                   class="w-full rounded-lg sm:rounded-xl border border-border bg-background text-text text-xs sm:text-sm py-2 px-3 sm:py-3 sm:px-4 transition-all">
                                         </div>
                                     </div>
                                 @endguest
@@ -199,7 +199,7 @@
                                 <div>
                                     <label class="block text-[9px] sm:text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Comment</label>
                                     <textarea name="content" rows="4" required
-                                              class="w-full rounded-lg sm:rounded-xl border border-white/10 bg-background text-text text-xs sm:text-sm py-2 px-3 sm:py-3 sm:px-4 transition-all"
+                                              class="w-full rounded-lg sm:rounded-xl border border-border bg-background text-text text-xs sm:text-sm py-2 px-3 sm:py-3 sm:px-4 transition-all"
                                               placeholder="Thoughts?"></textarea>
                                 </div>
 
@@ -213,7 +213,7 @@
                         <!-- Comments Listing -->
                         <div class="space-y-4 sm:space-y-6" data-stagger-reveal>
                             @forelse($post->comments->where('is_approved', true) as $comment)
-                                <div class="flex gap-2 sm:gap-4 p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all">
+                                <div class="flex gap-2 sm:gap-4 p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:bg-white/5 border border-transparent hover:border-border transition-all">
                                     <div class="flex-shrink-0">
                                         <div class="h-7 w-7 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-sm sm:text-lg shadow-md">
                                             {{ substr($comment->name, 0, 1) }}
@@ -242,7 +242,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             @forelse($relatedPosts as $related)
                                 <a href="{{ route('blog.show', $related->slug) }}" 
-                                   class="block group p-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all">
+                                   class="block group p-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-border transition-all">
                                     @if($related->featured_image)
                                         <div class="aspect-[2/1] rounded-lg overflow-hidden mb-2">
                                             <img src="{{ asset('storage/' . $related->featured_image) }}" alt="{{ $related->title }}"
@@ -275,7 +275,7 @@
                                 <span class="hidden sm:inline">Table of Contents</span>
                                 <span class="inline sm:hidden">TOC</span>
                             </h4>
-                            <nav class="space-y-1 sm:space-y-2 border-l border-white/5 text-[9px] sm:text-xs" id="toc-nav">
+                            <nav class="space-y-1 sm:space-y-2 border-l border-border text-[9px] sm:text-xs" id="toc-nav">
                                 <!-- Populated dynamically via Javascript -->
                                 <p class="text-[8px] sm:text-xs text-text-muted pl-2 sm:pl-4 italic">None</p>
                             </nav>
@@ -290,7 +290,7 @@
                             <div class="space-y-2 sm:space-y-4">
                                 @forelse($relatedPosts as $related)
                                     <a href="{{ route('blog.show', $related->slug) }}" 
-                                       class="block group p-1.5 sm:p-3 rounded-lg sm:rounded-2xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all">
+                                       class="block group p-1.5 sm:p-3 rounded-lg sm:rounded-2xl hover:bg-white/5 border border-transparent hover:border-border transition-all">
                                         @if($related->featured_image)
                                             <div class="aspect-[2/1] rounded-lg overflow-hidden mb-1 sm:mb-3">
                                                 <img src="{{ asset('storage/' . $related->featured_image) }}" alt="{{ $related->title }}"
@@ -359,7 +359,7 @@
                         
                         const item = document.createElement('a');
                         item.href = `#${id}`;
-                        item.innerHTML = `<span class="inline-block sm:hidden w-1.5 h-1.5 rounded-full bg-white/20 border border-white/10 flex-shrink-0 item-dot transition-all"></span><span class="hidden sm:inline line-clamp-1">${heading.textContent}</span>`;
+                        item.innerHTML = `<span class="inline-block sm:hidden w-1.5 h-1.5 rounded-full bg-surface/20 border border-border flex-shrink-0 item-dot transition-all"></span><span class="hidden sm:inline line-clamp-1">${heading.textContent}</span>`;
                         item.className = `toc-vertical-item flex items-center justify-center sm:justify-start text-text-muted hover:text-primary transition-all py-1.5 sm:py-1.5 sm:pl-4 font-semibold ${heading.tagName === 'H3' ? 'sm:ml-3 text-[11px] opacity-75' : 'text-xs'}`;
                         
                         item.addEventListener('click', (e) => {

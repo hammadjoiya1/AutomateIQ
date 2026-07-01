@@ -21,7 +21,7 @@
                                 value="{{ old('name', $brandVoice->name ?? '') }}"
                                 class="w-full rounded-md border-primary/30 bg-background text-text focus:border-primary focus:ring focus:ring-primary/20 shadow-sm"
                                 placeholder="e.g. Professional Coach, Sarcastic Gamer">
-                            @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('name') <p class="text-danger text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="mb-6">
@@ -30,7 +30,7 @@
                             <textarea name="prompt" id="prompt" rows="6" required
                                 class="w-full rounded-md border-primary/30 bg-background text-text focus:border-primary focus:ring focus:ring-primary/20 shadow-sm font-mono text-sm leading-relaxed"
                                 placeholder="Example: Use short, punchy sentences. Be extremely enthusiastic. Use emojis like 🚀 and 🔥. Avoid big words. sound like a 22-year-old startup founder.">{{ old('prompt', $brandVoice->prompt ?? '') }}</textarea>
-                            @error('prompt') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('prompt') <p class="text-danger text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="mb-8">

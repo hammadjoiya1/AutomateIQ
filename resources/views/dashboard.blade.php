@@ -249,7 +249,12 @@
     <!-- Include ApexCharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+            const getThemeColor = (varName, fallback) => {
+                return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
+            };
+            const accentColor = getThemeColor('--color-accent', '#E08A66');
+            const surfaceColor = getThemeColor('--color-surface-raised', '#2C2822');
+
             var options = {
                 series: [{{ $subscriptionUsed }}, {{ max(0, $subscriptionCredits) }}],
                 chart: {
@@ -270,7 +275,7 @@
                         }
                     }
                 },
-                colors: ['#FF4B1F', '#1C2024'],
+                colors: [accentColor, surfaceColor],
                 labels: ['Used', 'Remaining'],
                 plotOptions: {
                     pie: {
@@ -289,7 +294,7 @@
                 },
                 stroke: {
                     show: true,
-                    colors: ['rgba(255,255,255,0.05)'],
+                    colors: [getThemeColor('--color-border', '#3A352E')],
                     width: 2
                 },
                 legend: {
@@ -309,8 +314,6 @@
             // Detect theme to adjust chart colors
             const theme = document.documentElement.getAttribute('data-theme') || 'dark';
             if (theme === 'light') {
-                options.colors = ['#FF4B1F', '#f1f5f9'];
-                options.stroke.colors = ['#ffffff'];
                 options.tooltip.theme = 'light';
             }
 

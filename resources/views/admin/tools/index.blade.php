@@ -6,7 +6,7 @@
         </a>
     </div>
 
-    <div class="card overflow-hidden border border-white/5">
+    <div class="card overflow-hidden border border-border">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead class="text-xs text-text-muted uppercase bg-surface/50 border-b border-border">
@@ -29,7 +29,7 @@
                             <td class="px-6 py-4 text-text-muted">{{ $tool->category->name ?? 'Uncategorized' }}</td>
                             <td class="px-6 py-4">
                                 <span
-                                    class="px-2 py-1 rounded-full text-xs font-bold {{ $tool->status ? 'bg-green-500/10 text-green-500' : 'bg-gray-500/10 text-gray-500' }}">
+                                    class="px-2 py-1 rounded-full text-xs font-bold {{ $tool->status ? 'bg-success/10 text-success' : 'bg-surface-raised0/10 text-text-muted' }}">
                                     {{ $tool->status ? 'Active' : 'Inactive' }}
                                 </span>
                             </td>
@@ -48,7 +48,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            class="text-red-500 hover:text-red-400 text-xs font-bold">Delete</button>
+                                            class="text-danger hover:text-danger text-xs font-bold">Delete</button>
                                     </form>
                                 </div>
                             </td>

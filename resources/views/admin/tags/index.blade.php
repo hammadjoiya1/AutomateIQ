@@ -20,7 +20,7 @@
                                     class="mt-1 block w-full rounded-md border-primary/20 bg-primary/5 text-text focus:border-primary focus:ring focus:ring-primary/50"
                                     required>
                                 @error('name')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    <span class="text-danger text-sm">{{ $message }}</span>
                                 @enderror
                             </div>
                             <button type="submit"
@@ -62,7 +62,7 @@
                                                     <input type="text" name="name" x-model="name"
                                                         class="px-2 py-1 text-xs rounded border-primary/20 bg-primary/5 text-text focus:border-primary">
                                                     <button type="submit"
-                                                        class="text-green-500 hover:text-green-700">✓</button>
+                                                        class="text-success hover:text-success">✓</button>
                                                 </form>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-text/70">{{ $tag->slug }}
@@ -79,7 +79,7 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"
-                                                            class="text-red-500 hover:text-red-700">Delete</button>
+                                                            class="text-danger hover:text-danger">Delete</button>
                                                     </form>
                                                 </div>
                                             </td>

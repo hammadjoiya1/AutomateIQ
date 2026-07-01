@@ -4,7 +4,7 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="card p-6 border border-white/5">
+        <div class="card p-6 border border-border">
             <h3 class="font-bold text-lg text-text mb-4">General Configuration</h3>
             <form action="{{ route('admin.settings.update') }}" method="POST" class="space-y-4">
                 @csrf
@@ -35,7 +35,7 @@
             </form>
         </div>
 
-        <div class="card p-6 border border-white/5">
+        <div class="card p-6 border border-border">
             <h3 class="font-bold text-lg text-text mb-4">SEO Defaults</h3>
             <form action="{{ route('admin.settings.update') }}" method="POST" class="space-y-4">
                 @csrf
@@ -59,7 +59,7 @@
             </form>
         </div>
 
-        <div class="card p-6 border border-white/5 lg:col-span-2">
+        <div class="card p-6 border border-border lg:col-span-2">
             <h3 class="font-bold text-lg text-text mb-4">Credits & Billing</h3>
             <form action="{{ route('admin.settings.update') }}" method="POST" class="space-y-6">
                 @csrf

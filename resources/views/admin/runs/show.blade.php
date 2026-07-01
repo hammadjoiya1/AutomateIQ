@@ -5,7 +5,7 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="card p-6 border border-white/5 space-y-4">
+        <div class="card p-6 border border-border space-y-4">
             <h3 class="font-bold text-lg text-text">Run Information</h3>
             <div class="grid grid-cols-2 gap-4 text-sm">
                 <div class="text-text-muted">User:</div>
@@ -17,7 +17,7 @@
                 <div class="text-text-muted">Status:</div>
                 <div>
                     <span
-                        class="px-2 py-1 rounded-full text-xs font-bold {{ $run->status === 'completed' ? 'bg-green-500/10 text-green-500' : ($run->status === 'failed' ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500') }}">
+                        class="px-2 py-1 rounded-full text-xs font-bold {{ $run->status === 'completed' ? 'bg-success/10 text-success' : ($run->status === 'failed' ? 'bg-danger/10 text-danger' : 'bg-accent/10 text-accent') }}">
                         {{ ucfirst($run->status) }}
                     </span>
                 </div>
@@ -35,13 +35,13 @@
             </div>
         </div>
 
-        <div class="card p-6 border border-white/5">
+        <div class="card p-6 border border-border">
             <h3 class="font-bold text-lg text-text mb-4">Input Data</h3>
             <pre
                 class="bg-bg-2 p-4 rounded-lg overflow-x-auto text-xs font-mono text-text p-4 border border-border">{{ json_encode($run->input_data, JSON_PRETTY_PRINT) }}</pre>
         </div>
 
-        <div class="card p-6 border border-white/5 md:col-span-2">
+        <div class="card p-6 border border-border md:col-span-2">
             <h3 class="font-bold text-lg text-text mb-4">Output Result</h3>
             <div class="bg-bg-2 p-4 rounded-lg border border-border text-text whitespace-pre-wrap">
                 {{ $run->output_text }}</div>

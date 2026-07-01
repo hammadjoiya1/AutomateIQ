@@ -4,7 +4,7 @@
         <a href="{{ route('admin.tools.index') }}" class="btn btn-secondary px-4">Cancel</a>
     </div>
 
-    <div class="card p-6 border border-white/5">
+    <div class="card p-6 border border-border">
         <form action="{{ route('admin.tools.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
@@ -126,7 +126,7 @@
                                     class="rounded border-border bg-bg-2 text-primary"> Req?
                             </label>
                             <button type="button" @click="removeField(index)"
-                                class="text-red-500 hover:text-red-400">×</button>
+                                class="text-danger hover:text-danger">×</button>
                         </div>
                     </template>
                 </div>

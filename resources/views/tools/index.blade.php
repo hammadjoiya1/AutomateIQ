@@ -100,7 +100,7 @@
                                         </div>
                                         @if($tool->is_featured)
                                             <span
-                                                class="inline-flex items-center px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                                                class="inline-flex items-center px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold bg-warning/10 text-warning border border-warning/20">
                                                 Featured
                                             </span>
                                         @endif
