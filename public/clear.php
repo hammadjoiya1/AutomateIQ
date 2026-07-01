@@ -11,8 +11,13 @@ if (function_exists('opcache_reset')) {
 
 // 2. Clear Laravel caches via artisan call
 try {
-    // We can run artisan commands programmatically
-    require __DIR__.'/../bootstrap/app.php';
+    // Load autoloader first
+    if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+        require __DIR__.'/../vendor/autoload.php';
+    }
+    
+    // Boot Laravel
+    $app = require_once __DIR__.'/../bootstrap/app.php';
     $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
     
     $status1 = $kernel->call('view:clear');
