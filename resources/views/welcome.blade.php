@@ -322,11 +322,11 @@
 
                 <!-- Testimonial Stats -->
                 <div class="hero-text-reveal space-y-6">
-                    <div class="strat-card">
+                    <div class="strat-card spotlight-card">
                         <div class="text-5xl font-black count-up" data-mono data-suffix="%" data-value="99.9" style="color: var(--color-text); font-family: var(--font-mono)">99.9%</div>
                         <div class="text-sm mt-2 font-medium" style="color: var(--color-text-muted)">SLA Compliance &amp; Pipeline Guarantee</div>
                     </div>
-                    <div class="strat-card">
+                    <div class="strat-card spotlight-card">
                         <div class="text-5xl font-black count-up" data-mono data-prefix="+" data-value="45" style="color: var(--color-text); font-family: var(--font-mono)">+45M</div>
                         <div class="text-sm mt-2 font-medium" style="color: var(--color-text-muted)">API Tasks Processed Seamlessly</div>
                     </div>
@@ -520,6 +520,100 @@
         </div>
     </section>
 
+     <!-- AI Pipeline & SLA Cost Estimator Section -->
+    <section id="estimator" class="py-24 relative overflow-hidden bg-white/[0.01] border-y border-white/5">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 hero-text-reveal">
+                <div class="section-badge mb-4">🧮 Project Sizing</div>
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Pipeline Cost Estimator</h2>
+                <p class="text-white/50 text-lg font-medium">Estimate your customized multi-step AI workflow scaling budgets instantly.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center bg-[#050508] border border-white/[0.06] rounded-2xl p-8 md:p-12 relative overflow-hidden">
+                <!-- Grid decorative pattern -->
+                <div class="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none"></div>
+
+                <!-- Left Column: Sliders & Controls -->
+                <div class="space-y-8 relative z-10 text-left">
+                    <!-- Volume Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <label class="text-sm font-semibold text-white/90">Monthly Executions</label>
+                            <span id="estimator-volume-label" class="text-sm font-mono font-bold text-primary">100,000 Runs</span>
+                        </div>
+                        <input id="estimator-volume" type="range" min="10000" max="1000000" step="10000" value="100000" class="premium-slider w-full">
+                        <div class="flex justify-between text-[10px] text-white/30 font-mono mt-2">
+                            <span>10K Runs</span>
+                            <span>500K Runs</span>
+                            <span>1M Runs</span>
+                        </div>
+                    </div>
+
+                    <!-- Complexity Options -->
+                    <div>
+                        <label class="block text-sm font-semibold text-white/90 mb-3">Pipeline Complexity</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button type="button" data-estimator-complexity="simple" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-white/5 text-white/60">
+                                Simple
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">1-3 Actions</span>
+                            </button>
+                            <button type="button" data-estimator-complexity="advanced" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition active border-primary bg-primary/10 text-white">
+                                Advanced
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">Multi-Agent</span>
+                            </button>
+                            <button type="button" data-estimator-complexity="enterprise" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-white/5 text-white/60">
+                                Enterprise
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">Complex SLA</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Support Level Options -->
+                    <div>
+                        <label class="block text-sm font-semibold text-white/90 mb-3">SLA Support Level</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button type="button" data-estimator-support="standard" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-white/5 text-white/60">
+                                Standard
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">Community</span>
+                            </button>
+                            <button type="button" data-estimator-support="business" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition active border-primary bg-primary/10 text-white">
+                                Business
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">8x5 Priority</span>
+                            </button>
+                            <button type="button" data-estimator-support="enterprise" class="px-4 py-2.5 border rounded-xl text-xs font-semibold transition border-white/5 text-white/60">
+                                Dedicated
+                                <span class="block text-[9px] font-normal text-white/40 mt-0.5">24/7 Phone</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Visual Breakdown Output -->
+                <div class="flex flex-col justify-between h-full border border-white/5 bg-white/[0.01] rounded-xl p-8 text-center space-y-6 relative z-10">
+                    <div>
+                        <span id="estimator-cluster-output" class="px-3 py-1 border border-white/10 bg-white/5 rounded-full text-[10px] font-mono font-semibold text-white/50">Dedicated VPC Instance</span>
+                        <div class="text-[10px] text-white/40 uppercase tracking-widest font-mono mt-6">Estimated Cost</div>
+                        <div id="estimator-cost-output" class="text-5xl font-extrabold text-white mt-2 font-display">$289</div>
+                        <div class="text-xs text-white/40 mt-1">per month (billed annually)</div>
+                    </div>
+
+                    <div class="border-t border-white/5 pt-6 text-left space-y-3 font-mono text-[11px]">
+                        <div class="flex justify-between">
+                            <span class="text-white/40">Workflow Runs Charge:</span>
+                            <span id="estimator-runs-output" class="text-white/80 font-bold">$190/mo</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-white/40">SLA Support Coverage:</span>
+                            <span id="estimator-support-output" class="text-white/80 font-bold">$99/mo</span>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('register') }}" class="btn-glow w-full text-center justify-center">Provision This Pipeline</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Pricing Section -->
     <section id="pricing" class="py-24 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -531,7 +625,7 @@
 
             <div class="grid md:grid-cols-3 gap-8 items-stretch scroll-reveal-stagger">
                 <!-- Free Plan -->
-                <div class="hero-text-reveal pricing-card-strat flex flex-col justify-between">
+                <div class="hero-text-reveal pricing-card-strat spotlight-card flex flex-col justify-between">
                     <div>
                         <h3 class="text-lg font-semibold text-white/60 font-display">Starter</h3>
                         <div class="text-5xl font-extrabold text-white mt-4">$0</div>
@@ -551,7 +645,7 @@
                 </div>
 
                 <!-- Pro Plan -->
-                <div class="hero-text-reveal pricing-card-strat featured flex flex-col justify-between">
+                <div class="hero-text-reveal pricing-card-strat spotlight-card featured flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-center">
                             <h3 class="text-lg font-semibold text-white font-display">Scale SaaS</h3>
@@ -578,7 +672,7 @@
                 </div>
 
                 <!-- Enterprise Plan -->
-                <div class="hero-text-reveal pricing-card-strat flex flex-col justify-between">
+                <div class="hero-text-reveal pricing-card-strat spotlight-card flex flex-col justify-between">
                     <div>
                         <h3 class="text-lg font-semibold text-white/60 font-display">Enterprise</h3>
                         <div class="text-5xl font-extrabold text-white mt-4">$99</div>

@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-vlZiPHNf.css",
+    "file": "assets/app-DTLEXk-Q.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -9,7 +9,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-9ZZntomS.js",
+    "file": "assets/app-si42v6QJ.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -17,8 +17,16 @@
       "resources/js/gradient-blinds.js",
       "resources/js/gradient-blinds.js",
       "resources/js/physics-grid.js",
-      "resources/js/terminal-sim.js"
+      "resources/js/terminal-sim.js",
+      "resources/js/spotlight.js",
+      "resources/js/estimator.js"
     ]
+  },
+  "resources/js/estimator.js": {
+    "file": "assets/estimator-BGKnXhOv.js",
+    "name": "estimator",
+    "src": "resources/js/estimator.js",
+    "isDynamicEntry": true
   },
   "resources/js/gradient-blinds.js": {
     "file": "assets/gradient-blinds-BOkbcokj.js",
@@ -30,6 +38,12 @@
     "file": "assets/physics-grid-B5IMO8q2.js",
     "name": "physics-grid",
     "src": "resources/js/physics-grid.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/spotlight.js": {
+    "file": "assets/spotlight-BekaQ6zQ.js",
+    "name": "spotlight",
+    "src": "resources/js/spotlight.js",
     "isDynamicEntry": true
   },
   "resources/js/terminal-sim.js": {

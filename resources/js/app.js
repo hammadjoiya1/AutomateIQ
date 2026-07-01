@@ -51,6 +51,8 @@ let navBlindsCleanup = null;
 let heroBlindsCleanup = null;
 let physicsGridCleanup = null;
 let terminalSimCleanup = null;
+let spotlightCleanup = null;
+let estimatorCleanup = null;
 
 function initHeroBlinds() {
     const mount = document.getElementById('hero-blinds-mount');
@@ -246,6 +248,28 @@ function initPage() {
             terminalSimCleanup = initTerminalSim(terminalBody);
         });
     }
+
+    // ── Mouse Border Spotlight Glowing Cards ─────────────────────────────────
+    if (document.querySelector('.spotlight-card')) {
+        if (spotlightCleanup) {
+            spotlightCleanup();
+            spotlightCleanup = null;
+        }
+        import('./spotlight').then(({ initSpotlightCards }) => {
+            spotlightCleanup = initSpotlightCards();
+        });
+    }
+
+    // ── Interactive Pipeline Cost Estimator ──────────────────────────────────
+    if (document.getElementById('estimator-volume')) {
+        if (estimatorCleanup) {
+            estimatorCleanup();
+            estimatorCleanup = null;
+        }
+        import('./estimator').then(({ initEstimator }) => {
+            estimatorCleanup = initEstimator();
+        });
+    }
 }
  
 document.addEventListener('turbo:load', () => {
@@ -266,6 +290,14 @@ document.addEventListener('turbo:before-cache', () => {
     if (terminalSimCleanup) {
         terminalSimCleanup();
         terminalSimCleanup = null;
+    }
+    if (spotlightCleanup) {
+        spotlightCleanup();
+        spotlightCleanup = null;
+    }
+    if (estimatorCleanup) {
+        estimatorCleanup();
+        estimatorCleanup = null;
     }
 });
 

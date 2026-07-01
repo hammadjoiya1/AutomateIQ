@@ -6,7 +6,7 @@
 
 @php
     // Base: surface bg, design-token border, control-room radius (10px)
-    $base = 'bg-[var(--color-surface)] border border-[var(--color-border)] relative overflow-hidden';
+    $base = 'bg-[var(--color-surface)] border border-[var(--color-border)] relative overflow-hidden spotlight-card';
 
     // hover handled by motion-presets.js initCardHover() via [data-motion-card]
     // no CSS transitions on transform — motion lib owns that
