@@ -56,55 +56,98 @@
 
 /* Effects removed to allow Theme Backgrounds to shine */
 
-/* ── 3D WebGL Background Canvas ─────────────────────────────────────────── */
-.three-bg-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    min-height: 600px;
-    pointer-events: none;
-    z-index: 0;
-    display: block;
-    opacity: 0.85;
+/* ═══════════════════════════════════════════════════════════════
+   CAPSULE NAVBAR
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Outer nav wrapper — no background itself */
+.capsule-nav {
+    pointer-events: none; /* let clicks pass through transparent gap */
+}
+.capsule-nav > * {
+    pointer-events: auto;
 }
 
-/* ── Dashboard 3D Mockup ─────────────────────────────────────────────────── */
-.dashboard-mockup-3d {
-    transform: perspective(1200px) rotateX(12deg) rotateY(-3deg) scale(0.96);
-    transform-origin: center top;
-    will-change: transform;
-    transition: box-shadow 0.4s ease;
+/* The pill-shaped inner container */
+.capsule-nav-inner {
+    background: rgba(10, 10, 12, 0.75);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
     box-shadow:
-        0 80px 160px -20px rgba(0, 0, 0, 0.9),
-        0 0 0 1px rgba(255, 255, 255, 0.04),
-        0 40px 80px -20px rgba(255, 75, 31, 0.08);
+        0 4px 24px rgba(0, 0, 0, 0.5),
+        0 1px 0 rgba(255, 255, 255, 0.06) inset;
 }
 
-.dashboard-mockup-3d:hover {
-    box-shadow:
-        0 100px 200px -20px rgba(0, 0, 0, 0.95),
-        0 0 0 1px rgba(255, 255, 255, 0.07),
-        0 60px 100px -20px rgba(255, 75, 31, 0.15);
+/* Logo pill — has the GradientBlinds WebGL effect */
+.capsule-nav-logo-pill {
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.04); /* fallback before WebGL loads */
+    position: relative;
+    overflow: hidden;
+    transition: opacity 0.2s;
 }
+.capsule-nav-logo-pill:hover {
+    opacity: 0.9;
+}
+
+/* Nav links */
+.capsule-nav-link {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    transition: color 0.15s, background 0.15s;
+    white-space: nowrap;
+}
+.capsule-nav-link:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.06);
+}
+.capsule-nav-link.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* "Get Started" CTA inside the capsule */
+.capsule-cta-btn {
+    border-radius: 9999px !important;
+    font-size: 0.8125rem !important;
+    padding: 0.375rem 1rem !important;
+    background: #fff !important;
+    color: #0a0a0c !important;
+    font-weight: 600 !important;
+    transition: opacity 0.15s, transform 0.15s !important;
+}
+.capsule-cta-btn:hover {
+    opacity: 0.9 !important;
+    transform: scale(1.02) !important;
+}
+
 
 /* ── Control Room: global typography enforcement ── */
 @layer base {
+
     /* All numeric data must render in mono — credits, counts, timestamps */
-    [data-mono], .tabular-num {
+    [data-mono],
+    .tabular-num {
         font-family: 'JetBrains Mono', monospace;
         font-variant-numeric: tabular-nums;
     }
 
     /* Display / headline font */
-    h1, h2, .font-display {
+    h1,
+    h2,
+    .font-display {
         font-family: 'Archivo', sans-serif;
         font-stretch: expanded;
     }
 }
 
 @layer components {
+
     /* ── Waveform component — idle bars and active generation state ── */
     .waveform {
         display: flex;
@@ -122,16 +165,38 @@
     }
 
     /* Signal / success states */
-    .text-signal { color: var(--color-signal); }
-    .bg-signal { background-color: var(--color-signal); }
-    .border-signal { border-color: var(--color-signal); }
-    .text-signal-dim { color: var(--color-signal-dim); }
+    .text-signal {
+        color: var(--color-signal);
+    }
+
+    .bg-signal {
+        background-color: var(--color-signal);
+    }
+
+    .border-signal {
+        border-color: var(--color-signal);
+    }
+
+    .text-signal-dim {
+        color: var(--color-signal-dim);
+    }
 
     /* Accent / live states */
-    .text-accent { color: var(--color-accent); }
-    .bg-accent { background-color: var(--color-accent); }
-    .border-accent { border-color: var(--color-accent); }
-    .border-accent-dim { border-color: var(--color-accent-dim); }
+    .text-accent {
+        color: var(--color-accent);
+    }
+
+    .bg-accent {
+        background-color: var(--color-accent);
+    }
+
+    .border-accent {
+        border-color: var(--color-accent);
+    }
+
+    .border-accent-dim {
+        border-color: var(--color-accent-dim);
+    }
 
     /* ── Workflow signal chain — nodes connected by self-drawing lines ── */
     .workflow-node {
@@ -3295,6 +3360,10 @@ body[data-theme="dark"] {
 .magnetic-btn {
     display: inline-block;
     will-change: transform;
+}
+
+[data-theme="light"] .bg-white\/20 {
+    background-color: rgba(0, 0, 0, 0.08) !important;
 }
 
 [data-theme="light"] .bg-white\/20 {

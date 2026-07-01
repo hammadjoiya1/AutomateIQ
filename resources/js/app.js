@@ -31,7 +31,7 @@ function trackEvent(event, payload = {}) {
 }
 window.trackEvent = trackEvent;
 
-// ── Lenis smooth scroll (loaded via CDN on pages that need it) ─────────────────
+// ── Lenis smooth scroll ────────────────────────────────────────────────────────
 function initLenis() {
     if (typeof Lenis === 'undefined') return;
     const lenis = new Lenis({
@@ -46,18 +46,41 @@ function initLenis() {
     document.addEventListener('turbo:before-visit', () => lenis.destroy(), { once: true });
 }
 
+// ── Navbar GradientBlinds — mounted once, persists across Turbo navigations ───
+let navBlindsCleanup = null;
+
+function initNavBlinds() {
+    const mount = document.getElementById('nav-blinds-mount');
+    if (!mount || navBlindsCleanup) return; // already running
+
+    import('./gradient-blinds').then(({ mountGradientBlinds }) => {
+        navBlindsCleanup = mountGradientBlinds(mount, {
+            gradientColors: ['#a855f7', '#7c3aed', '#4f46e5'],
+            angle: 15,
+            noise: 0.22,
+            blindCount: 12,
+            blindMinWidth: 50,
+            spotlightRadius: 0.6,
+            spotlightSoftness: 1.2,
+            spotlightOpacity: 0.9,
+            mouseDampening: 0.12,
+            shineDirection: 'left',
+        });
+    }).catch((e) => console.error('[nav-blinds]', e));
+}
+
 // ── Per-page init (runs on every Turbo navigation) ────────────────────────────
 function initPage() {
     initLenis();
     initMagneticButtons();
 
-    // Core motion system from spec (motion-presets.js)
+    // Core motion system
     initButtonPress();
     initCardHover();
     initScrollReveal();
     initConnectorLines();
 
-    // Waveform — idle by default, accent/active when data-waveform="active"
+    // Waveform bars
     document.querySelectorAll('.waveform').forEach((wf) => {
         const bars = [...wf.querySelectorAll('.waveform-bar')];
         if (bars.length) initWaveform(bars, wf.dataset.waveform === 'active');
@@ -99,8 +122,8 @@ function initPage() {
     // ROI calculator
     const roi = document.querySelector('[data-roi]');
     if (roi) {
-        const hours = roi.querySelector('[data-roi-hours]');
-        const rate = roi.querySelector('[data-roi-rate]');
+        const hours  = roi.querySelector('[data-roi-hours]');
+        const rate   = roi.querySelector('[data-roi-rate]');
         const result = roi.querySelector('[data-roi-result]');
         const compute = () => {
             result.textContent = `$${Math.round(parseFloat(hours.value || 0) * parseFloat(rate.value || 0) * 4).toLocaleString()}`;
@@ -121,7 +144,7 @@ function initPage() {
         trackEvent('ab_test', { id: el.getAttribute('data-abtest'), variant: pick?.id });
     });
 
-    // IntersectionObserver for legacy .scroll-reveal classes + count-up
+    // IntersectionObserver for scroll-reveal + count-up
     const scrollObserver = new IntersectionObserver((entries, obs) => {
         entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
@@ -140,30 +163,32 @@ function initPage() {
         '.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale, .count-up, .reveal'
     ).forEach((el) => scrollObserver.observe(el));
 
-    // ── 3D WebGL background (Three.js) ────────────────────────────────────────
+    // ── 3D WebGL hero background (Three.js) ──────────────────────────────────
     const threeBgCanvas = document.getElementById('three-bg-canvas');
     if (threeBgCanvas) {
         import('./three-bg').then((module) => {
             const cleanup = module.initThreeBg('three-bg-canvas');
             if (cleanup) document.addEventListener('turbo:before-cache', () => cleanup(), { once: true });
-        }).catch((e) => console.error('Three.js background failed:', e));
+        }).catch((e) => console.error('[three-bg]', e));
     }
 
-    // ── Hero dashboard mockup scroll-tilt ─────────────────────────────────────
+    // ── Hero dashboard mockup scroll-tilt ────────────────────────────────────
     const dashboard = document.querySelector('.dashboard-mockup-3d');
     if (dashboard) {
         const handleScrollTilt = () => {
-            const rect = dashboard.getBoundingClientRect();
+            const rect     = dashboard.getBoundingClientRect();
             const progress = Math.min(Math.max((window.innerHeight - rect.top) / (window.innerHeight + rect.height * 0.5), 0), 1);
-            const rotX = Math.max(12 - progress * 15, 0);
-            const rotY = Math.max(-3 + progress * 5, -3);
+            const rotX     = Math.max(12 - progress * 15, 0);
+            const rotY     = Math.max(-3 + progress * 5, -3);
             dashboard.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${0.96 + progress * 0.04})`;
         };
         window.addEventListener('scroll', handleScrollTilt, { passive: true });
         handleScrollTilt();
     }
-}
 
+    // ── Navbar GradientBlinds ─────────────────────────────────────────────────
+    initNavBlinds();
+}
 
 document.addEventListener('turbo:load', () => {
     Alpine.initTree(document.body);
