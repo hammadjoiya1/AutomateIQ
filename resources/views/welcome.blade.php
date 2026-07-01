@@ -45,6 +45,11 @@
     <!-- Global Mouse Aura -->
     <div id="global-aura" class="fixed top-0 left-0 w-96 h-96 rounded-full blur-[100px] pointer-events-none z-[-1] opacity-30 transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500" style="background: var(--color-accent)"></div>
 
+    <!-- Interactive Physics Canvas Grid Background -->
+    <div class="fixed inset-0 -z-10 pointer-events-none overflow-hidden opacity-30">
+        <canvas id="physics-canvas" class="w-full h-full"></canvas>
+    </div>
+
     <!-- Navigation Header -->
     <!-- Navigation Header — Floating Capsule -->
     <div x-data="{ open: false }">
@@ -188,74 +193,22 @@
             <div class="scroll-reveal mt-20 relative max-w-5xl mx-auto" style="transition-delay: 0.4s;">
                 <div class="absolute inset-0 bg-primary/20 blur-3xl -z-10 rounded-full opacity-40"></div>
                 
-                <div class="dashboard-mockup-3d relative rounded-2xl border border-white/10 shadow-2xl overflow-hidden bg-[#0d0d15] aspect-[16/10] sm:aspect-[16/9]">
-                    <!-- Browser Header -->
-                    <div class="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-white/5">
-                        <div class="flex gap-1.5">
-                            <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                <div
+                    class="dashboard-mockup-3d terminal-window relative rounded-2xl border border-white/[0.06] shadow-2xl overflow-hidden bg-[#050508] aspect-[16/10] sm:aspect-[16/9] text-left">
+                    <!-- Terminal Header -->
+                    <div class="terminal-header flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+                        <div class="terminal-dots flex gap-1.5">
+                            <div class="terminal-dot terminal-dot-red w-2.5 h-2.5 rounded-full"></div>
+                            <div class="terminal-dot terminal-dot-yellow w-2.5 h-2.5 rounded-full"></div>
+                            <div class="terminal-dot terminal-dot-green w-2.5 h-2.5 rounded-full"></div>
                         </div>
-                        <div class="mx-auto flex items-center justify-center bg-[#0a0a0f] border border-white/5 rounded-md px-3 py-1 text-xs text-white/40 w-1/3">
-                            <svg class="w-3 h-3 mr-2 opacity-50" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                            </svg>
-                            app.automateiq.com
-                        </div>
+                        <div class="font-mono text-[10px] text-white/40 tracking-wider">aiq: terminal-session</div>
                         <div class="w-10"></div>
                     </div>
 
-                    <!-- Inner Mock Dashboard -->
-                    <div class="p-6 h-full bg-[#0d0d15] text-left relative overflow-hidden flex flex-col justify-between">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <span class="text-[10px] uppercase tracking-wider text-white/40 font-mono">System Status</span>
-                                <h4 class="text-lg font-bold text-white mt-1">SaaS Workflow Console</h4>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="px-3 py-1.5 border text-xs font-semibold" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border); color: var(--color-text-muted)">⚡ <span data-mono>48</span> Active Pipelines</div>
-                                <div class="px-3 py-1.5 border text-xs font-semibold" style="border-radius: var(--radius-sm); background: var(--color-accent-dim); border-color: var(--color-accent); color: var(--color-accent)">Enterprise Plan</div>
-                            </div>
-                        </div>
-
-                        <!-- Mock Graph Content -->
-                        <div class="grid grid-cols-3 gap-4 mt-6 flex-1">
-                            <div class="col-span-2 bg-[#0a0a0f] border border-white/5 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden">
-                                <div class="flex justify-between items-center mb-4">
-                                    <div>
-                                        <div class="text-[10px] text-white/40 uppercase">Tasks Automated</div>
-                                        <div class="text-2xl font-extrabold text-white mt-1">240.8K <span class="text-xs text-green-500 font-semibold">+24.6%</span></div>
-                                    </div>
-                                    <div class="text-[10px] text-white/40 bg-white/5 border border-white/10 rounded px-2 py-1">Active Console</div>
-                                </div>
-                                <!-- Mock Line Chart SVG -->
-                                <svg class="w-full h-32 text-primary" viewBox="0 0 300 100" fill="none">
-                                    <path d="M0,90 Q50,70 100,50 T200,30 T300,10" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
-                                    <path d="M0,90 Q50,70 100,50 T200,30 T300,10 L300,100 L0,100 Z" fill="url(#grad)" opacity="0.1"/>
-                                    <defs>
-                                        <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stop-color="currentColor"/>
-                                            <stop offset="100%" stop-color="transparent"/>
-                                        </linearGradient>
-                                    </defs>
-                                </svg>
-                            </div>
-                            <div class="bg-[#0a0a0f] border border-white/5 rounded-xl p-4 flex flex-col justify-between">
-                                <div>
-                                    <div class="text-[10px] text-white/40 uppercase">Avg Run Time</div>
-                                    <div class="text-2xl font-extrabold text-white mt-1">1.24s <span class="text-xs text-green-500 font-semibold">-28.5%</span></div>
-                                </div>
-                                <!-- Mock Bar Chart -->
-                                <div class="flex items-end justify-between gap-1 h-20">
-                                    <div class="bg-white/10 w-full h-8 rounded-sm"></div>
-                                    <div class="bg-white/10 w-full h-12 rounded-sm"></div>
-                                    <div class="bg-white/10 w-full h-16 rounded-sm"></div>
-                                    <div class="bg-primary w-full h-24 rounded-sm"></div>
-                                    <div class="bg-white/10 w-full h-14 rounded-sm"></div>
-                                    <div class="bg-white/10 w-full h-20 rounded-sm"></div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Terminal Body -->
+                    <div class="terminal-body-sim flex-1 p-6 font-mono text-xs text-white/80 overflow-y-auto leading-relaxed select-none">
+                        <!-- Simulated CLI typewriter output goes here -->
                     </div>
                 </div>
             </div>

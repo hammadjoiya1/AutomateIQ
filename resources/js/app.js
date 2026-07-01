@@ -49,6 +49,8 @@ function initLenis() {
 // ── Navbar GradientBlinds — mounted once, persists across Turbo navigations ───
 let navBlindsCleanup = null;
 let heroBlindsCleanup = null;
+let physicsGridCleanup = null;
+let terminalSimCleanup = null;
 
 function initHeroBlinds() {
     const mount = document.getElementById('hero-blinds-mount');
@@ -217,21 +219,53 @@ function initPage() {
 
     // ── Navbar GradientBlinds ─────────────────────────────────────────────────
     initNavBlinds();
-
+ 
     // ── Hero GradientBlinds ───────────────────────────────────────────────────
     initHeroBlinds();
-}
 
+    // ── Physics Grid Background Canvas ────────────────────────────────────────
+    const canvasGrid = document.getElementById('physics-canvas');
+    if (canvasGrid) {
+        if (physicsGridCleanup) {
+            physicsGridCleanup();
+            physicsGridCleanup = null;
+        }
+        import('./physics-grid').then(({ initPhysicsGrid }) => {
+            physicsGridCleanup = initPhysicsGrid(canvasGrid);
+        });
+    }
+
+    // ── Terminal Mockup Emulator ─────────────────────────────────────────────
+    const terminalBody = document.querySelector('.terminal-body-sim');
+    if (terminalBody) {
+        if (terminalSimCleanup) {
+            terminalSimCleanup();
+            terminalSimCleanup = null;
+        }
+        import('./terminal-sim').then(({ initTerminalSim }) => {
+            terminalSimCleanup = initTerminalSim(terminalBody);
+        });
+    }
+}
+ 
 document.addEventListener('turbo:load', () => {
     Alpine.initTree(document.body);
     initPage();
 });
-
+ 
 document.addEventListener('turbo:before-cache', () => {
     Alpine.destroyTree(document.body);
     if (heroBlindsCleanup) {
         heroBlindsCleanup();
         heroBlindsCleanup = null;
+    }
+    if (physicsGridCleanup) {
+        physicsGridCleanup();
+        physicsGridCleanup = null;
+    }
+    if (terminalSimCleanup) {
+        terminalSimCleanup();
+        terminalSimCleanup = null;
     }
 });
 
