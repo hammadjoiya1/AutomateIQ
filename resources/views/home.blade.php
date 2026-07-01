@@ -18,10 +18,8 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Vanilla Tilt for 3D wow effects -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"
-        integrity="sha512-wC/cunGGDjXSl9OHwe00RQm5053048D51m178oIEqYqjBtv1k52rK8HnL/0Jm/E+Bv2wP9rN1e31XN/2V8B52g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Vanilla Tilt -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
 
     <!-- Lenis Smooth Scroll -->
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
@@ -49,49 +47,57 @@
         class="fixed top-0 left-0 w-96 h-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none z-[-1] opacity-50 mix-blend-screen transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500">
     </div>
 
-    <!-- Navigation Header -->
-    <div x-data="{ scrolled: false, open: false }" @scroll.window="scrolled = (window.pageYOffset > 20)">
-        <!-- Full-Width StratStudio Navigation -->
-        <nav class="floating-nav fixed top-0 left-0 right-0 w-full z-50 px-6 py-4 md:px-12 transition-all duration-300">
-            <div class="max-w-7xl mx-auto flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <x-application-logo class="h-6 w-auto text-primary group-hover:scale-110 transition-transform" />
-                    <span
-                        class="font-display font-bold text-lg text-text tracking-tight group-hover:opacity-80 transition-opacity">AutomateIQ</span>
+    <!-- Navigation Header — Floating Capsule -->
+    <div x-data="{ open: false }">
+        <nav class="capsule-nav fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl transition-all duration-300">
+            <div class="capsule-nav-inner flex items-center gap-2 px-2 py-2">
+
+                <!-- Logo Pill with GradientBlinds WebGL effect -->
+                <div class="capsule-nav-logo-pill relative overflow-hidden flex-shrink-0">
+                    <div id="nav-blinds-mount" class="absolute inset-0 rounded-[inherit] overflow-hidden"></div>
+                    <a href="{{ route('home') }}" class="relative z-10 flex items-center gap-2 px-4 py-2 group">
+                        <x-application-logo class="h-5 w-auto text-white drop-shadow-sm" />
+                        <span class="font-display font-bold text-sm text-white tracking-tight whitespace-nowrap">AutomateIQ</span>
+                    </a>
                 </div>
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="{{ route('tools.index') }}" class="nav-link-strat">Tools</a>
-                    <a href="{{ route('workflows.index') }}" class="nav-link-strat">Workflows</a>
-                    <a href="{{ route('pricing') }}" class="nav-link-strat">Pricing</a>
-                    <a href="{{ route('blog.index') }}" class="nav-link-strat">Blog</a>
+
+                <!-- Nav Links -->
+                <div class="hidden md:flex items-center gap-1 flex-1 px-2">
+                    <a href="{{ route('tools.index') }}" class="capsule-nav-link">Tools</a>
+                    <a href="{{ route('workflows.index') }}" class="capsule-nav-link">Workflows</a>
+                    <a href="{{ route('pricing') }}" class="capsule-nav-link">Pricing</a>
+                    <a href="{{ route('blog.index') }}" class="capsule-nav-link">Blog</a>
+                </div>
+
+                <!-- Spacer on mobile -->
+                <div class="flex-1 md:hidden"></div>
+
+                <!-- Auth + Theme -->
+                <div class="hidden md:flex items-center gap-2 flex-shrink-0">
                     <x-theme-switcher />
                     @if (Route::has('login'))
-                        <div class="flex items-center gap-4">
-                            @auth
-                                <a href="{{ url('/dashboard') }}" class="nav-cta-btn">Dashboard</a>
-                            @else
-                                <a href="{{ route('login') }}"
-                                    class="text-sm font-medium text-white/60 hover:text-white transition-colors">Log in</a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="nav-cta-btn">Get Started</a>
-                                @endif
-                            @endauth
-                        </div>
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="capsule-nav-link">Dashboard</a>
+                        @else
+                            <a href="{{ route('login') }}" class="capsule-nav-link">Log in</a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="capsule-cta-btn">Get Started</a>
+                            @endif
+                        @endauth
                     @endif
                 </div>
-                <div class="flex items-center md:hidden">
-                    <button type="button" @click="open = true"
-                        class="text-white p-2 rounded-md hover:bg-white/5 transition">
-                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
+
+                <!-- Mobile hamburger -->
+                <button type="button" @click="open = true"
+                    class="flex items-center md:hidden text-white/70 hover:text-white p-2 rounded-lg hover:bg-white/10 transition">
+                    <svg class="h-5 w-5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
         </nav>
 
-        <!-- Mobile Menu Overlay -->
+        <!-- Mobile Drawer -->
         <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150"
             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
@@ -108,41 +114,31 @@
                                 <x-application-logo class="h-7 w-auto text-primary" />
                                 <span class="font-bold text-lg text-text">AutomateIQ</span>
                             </div>
-                            <button type="button" @click="open = false"
-                                class="p-2 text-text/60 hover:text-text rounded-md transition">
+                            <button type="button" @click="open = false" class="p-2 text-text/60 hover:text-text rounded-md transition">
                                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
-                        <div class="mt-8 space-y-4">
-                            <a href="{{ route('tools.index') }}" @click="open = false"
-                                class="block py-2 text-base font-medium text-white/60 hover:text-white transition">Tools</a>
-                            <a href="{{ route('workflows.index') }}" @click="open = false"
-                                class="block py-2 text-base font-medium text-white/60 hover:text-white transition">Workflows</a>
-                            <a href="{{ route('pricing') }}" @click="open = false"
-                                class="block py-2 text-base font-medium text-white/60 hover:text-white transition">Pricing</a>
-                            <a href="{{ route('blog.index') }}" @click="open = false"
-                                class="block py-2 text-base font-medium text-white/60 hover:text-white transition">Blog</a>
+                        <div class="mt-8 space-y-1">
+                            <a href="{{ route('tools.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition">Tools</a>
+                            <a href="{{ route('workflows.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition">Workflows</a>
+                            <a href="{{ route('pricing') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition">Pricing</a>
+                            <a href="{{ route('blog.index') }}" @click="open = false" class="block py-2 px-3 text-base font-medium text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition">Blog</a>
                         </div>
                     </div>
-                    <div class="border-t border-white/10 pt-6">
-                        <div class="flex items-center justify-between text-sm text-white/60 mb-6">
+                    <div class="border-t border-white/10 pt-6 space-y-3">
+                        <div class="flex items-center justify-between text-sm text-white/60">
                             <span>Theme</span>
                             <x-theme-switcher />
                         </div>
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ url('/dashboard') }}" @click="open = false"
-                                    class="btn-primary-white block text-center py-3 rounded-full font-bold transition">Dashboard</a>
+                                <a href="{{ url('/dashboard') }}" @click="open = false" class="block text-center py-3 bg-white text-black rounded-full font-bold text-sm">Dashboard</a>
                             @else
-                                <a href="{{ route('login') }}" @click="open = false"
-                                    class="block text-center py-3 text-white/60 hover:text-white font-medium mb-3">Log in</a>
+                                <a href="{{ route('login') }}" @click="open = false" class="block text-center py-3 text-white/60 hover:text-white font-medium text-sm">Log in</a>
                                 @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" @click="open = false"
-                                        class="btn-primary-white block text-center py-3 rounded-full font-bold transition">Get
-                                        Started</a>
+                                    <a href="{{ route('register') }}" @click="open = false" class="block text-center py-3 bg-white text-black rounded-full font-bold text-sm">Get Started</a>
                                 @endif
                             @endauth
                         @endif
