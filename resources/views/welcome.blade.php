@@ -159,29 +159,29 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background: var(--color-accent)"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2" style="background: var(--color-accent)"></span>
                 </span>
-                v2.0 — live now
+                ⚡ AutomateIQ v2.0 is now live
             </div>
 
             <!-- Title -->
             <h1 class="scroll-reveal font-display text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-none" style="color: var(--color-text); font-stretch: expanded; transition-delay: 0.1s;">
-                Master the Art of <br>
-                <span style="color: var(--color-accent)">Faceless Automation</span>
+                Automate Your Growth, <br>
+                <span style="color: var(--color-accent)">Scale Your Workflows</span>
             </h1>
 
             <!-- Subtitle -->
             <p class="scroll-reveal text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed" style="color: var(--color-text-muted); transition-delay: 0.2s;">
-                Creator‑grade hooks, viral ideas, short scripts, scene splitters, video prompts, and repurposing—built for faceless growth.
+                The all‑in‑one intelligent automation platform to streamline operations, orchestrate processes, and scale your business without the overhead.
             </p>
 
             <!-- CTA Actions -->
             <div class="scroll-reveal flex flex-col sm:flex-row gap-4 justify-center items-center" style="transition-delay: 0.3s;">
                 <x-ui.button variant="primary" size="lg" href="{{ route('register') }}" class="magnetic-btn group">
-                    Start Creating Now
+                    Start Free Trial
                     <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                     </svg>
                 </x-ui.button>
-                <x-ui.button variant="secondary" size="lg" href="#features" class="magnetic-btn">View Tools</x-ui.button>
+                <x-ui.button variant="secondary" size="lg" href="#features" class="magnetic-btn">Book Demo</x-ui.button>
             </div>
 
             <!-- Dashboard Mockup (Perspective + Scroll-flattening) -->

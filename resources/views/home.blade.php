@@ -166,34 +166,34 @@
                         class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                 </span>
-                v2.0 is now live
+                ⚡ AutomateIQ v2.0 is now live
             </div>
 
             <!-- Title -->
             <h1 class="scroll-reveal text-gradient-hero text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-none"
                 style="transition-delay: 0.1s;">
-                Master the Art of <br>
-                <span>Faceless Automation</span>
+                Automate Your Growth, <br>
+                <span>Scale Your Workflows</span>
             </h1>
 
             <!-- Subtitle -->
             <p class="scroll-reveal text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-12 leading-relaxed"
                 style="transition-delay: 0.2s;">
-                Creator‑grade hooks, viral ideas, short scripts, scene splitters, video prompts, and repurposing—built
-                for faceless growth.
+                The all‑in‑one intelligent automation platform to streamline operations, orchestrate processes, 
+                and scale your business without the overhead.
             </p>
 
             <!-- CTA Actions -->
             <div class="scroll-reveal flex flex-col sm:flex-row gap-4 justify-center items-center"
                 style="transition-delay: 0.3s;">
                 <a href="{{ route('register') }}" class="btn-glow magnetic-btn">
-                    Start Creating Now
+                    Start Free Trial
                     <svg class="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                     </svg>
                 </a>
-                <a href="#features" class="btn-ghost-strat magnetic-btn">View Tools</a>
+                <a href="#features" class="btn-ghost-strat magnetic-btn">Book Demo</a>
             </div>
 
             <!-- Dashboard Mockup (Perspective + Scroll-flattening) -->
