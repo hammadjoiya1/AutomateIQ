@@ -48,6 +48,40 @@ function initLenis() {
 
 // ── Navbar GradientBlinds — mounted once, persists across Turbo navigations ───
 let navBlindsCleanup = null;
+let heroBlindsCleanup = null;
+
+function initHeroBlinds() {
+    const mount = document.getElementById('hero-blinds-mount');
+    if (!mount) {
+        if (heroBlindsCleanup) {
+            heroBlindsCleanup();
+            heroBlindsCleanup = null;
+        }
+        return;
+    }
+
+    if (heroBlindsCleanup) return; // already running
+
+    import('./gradient-blinds').then(({ mountGradientBlinds }) => {
+        heroBlindsCleanup = mountGradientBlinds(mount, {
+            gradientColors: ['#FF9FFC', '#5227FF'],
+            angle: 0,
+            noise: 0.3,
+            blindCount: 12,
+            blindMinWidth: 50,
+            spotlightRadius: 0.5,
+            spotlightSoftness: 1,
+            spotlightOpacity: 1,
+            mouseDampening: 0.15,
+            distortAmount: 0,
+            shineDirection: 'left',
+            mixBlendMode: 'lighten',
+        });
+    }).catch((e) => {
+        console.error('[hero-blinds]', e);
+        throw e;
+    });
+}
 
 function initNavBlinds() {
     const mount = document.getElementById('nav-blinds-mount');
@@ -166,18 +200,6 @@ function initPage() {
         '.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale, .count-up, .reveal'
     ).forEach((el) => scrollObserver.observe(el));
 
-    // ── 3D WebGL hero background (Three.js) ──────────────────────────────────
-    const threeBgCanvas = document.getElementById('three-bg-canvas');
-    if (threeBgCanvas) {
-        import('./three-bg').then((module) => {
-            const cleanup = module.initThreeBg('three-bg-canvas');
-            if (cleanup) document.addEventListener('turbo:before-cache', () => cleanup(), { once: true });
-        }).catch((e) => {
-            console.error('[three-bg]', e);
-            throw e;
-        });
-    }
-
     // ── Hero dashboard mockup scroll-tilt ────────────────────────────────────
     const dashboard = document.querySelector('.dashboard-mockup-3d');
     if (dashboard) {
@@ -194,6 +216,9 @@ function initPage() {
 
     // ── Navbar GradientBlinds ─────────────────────────────────────────────────
     initNavBlinds();
+
+    // ── Hero GradientBlinds ───────────────────────────────────────────────────
+    initHeroBlinds();
 }
 
 document.addEventListener('turbo:load', () => {
@@ -203,6 +228,10 @@ document.addEventListener('turbo:load', () => {
 
 document.addEventListener('turbo:before-cache', () => {
     Alpine.destroyTree(document.body);
+    if (heroBlindsCleanup) {
+        heroBlindsCleanup();
+        heroBlindsCleanup = null;
+    }
 });
 
 document.addEventListener('turbo:visit', () => {

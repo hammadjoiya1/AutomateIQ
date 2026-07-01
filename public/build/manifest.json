@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-Ngk-kCdp.css",
+    "file": "assets/app-eir0KKi7.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -9,25 +9,19 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-BS42qfjW.js",
+    "file": "assets/app-aqlixaW8.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "dynamicImports": [
       "resources/js/gradient-blinds.js",
-      "resources/js/three-bg.js"
+      "resources/js/gradient-blinds.js"
     ]
   },
   "resources/js/gradient-blinds.js": {
-    "file": "assets/gradient-blinds-BE35fgBE.js",
+    "file": "assets/gradient-blinds-BOkbcokj.js",
     "name": "gradient-blinds",
     "src": "resources/js/gradient-blinds.js",
-    "isDynamicEntry": true
-  },
-  "resources/js/three-bg.js": {
-    "file": "assets/three-bg-CnVZ75ub.js",
-    "name": "three-bg",
-    "src": "resources/js/three-bg.js",
     "isDynamicEntry": true
   }
 }

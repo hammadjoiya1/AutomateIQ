@@ -149,8 +149,8 @@
 
     <!-- Hero Section -->
     <section class="relative pt-36 pb-24 lg:pt-52 lg:pb-36 overflow-hidden">
-        <!-- 3D WebGL Background Canvas -->
-        <canvas id="three-bg-canvas" class="three-bg-canvas" aria-hidden="true"></canvas>
+        <!-- Hero Background: GradientBlinds -->
+        <div id="hero-blinds-mount" class="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden" aria-hidden="true"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <!-- Live badge -->

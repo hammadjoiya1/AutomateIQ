@@ -136,6 +136,8 @@ export function mountGradientBlinds(container, opts = {}) {
         spotlightOpacity = 1,
         distortAmount    = 0,
         shineDirection   = 'left',
+        mixBlendMode     = 'lighten',
+        paused           = false,
         dpr              = window.devicePixelRatio || 1,
     } = opts;
 
@@ -144,6 +146,9 @@ export function mountGradientBlinds(container, opts = {}) {
     const canvas = gl.canvas;
 
     canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;border-radius:inherit;';
+    if (mixBlendMode) {
+        canvas.style.mixBlendMode = mixBlendMode;
+    }
     container.appendChild(canvas);
 
     const { arr: colorArr, count: colorCount } = prepStops(gradientColors);
@@ -232,11 +237,13 @@ export function mountGradientBlinds(container, opts = {}) {
             lastT = t;
         }
 
-        try { 
-            renderer.render({ scene: mesh }); 
-        } catch (err) {
-            console.error('[gradient-blinds-render]', err);
-            throw err;
+        if (!paused) {
+            try { 
+                renderer.render({ scene: mesh }); 
+            } catch (err) {
+                console.error('[gradient-blinds-render]', err);
+                throw err;
+            }
         }
     }
 
