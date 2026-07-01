@@ -143,17 +143,17 @@
     /* All numeric data must render in mono — credits, counts, timestamps */
     [data-mono],
     .tabular-num {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: 'Space Mono', monospace;
         font-variant-numeric: tabular-nums;
-    }
-
-    /* Display / headline font */
-    h1,
-    h2,
-    .font-display {
-        font-family: 'Archivo', sans-serif;
-        font-stretch: expanded;
-    }
+     }
+ 
+     /* Display / headline font */
+     h1,
+     h2,
+     .font-display {
+         font-family: 'Space Grotesk', sans-serif;
+         font-stretch: expanded;
+     }
 }
 
 @layer components {

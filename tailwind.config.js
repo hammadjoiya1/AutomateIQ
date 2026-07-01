@@ -13,9 +13,9 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
-                display: ['Archivo', ...defaultTheme.fontFamily.sans],
-                mono: ['JetBrains Mono', ...defaultTheme.fontFamily.mono],
+                sans: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
+                display: ['Space Grotesk', ...defaultTheme.fontFamily.sans],
+                mono: ['Space Mono', ...defaultTheme.fontFamily.mono],
             },
             colors: {
                 background: 'var(--bg)',

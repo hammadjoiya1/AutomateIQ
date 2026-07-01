@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=outfit:400,500,600,700|inter:400,500,600&display=swap"
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700|space-grotesk:400,500,600,700|space-mono:400,700&display=swap"
         rel="stylesheet" />
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
