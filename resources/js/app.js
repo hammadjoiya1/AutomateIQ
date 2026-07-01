@@ -99,6 +99,7 @@ function initNavBlinds() {
             spotlightOpacity: 0.9,
             mouseDampening: 0.12,
             shineDirection: 'left',
+            mixBlendMode: 'normal',
         });
     }).catch((e) => {
         console.error('[nav-blinds]', e);

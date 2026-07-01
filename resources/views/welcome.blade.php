@@ -53,7 +53,7 @@
 
                 <!-- Logo Pill with GradientBlinds WebGL effect -->
                 <div class="capsule-nav-logo-pill relative overflow-hidden flex-shrink-0">
-                    <div id="nav-blinds-mount" class="absolute inset-0 rounded-[inherit] overflow-hidden"></div>
+                    <div id="nav-blinds-mount" class="absolute inset-0 rounded-[inherit] overflow-hidden pointer-events-none"></div>
                     <a href="{{ route('home') }}" class="relative z-10 flex items-center gap-2 px-4 py-2 group">
                         <x-application-logo class="h-5 w-auto text-white drop-shadow-sm" />
                         <span class="font-display font-bold text-sm text-white tracking-tight whitespace-nowrap">AutomateIQ</span>
