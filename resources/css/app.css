@@ -2989,7 +2989,7 @@
 }
 
 .text-gradient-hero span {
-    background: linear-gradient(135deg, #FF9FFC 10%, #a855f7 50%, #5227FF 90%);
+    background: linear-gradient(135deg, var(--color-accent) 10%, var(--primary-hover) 50%, var(--color-accent) 90%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
