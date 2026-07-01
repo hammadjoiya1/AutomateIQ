@@ -209,12 +209,12 @@
                     <div class="p-6 h-full bg-[#0d0d15] text-left relative overflow-hidden flex flex-col justify-between">
                         <div class="flex justify-between items-center">
                             <div>
-                                <span class="text-[10px] uppercase tracking-wider text-white/40 font-mono">Workspace Overview</span>
-                                <h4 class="text-lg font-bold text-white mt-1">Creator Dashboard</h4>
+                                <span class="text-[10px] uppercase tracking-wider text-white/40 font-mono">System Status</span>
+                                <h4 class="text-lg font-bold text-white mt-1">SaaS Workflow Console</h4>
                             </div>
                             <div class="flex items-center gap-2">
-                                <div class="px-3 py-1.5 border text-xs font-semibold" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border); color: var(--color-text-muted)">⚡ <span data-mono>602</span> Credits</div>
-                                <div class="px-3 py-1.5 border text-xs font-semibold" style="border-radius: var(--radius-sm); background: var(--color-accent-dim); border-color: var(--color-accent); color: var(--color-accent)">Pro Creator</div>
+                                <div class="px-3 py-1.5 border text-xs font-semibold" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border); color: var(--color-text-muted)">⚡ <span data-mono>48</span> Active Pipelines</div>
+                                <div class="px-3 py-1.5 border text-xs font-semibold" style="border-radius: var(--radius-sm); background: var(--color-accent-dim); border-color: var(--color-accent); color: var(--color-accent)">Enterprise Plan</div>
                             </div>
                         </div>
 
@@ -223,10 +223,10 @@
                             <div class="col-span-2 bg-[#0a0a0f] border border-white/5 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden">
                                 <div class="flex justify-between items-center mb-4">
                                     <div>
-                                        <div class="text-[10px] text-white/40 uppercase">Total Revenue</div>
-                                        <div class="text-2xl font-extrabold text-white mt-1">$240.8K <span class="text-xs text-green-500 font-semibold">+24.6%</span></div>
+                                        <div class="text-[10px] text-white/40 uppercase">Tasks Automated</div>
+                                        <div class="text-2xl font-extrabold text-white mt-1">240.8K <span class="text-xs text-green-500 font-semibold">+24.6%</span></div>
                                     </div>
-                                    <div class="text-[10px] text-white/40 bg-white/5 border border-white/10 rounded px-2 py-1">Jan - Dec 2024</div>
+                                    <div class="text-[10px] text-white/40 bg-white/5 border border-white/10 rounded px-2 py-1">Active Console</div>
                                 </div>
                                 <!-- Mock Line Chart SVG -->
                                 <svg class="w-full h-32 text-primary" viewBox="0 0 300 100" fill="none">
@@ -242,8 +242,8 @@
                             </div>
                             <div class="bg-[#0a0a0f] border border-white/5 rounded-xl p-4 flex flex-col justify-between">
                                 <div>
-                                    <div class="text-[10px] text-white/40 uppercase">Total Profit</div>
-                                    <div class="text-2xl font-extrabold text-white mt-1">$144.6K <span class="text-xs text-green-500 font-semibold">+28.5%</span></div>
+                                    <div class="text-[10px] text-white/40 uppercase">Avg Run Time</div>
+                                    <div class="text-2xl font-extrabold text-white mt-1">1.24s <span class="text-xs text-green-500 font-semibold">-28.5%</span></div>
                                 </div>
                                 <!-- Mock Bar Chart -->
                                 <div class="flex items-end justify-between gap-1 h-20">
@@ -284,7 +284,7 @@
     <!-- Trusted By Marquee -->
     <section class="py-10 border-y border-white/5 bg-white/[0.01] overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 text-center">
-            <p class="text-sm font-semibold text-white/40 uppercase tracking-widest">Trusted by leading creators</p>
+            <p class="text-sm font-semibold text-white/40 uppercase tracking-widest">Trusted by leading enterprises</p>
         </div>
         <div class="relative flex overflow-x-hidden group">
             <div class="animate-marquee whitespace-nowrap flex items-center gap-16 px-8">
@@ -317,21 +317,21 @@
     <section class="py-16 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 scroll-reveal-stagger">
-                <div class="scroll-reveal stat-card">
-                    <div class="stat-number count-up" data-mono data-prefix="+" data-suffix="x" data-value="4">+4x</div>
-                    <div class="stat-label">Content Output</div>
+                <div class="hero-text-reveal stat-card">
+                    <div class="stat-number count-up" data-mono data-prefix="+" data-suffix="x" data-value="12">+12x</div>
+                    <div class="stat-label">Throughput Increase</div>
                 </div>
-                <div class="scroll-reveal stat-card">
-                    <div class="stat-number count-up" data-mono data-prefix="-" data-suffix="%" data-value="70">-70%</div>
-                    <div class="stat-label">Planning Time</div>
+                <div class="hero-text-reveal stat-card">
+                    <div class="stat-number count-up" data-mono data-prefix="-" data-suffix="%" data-value="85">-85%</div>
+                    <div class="stat-label">Operational Cost</div>
                 </div>
-                <div class="scroll-reveal stat-card">
-                    <div class="stat-number count-up" data-mono data-prefix="&lt; " data-suffix=" min" data-value="5">&lt; 5 min</div>
-                    <div class="stat-label">First Video Win</div>
+                <div class="hero-text-reveal stat-card">
+                    <div class="stat-number count-up" data-mono data-prefix="&lt; " data-suffix="s" data-value="1.2">&lt; 1.2s</div>
+                    <div class="stat-label">API Response Time</div>
                 </div>
-                <div class="scroll-reveal stat-card">
-                    <div class="stat-number count-up" data-mono data-suffix="K+" data-value="10">10K+</div>
-                    <div class="stat-label">Active Creators</div>
+                <div class="hero-text-reveal stat-card">
+                    <div class="stat-number count-up" data-mono data-suffix="%" data-value="99.99">99.99%</div>
+                    <div class="stat-label">Uptime SLA Guarantee</div>
                 </div>
             </div>
         </div>
@@ -342,7 +342,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <!-- Testimonial content -->
-                <div class="scroll-reveal-left scroll-reveal">
+                <div class="hero-text-reveal">
                     <div class="section-badge mb-6">💬 Testimonials</div>
                     <h2 class="font-display text-3xl md:text-4xl font-bold mb-8" style="color: var(--color-text); font-stretch: expanded;">What our clients say</h2>
                     
@@ -355,27 +355,27 @@
                             <svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                         </div>
                         <p class="text-lg leading-relaxed italic mb-6" style="color: var(--color-text-muted)">
-                            "The automated workflows changed everything for our channels. We scaled script splits and visual cues across five different handles and quadrupled our views inside weeks."
+                            "AutomateIQ integrated directly into our core tech stack. We've automated our entire lead pipeline and visual asset generation, reducing manual data entry to absolute zero."
                         </p>
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 flex items-center justify-center font-bold font-mono border" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border); color: var(--color-text)">JT</div>
                             <div>
                                 <div class="text-sm font-semibold" style="color: var(--color-text)">Jordan Taylor</div>
-                                <div class="text-xs" style="color: var(--color-text-muted)">Project Coordinator</div>
+                                <div class="text-xs" style="color: var(--color-text-muted)">VP of Operations, StratCorp</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Testimonial Stats -->
-                <div class="scroll-reveal-right scroll-reveal space-y-6">
+                <div class="hero-text-reveal space-y-6">
                     <div class="strat-card">
-                        <div class="text-5xl font-black count-up" data-mono data-suffix="%" data-value="99" style="color: var(--color-text); font-family: var(--font-mono)">99%</div>
-                        <div class="text-sm mt-2 font-medium" style="color: var(--color-text-muted)">Retention &amp; Engagement Rate</div>
+                        <div class="text-5xl font-black count-up" data-mono data-suffix="%" data-value="99.9" style="color: var(--color-text); font-family: var(--font-mono)">99.9%</div>
+                        <div class="text-sm mt-2 font-medium" style="color: var(--color-text-muted)">SLA Compliance &amp; Pipeline Guarantee</div>
                     </div>
                     <div class="strat-card">
-                        <div class="text-5xl font-black count-up" data-mono data-prefix="+" data-value="7200" style="color: var(--color-text); font-family: var(--font-mono)">+7,200</div>
-                        <div class="text-sm mt-2 font-medium" style="color: var(--color-text-muted)">Short-form Video Runs Automatically Handled</div>
+                        <div class="text-5xl font-black count-up" data-mono data-prefix="+" data-value="45" style="color: var(--color-text); font-family: var(--font-mono)">+45M</div>
+                        <div class="text-sm mt-2 font-medium" style="color: var(--color-text-muted)">API Tasks Processed Seamlessly</div>
                     </div>
                 </div>
             </div>
@@ -385,31 +385,31 @@
     <!-- Features Grid (Bento Box) -->
     <section id="features" class="py-24 relative overflow-hidden" style="background: var(--color-bg)">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
-                <div class="section-badge mb-4">Speed &amp; Simplicity</div>
-                <h2 class="font-display text-4xl md:text-5xl font-bold mb-4 tracking-tight" style="color: var(--color-text); font-stretch: expanded;">Everything you need to scale</h2>
-                <p class="text-lg" style="color: var(--color-text-muted)">A unified toolkit designed to replace hours of planning with automated precision.</p>
+            <div class="text-center max-w-3xl mx-auto mb-16 hero-text-reveal">
+                <div class="section-badge mb-4">⚡ SaaS Architecture</div>
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-4 tracking-tight" style="color: var(--color-text); font-stretch: expanded;">Built for High‑Scale Operations</h2>
+                <p class="text-lg" style="color: var(--color-text-muted)">A unified workflow engine built to replace manual scripts with event-driven automation.</p>
             </div>
 
             <!-- Bento Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[240px] reveal">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[240px] hero-text-reveal">
 
                 <!-- Large Feature (Col span 2, Row span 2) — Script Builder with live mockup -->
                 <x-ui.card padding="p-8" hoverEffect="true" class="col-span-1 md:col-span-2 md:row-span-2 flex flex-col justify-between group">
                     <div class="mb-4">
                         <div class="w-12 h-12 flex items-center justify-center mb-6 border group-hover:scale-110 transition-transform duration-300" data-card-icon style="border-radius: var(--radius-sm); background: var(--color-accent-dim); border-color: var(--color-accent)">
-                            <svg class="w-6 h-6" style="color: var(--color-accent)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                            <svg class="w-6 h-6" style="color: var(--color-accent)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-2" style="color: var(--color-text)">Short-form Script Builder</h3>
-                        <p class="text-base" style="color: var(--color-text-muted)">Create time-coded, retention-optimized scripts automatically mapped to visual cues.</p>
+                        <h3 class="text-2xl font-bold mb-2" style="color: var(--color-text)">AI Workflow Orchestrator</h3>
+                        <p class="text-base" style="color: var(--color-text-muted)">Design and automate multi-step processes with logical triggers, loops, and conditional branches.</p>
                     </div>
                     <div class="relative h-40 w-full overflow-hidden mt-4 border" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
                         <div class="absolute inset-x-0 bottom-0 h-12 z-10" style="background: linear-gradient(to top, var(--color-surface-raised), transparent)"></div>
                         <div class="p-4 space-y-3 font-mono text-xs" style="color: var(--color-text-muted)">
-                            <div class="flex gap-2"><span style="color: var(--color-accent)">[0:00]</span> <span>Hook: The secret to 10M views...</span></div>
-                            <div class="flex gap-2"><span style="color: var(--color-accent)">[0:05]</span> <span>B-Roll: Fast zoom on analytics</span></div>
-                            <div class="flex gap-2"><span style="color: var(--color-accent)">[0:08]</span> <span>Body: Most creators focus on the wrong metric.</span></div>
-                            <div class="flex gap-2"><span style="color: var(--color-signal)">[0:14]</span> <span>CTA: Tap the link before this disappears.</span></div>
+                            <div class="flex gap-2"><span style="color: var(--color-accent)">[Trigger]</span> <span>Webhook: New User Sign Up...</span></div>
+                            <div class="flex gap-2"><span style="color: var(--color-accent)">[Action]</span> <span>AI Module: Generate Welcome Asset</span></div>
+                            <div class="flex gap-2"><span style="color: var(--color-accent)">[Branch]</span> <span>If Status is Active: Stream Content</span></div>
+                            <div class="flex gap-2"><span style="color: var(--color-signal)">[Finish]</span> <span>API: Post to Webhook Endpoint</span></div>
                         </div>
                     </div>
                 </x-ui.card>
@@ -419,29 +419,29 @@
                     <div class="absolute right-0 top-0 w-48 h-48 blur-3xl pointer-events-none" style="background: radial-gradient(circle, var(--color-accent-dim) 0%, transparent 70%)"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 flex items-center justify-center mb-4 border" data-card-icon style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
-                            <svg class="w-5 h-5" style="color: var(--color-text-muted)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path></svg>
+                            <svg class="w-5 h-5" style="color: var(--color-text-muted)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                         </div>
-                        <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Scene Splitter</h3>
-                        <p class="text-sm max-w-sm" style="color: var(--color-text-muted)">Turn raw copy into visual scene lists containing camera angles, text overlays, and cues.</p>
+                        <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Real‑Time Processing</h3>
+                        <p class="text-sm max-w-sm" style="color: var(--color-text-muted)">Connect custom data feeds and stream execution steps through advanced logic arrays with ultra‑low latency.</p>
                     </div>
                 </x-ui.card>
 
                 <!-- Small Feature (Col span 1, Row span 1) — AI Image Gen -->
                 <x-ui.card padding="p-6" hoverEffect="true" class="col-span-1 flex flex-col group">
                     <div class="w-10 h-10 flex items-center justify-center mb-4 border" data-card-icon style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
-                        <svg class="w-5 h-5" style="color: var(--color-text-muted)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <svg class="w-5 h-5" style="color: var(--color-text-muted)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     </div>
-                    <h3 class="text-lg font-bold mb-1" style="color: var(--color-text)">AI Image Gen</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted)">Build thumbnail-ready assets instantly.</p>
+                    <h3 class="text-lg font-bold mb-1" style="color: var(--color-text)">Asset API</h3>
+                    <p class="text-sm" style="color: var(--color-text-muted)">Programmatically build design assets instantly.</p>
                 </x-ui.card>
 
                 <!-- Small Feature (Col span 1, Row span 1) — High Conversion -->
                 <x-ui.card padding="p-6" hoverEffect="true" class="col-span-1 flex flex-col group">
                     <div class="w-10 h-10 flex items-center justify-center mb-4 border" data-card-icon style="border-radius: var(--radius-sm); background: var(--color-signal-dim); border-color: var(--color-signal)">
-                        <svg class="w-5 h-5" style="color: var(--color-signal)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <svg class="w-5 h-5" style="color: var(--color-signal)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2"></path></svg>
                     </div>
-                    <h3 class="text-lg font-bold mb-1" style="color: var(--color-text)">High Conversion</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted)">Formats engineered to stop scrolling.</p>
+                    <h3 class="text-lg font-bold mb-1" style="color: var(--color-text)">Pipeline Scaling</h3>
+                    <p class="text-sm" style="color: var(--color-text-muted)">Scale queues up to thousands of operations/sec.</p>
                 </x-ui.card>
 
             </div>
@@ -451,10 +451,10 @@
     <!-- Process Section — Signal Chain (asymmetric: nodes left, live monitor offset right) -->
     <section id="process" class="py-24 relative overflow-hidden" style="background: var(--color-surface)">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-xl mb-16 reveal">
-                <div class="section-badge mb-4">Process</div>
-                <h2 class="font-display text-3xl md:text-5xl font-bold mb-4" style="color: var(--color-text); font-stretch: expanded;">Signal chain</h2>
-                <p class="text-lg" style="color: var(--color-text-muted)">Three nodes. One automated output.</p>
+            <div class="max-w-xl mb-16 hero-text-reveal">
+                <div class="section-badge mb-4">🔧 Deployment</div>
+                <h2 class="font-display text-3xl md:text-5xl font-bold mb-4" style="color: var(--color-text); font-stretch: expanded;">Simple 3‑Step Setup</h2>
+                <p class="text-lg" style="color: var(--color-text-muted)">Go from concept to production-ready automation in minutes.</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
@@ -463,7 +463,7 @@
                 <div class="workflow-section lg:col-span-7">
 
                     <!-- Node 01 -->
-                    <div class="workflow-node reveal">
+                    <div class="workflow-node hero-text-reveal">
                         <div class="flex gap-5 items-start">
                             <div class="flex flex-col items-center shrink-0">
                                 <div class="workflow-node-dot">
@@ -475,17 +475,17 @@
                                 </div>
                             </div>
                             <div class="pb-12 flex-1">
-                                <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Choose Your Niche</h3>
-                                <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Select from proven script presets, or configure custom audience filters to map hooks directly to target demographics.</p>
+                                <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Define Your Trigger</h3>
+                                <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Select from webhooks, API events, or database changes to initiate your automated pipelines.</p>
                                 <div class="border p-3 text-xs font-mono" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
-                                    <span style="color: var(--color-text-muted)">niche</span><span style="color: var(--color-border)"> → </span><span style="color: var(--color-accent)">finance</span><span style="color: var(--color-border)"> · </span><span style="color: var(--color-signal)">12 presets matched</span>
+                                    <span style="color: var(--color-text-muted)">trigger</span><span style="color: var(--color-border)"> → </span><span style="color: var(--color-accent)">webhook_received</span><span style="color: var(--color-border)"> · </span><span style="color: var(--color-signal)">event payload matched</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Node 02 — offset right to break the column's straight edge -->
-                    <div class="workflow-node reveal lg:ml-10">
+                    <div class="workflow-node hero-text-reveal lg:ml-10">
                         <div class="flex gap-5 items-start">
                             <div class="flex flex-col items-center shrink-0">
                                 <div class="workflow-node-dot">
@@ -497,19 +497,19 @@
                                 </div>
                             </div>
                             <div class="pb-12 flex-1">
-                                <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Storyboarding</h3>
-                                <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Our automation breaks scripts line-by-line, matching overlay prompts and b-roll selections automatically.</p>
+                                <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Design the Workflow</h3>
+                                <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Map steps, connect AI modules, and set up logic branches using our intuitive console.</p>
                                 <div class="border p-3 space-y-1.5" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
-                                    <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[0:00]</span><span style="color: var(--color-text-muted)">Hook: The secret to 10M views...</span></div>
-                                    <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[0:05]</span><span style="color: var(--color-text-muted)">B-Roll: Fast zoom on analytics</span></div>
-                                    <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[0:10]</span><span style="color: var(--color-text-muted)">Body: Most creators miss this—</span></div>
+                                    <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[Node 1]</span><span style="color: var(--color-text-muted)">Extract content metadata</span></div>
+                                    <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[Node 2]</span><span style="color: var(--color-text-muted)">Generate design layout parameters</span></div>
+                                    <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[Node 3]</span><span style="color: var(--color-text-muted)">Run visual rendering engine API</span></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Node 03 — signal/live state, back to the left edge, no connector after -->
-                    <div class="workflow-node reveal">
+                    <div class="workflow-node hero-text-reveal">
                         <div class="flex gap-5 items-start">
                             <div class="shrink-0">
                                 <div class="workflow-node-dot" style="background: var(--color-signal-dim); border-color: var(--color-signal)">
@@ -517,14 +517,14 @@
                                 </div>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Automate &amp; Scale</h3>
-                                <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Synchronize output directly to your media queue, auto-publishing or exporting packaged assets in bulk.</p>
+                                <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Monitor &amp; Orchestrate</h3>
+                                <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Deploy with one click and monitor task executions, logs, and data processing rates in real time.</p>
                                 <div class="flex items-center gap-2 text-xs font-mono" style="color: var(--color-signal)">
                                     <span class="relative flex h-2 w-2">
                                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background: var(--color-signal)"></span>
                                         <span class="relative inline-flex rounded-full h-2 w-2" style="background: var(--color-signal)"></span>
                                     </span>
-                                    3 workflows active — <span data-mono>147</span> assets exported this week
+                                    48 pipelines active — <span data-mono>240.8K</span> tasks executed this week
                                 </div>
                             </div>
                         </div>
@@ -533,7 +533,7 @@
                 </div>
 
                 <!-- Live monitor panel — offset right, sticky, breaks the centered template -->
-                <div class="lg:col-span-5 reveal lg:sticky lg:top-32 lg:mt-16">
+                <div class="lg:col-span-5 hero-text-reveal lg:sticky lg:top-32 lg:mt-16">
                     <div class="border p-5" style="border-radius: var(--radius-lg); background: var(--color-surface-raised); border-color: var(--color-border)">
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-xs font-mono uppercase tracking-widest" style="color: var(--color-text-muted)">Live Monitor</span>
@@ -552,12 +552,12 @@
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div class="border p-3" style="border-radius: var(--radius-sm); border-color: var(--color-border)">
-                                <div class="text-2xl font-bold font-mono" data-mono style="color: var(--color-text)">147</div>
-                                <div class="text-xs" style="color: var(--color-text-muted)">Assets this week</div>
+                                <div class="text-2xl font-bold font-mono" data-mono style="color: var(--color-text)">240.8K</div>
+                                <div class="text-xs" style="color: var(--color-text-muted)">Total executions</div>
                             </div>
                             <div class="border p-3" style="border-radius: var(--radius-sm); border-color: var(--color-border)">
-                                <div class="text-2xl font-bold font-mono" data-mono style="color: var(--color-text)">3</div>
-                                <div class="text-xs" style="color: var(--color-text-muted)">Active workflows</div>
+                                <div class="text-2xl font-bold font-mono" data-mono style="color: var(--color-text)">48</div>
+                                <div class="text-xs" style="color: var(--color-text-muted)">Active pipelines</div>
                             </div>
                         </div>
                     </div>
@@ -570,15 +570,15 @@
     <!-- Pricing Section -->
     <section id="pricing" class="py-24 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
+            <div class="text-center max-w-3xl mx-auto mb-16 hero-text-reveal">
                 <div class="section-badge mb-4">💎 Flexible Tiers</div>
                 <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Simple, transparent pricing</h2>
-                <p class="text-white/50 text-lg font-medium">Choose the plan that matches your current creator scale.</p>
+                <p class="text-white/50 text-lg font-medium">Scale pricing transparently based on your execution volumes.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8 items-stretch scroll-reveal-stagger">
                 <!-- Free Plan -->
-                <div class="scroll-reveal pricing-card-strat flex flex-col justify-between">
+                <div class="hero-text-reveal pricing-card-strat flex flex-col justify-between">
                     <div>
                         <h3 class="text-lg font-semibold text-white/60 font-display">Starter</h3>
                         <div class="text-5xl font-extrabold text-white mt-4">$0</div>
@@ -586,11 +586,11 @@
                         <ul class="space-y-4 mt-8">
                             <li class="flex items-center gap-3 text-sm text-white/60 font-medium">
                                 <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                5 tool runs / day
+                                100 operations / month
                             </li>
                             <li class="flex items-center gap-3 text-sm text-white/60 font-medium">
                                 <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Mini-pack access (hooks only)
+                                Core workflow editor
                             </li>
                         </ul>
                     </div>
@@ -598,10 +598,10 @@
                 </div>
 
                 <!-- Pro Plan -->
-                <div class="scroll-reveal pricing-card-strat featured flex flex-col justify-between">
+                <div class="hero-text-reveal pricing-card-strat featured flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-center">
-                            <h3 class="text-lg font-semibold text-white font-display">Pro Creator</h3>
+                            <h3 class="text-lg font-semibold text-white font-display">Scale SaaS</h3>
                             <span class="text-[10px] bg-white/10 px-2.5 py-1 rounded-full text-white font-bold uppercase tracking-wider font-mono">Popular</span>
                         </div>
                         <div class="text-5xl font-extrabold text-white mt-4">$29</div>
@@ -609,39 +609,39 @@
                         <ul class="space-y-4 mt-8">
                             <li class="flex items-center gap-3 text-sm text-white/80 font-semibold">
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                100 tool runs / day
+                                10,000 operations / month
                             </li>
                             <li class="flex items-center gap-3 text-sm text-white/80 font-semibold">
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                5 automated videos / day
+                                Advanced AI API keys
                             </li>
                             <li class="flex items-center gap-3 text-sm text-white/80 font-semibold">
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Full preset engine workflows
+                                Priority multi-step queues
                             </li>
                         </ul>
                     </div>
-                    <a href="{{ route('register') }}" class="btn-glow w-full text-center mt-8 justify-center">Upgrade to Pro</a>
+                    <a href="{{ route('register') }}" class="btn-glow w-full text-center mt-8 justify-center">Start Pro Trial</a>
                 </div>
 
                 <!-- Enterprise Plan -->
-                <div class="scroll-reveal pricing-card-strat flex flex-col justify-between">
+                <div class="hero-text-reveal pricing-card-strat flex flex-col justify-between">
                     <div>
-                        <h3 class="text-lg font-semibold text-white/60 font-display">Agency</h3>
+                        <h3 class="text-lg font-semibold text-white/60 font-display">Enterprise</h3>
                         <div class="text-5xl font-extrabold text-white mt-4">$99</div>
                         <div class="text-xs text-white/40 mt-1 font-medium">per month</div>
                         <ul class="space-y-4 mt-8">
                             <li class="flex items-center gap-3 text-sm text-white/60 font-medium">
                                 <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Team collaboration presets
+                                Unlimited monthly operations
                             </li>
                             <li class="flex items-center gap-3 text-sm text-white/60 font-medium">
                                 <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Unlimited workflows
+                                Dedicated high-speed queues
                             </li>
                             <li class="flex items-center gap-3 text-sm text-white/60 font-medium">
                                 <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Priority Support channels
+                                Custom SLA &amp; SSO compliance
                             </li>
                         </ul>
                     </div>
@@ -654,18 +654,18 @@
     <!-- CTA Section -->
     <section class="py-24 relative overflow-hidden bg-white/[0.01]">
         <div class="absolute inset-0 bg-primary/10 blur-[100px] -z-10 rounded-full opacity-30 transform -translate-y-1/2"></div>
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 scroll-reveal">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 hero-text-reveal">
             <div class="w-16 h-16 mx-auto bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)]">
                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                 </svg>
             </div>
-            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Need To Discuss Before Starting?</h2>
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Ready to Scale Your SaaS Operations?</h2>
             <p class="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-                Connect with our product specialist for a live walk-through and customized configuration tailored specifically for your channel network.
+                Connect with our Solutions Architects for a custom walkthrough, custom SLA compliance terms, and enterprise pipeline sizing.
             </p>
             <x-ui.button variant="primary" size="lg" href="#" class="group">
-                Schedule a 1:1 Meeting
+                Book Solutions Call
                 <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                 </svg>
@@ -683,7 +683,7 @@
                         <span class="font-display font-bold text-lg text-white tracking-tight">AutomateIQ</span>
                     </div>
                     <p class="text-white/40 text-sm max-w-sm mb-6 leading-relaxed">
-                        {{ \App\Models\Setting::get('site_description', 'Empowering digital creators with structured scripts and seamless AI-driven shorts production.') }}
+                        {{ \App\Models\Setting::get('site_description', 'Enterprise-grade workflow automation, real-time AI pipelines, and cloud-scaling SaaS orchestrations.') }}
                     </p>
                     <div class="flex gap-3">
                         @if ($twitter = \App\Models\Setting::get('social_twitter'))
