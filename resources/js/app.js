@@ -65,7 +65,7 @@ function initHeroBlinds() {
     import('./gradient-blinds').then(({ mountGradientBlinds }) => {
         heroBlindsCleanup = mountGradientBlinds(mount, {
             gradientColors: ['#FF9FFC', '#5227FF'],
-            angle: 0,
+            angle: 45,
             noise: 0.3,
             blindCount: 12,
             blindMinWidth: 50,
