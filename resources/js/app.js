@@ -197,7 +197,7 @@ function initPage() {
     }, { rootMargin: '0px', threshold: 0.1 });
 
     document.querySelectorAll(
-        '.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale, .count-up, .reveal'
+        '.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale, .count-up, .reveal, .hero-text-reveal'
     ).forEach((el) => scrollObserver.observe(el));
 
     // ── Hero dashboard mockup scroll-tilt ────────────────────────────────────

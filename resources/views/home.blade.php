@@ -160,7 +160,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <!-- v2.0 Badge -->
             <div
-                class="scroll-reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-semibold mb-8">
+                class="hero-text-reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-semibold mb-8">
                 <span class="relative flex h-2 w-2">
                     <span
                         class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
@@ -170,21 +170,21 @@
             </div>
 
             <!-- Title -->
-            <h1 class="scroll-reveal text-gradient-hero text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-none"
+            <h1 class="hero-text-reveal text-gradient-hero text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-none"
                 style="transition-delay: 0.1s;">
                 Automate Your Growth, <br>
                 <span>Scale Your Workflows</span>
             </h1>
 
             <!-- Subtitle -->
-            <p class="scroll-reveal text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-12 leading-relaxed"
+            <p class="hero-text-reveal text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-12 leading-relaxed"
                 style="transition-delay: 0.2s;">
                 The all‑in‑one intelligent automation platform to streamline operations, orchestrate processes, 
                 and scale your business without the overhead.
             </p>
 
             <!-- CTA Actions -->
-            <div class="scroll-reveal flex flex-col sm:flex-row gap-4 justify-center items-center"
+            <div class="hero-text-reveal flex flex-col sm:flex-row gap-4 justify-center items-center"
                 style="transition-delay: 0.3s;">
                 <a href="{{ route('register') }}" class="btn-glow magnetic-btn">
                     Start Free Trial

@@ -154,7 +154,7 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <!-- Live badge -->
-            <div class="scroll-reveal inline-flex items-center gap-2 px-3 py-1 border text-xs font-mono font-semibold mb-8" style="border-radius: var(--radius-sm); background: var(--color-accent-dim); border-color: var(--color-accent); color: var(--color-accent)">
+            <div class="hero-text-reveal inline-flex items-center gap-2 px-3 py-1 border text-xs font-mono font-semibold mb-8" style="border-radius: var(--radius-sm); background: var(--color-accent-dim); border-color: var(--color-accent); color: var(--color-accent)">
                 <span class="relative flex h-2 w-2">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background: var(--color-accent)"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2" style="background: var(--color-accent)"></span>
@@ -163,18 +163,18 @@
             </div>
 
             <!-- Title -->
-            <h1 class="scroll-reveal font-display text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-none" style="color: var(--color-text); font-stretch: expanded; transition-delay: 0.1s;">
+            <h1 class="hero-text-reveal text-gradient-hero text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-none" style="transition-delay: 0.1s;">
                 Automate Your Growth, <br>
-                <span style="color: var(--color-accent)">Scale Your Workflows</span>
+                <span>Scale Your Workflows</span>
             </h1>
 
             <!-- Subtitle -->
-            <p class="scroll-reveal text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed" style="color: var(--color-text-muted); transition-delay: 0.2s;">
+            <p class="hero-text-reveal text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed" style="color: var(--color-text-muted); transition-delay: 0.2s;">
                 The all‑in‑one intelligent automation platform to streamline operations, orchestrate processes, and scale your business without the overhead.
             </p>
 
             <!-- CTA Actions -->
-            <div class="scroll-reveal flex flex-col sm:flex-row gap-4 justify-center items-center" style="transition-delay: 0.3s;">
+            <div class="hero-text-reveal flex flex-col sm:flex-row gap-4 justify-center items-center" style="transition-delay: 0.3s;">
                 <x-ui.button variant="primary" size="lg" href="{{ route('register') }}" class="magnetic-btn group">
                     Start Free Trial
                     <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
