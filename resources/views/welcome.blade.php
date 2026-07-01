@@ -145,8 +145,8 @@
 
     <!-- Hero Section -->
     <section class="relative pt-36 pb-24 lg:pt-52 lg:pb-36 overflow-hidden">
-        <!-- Slow-drifting OGL noise mesh, low opacity (spec §2) -->
-        <div id="hero-noise-bg" class="absolute inset-0 h-full w-full pointer-events-none" aria-hidden="true"></div>
+        <!-- 3D WebGL Background Canvas -->
+        <canvas id="three-bg-canvas" class="three-bg-canvas" aria-hidden="true"></canvas>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <!-- Live badge -->
