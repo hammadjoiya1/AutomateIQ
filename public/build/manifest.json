@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-IZMFljQi.css",
+    "file": "assets/app-C-KdV5Ge.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -8,61 +8,19 @@
       "app.css"
     ]
   },
-  "resources/js/advanced-effects.js": {
-    "file": "assets/advanced-effects-JzCJ1lMi.js",
-    "name": "advanced-effects",
-    "src": "resources/js/advanced-effects.js",
-    "isDynamicEntry": true
-  },
   "resources/js/app.js": {
-    "file": "assets/app-Cwy7vzdN.js",
+    "file": "assets/app-CT3_Tfpg.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "dynamicImports": [
-      "resources/js/spotlight.js",
-      "resources/js/interactions.js",
-      "resources/js/advanced-effects.js",
-      "resources/js/light-theme-effects.js",
-      "resources/js/effects-3d.js",
-      "resources/js/wow-effects.js",
-      "resources/js/glowy-waves-hero.js"
+      "resources/js/three-bg.js"
     ]
   },
-  "resources/js/effects-3d.js": {
-    "file": "assets/effects-3d-D4szHNQB.js",
-    "name": "effects-3d",
-    "src": "resources/js/effects-3d.js",
-    "isDynamicEntry": true
-  },
-  "resources/js/glowy-waves-hero.js": {
-    "file": "assets/glowy-waves-hero-oMAWHuKG.js",
-    "name": "glowy-waves-hero",
-    "src": "resources/js/glowy-waves-hero.js",
-    "isDynamicEntry": true
-  },
-  "resources/js/interactions.js": {
-    "file": "assets/interactions-BIWuurKW.js",
-    "name": "interactions",
-    "src": "resources/js/interactions.js",
-    "isDynamicEntry": true
-  },
-  "resources/js/light-theme-effects.js": {
-    "file": "assets/light-theme-effects-Cip7YC_x.js",
-    "name": "light-theme-effects",
-    "src": "resources/js/light-theme-effects.js",
-    "isDynamicEntry": true
-  },
-  "resources/js/spotlight.js": {
-    "file": "assets/spotlight-BvAeEt2T.js",
-    "name": "spotlight",
-    "src": "resources/js/spotlight.js",
-    "isDynamicEntry": true
-  },
-  "resources/js/wow-effects.js": {
-    "file": "assets/wow-effects-CplfvncA.js",
-    "name": "wow-effects",
-    "src": "resources/js/wow-effects.js",
+  "resources/js/three-bg.js": {
+    "file": "assets/three-bg-CHQY-kT1.js",
+    "name": "three-bg",
+    "src": "resources/js/three-bg.js",
     "isDynamicEntry": true
   }
 }

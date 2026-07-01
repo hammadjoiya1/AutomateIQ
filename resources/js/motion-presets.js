@@ -11,7 +11,7 @@ export const pageTransition = { duration: 0.15, easing: "ease-out" };
 
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-export function initButtonPress(selector = ".btn, [data-motion-press]") {
+export function initButtonPress(selector = ".btn, [data-motion-press], .btn-glow, .btn-ghost-strat, .nav-cta-btn, .btn-primary-white") {
     document.querySelectorAll(selector).forEach(btn => {
         btn.addEventListener("pointerdown", () => {
             if (reducedMotion()) return;
@@ -27,7 +27,7 @@ export function initButtonPress(selector = ".btn, [data-motion-press]") {
     });
 }
 
-export function initCardHover(selector = ".card-interactive, .card-hover, [data-motion-card]") {
+export function initCardHover(selector = ".card-interactive, .card-hover, [data-motion-card], .pricing-card-strat, .strat-card") {
     document.querySelectorAll(selector).forEach(card => {
         const icon = card.querySelector("[data-card-icon]");
         card.addEventListener("pointerenter", () => {
@@ -57,13 +57,13 @@ export function initScrollReveal(selector = ".reveal") {
 }
 
 // Animate a number from 0 → to using the motion library
-export function animateCount(el, to, duration = 0.8) {
+export function animateCount(el, to, duration = 0.8, prefix = '', suffix = '') {
     if (reducedMotion()) {
-        el.textContent = to.toLocaleString();
+        el.textContent = prefix + to.toLocaleString() + suffix;
         return;
     }
     animate((progress) => {
-        el.textContent = Math.round(to * progress).toLocaleString();
+        el.textContent = prefix + Math.round(to * progress).toLocaleString() + suffix;
     }, { duration, easing: "ease-out" });
 }
 

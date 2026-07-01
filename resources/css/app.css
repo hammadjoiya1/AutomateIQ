@@ -56,6 +56,36 @@
 
 /* Effects removed to allow Theme Backgrounds to shine */
 
+/* ── 3D WebGL Background Canvas ─────────────────────────────────────────── */
+.three-bg-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    display: block;
+}
+
+/* ── Dashboard 3D Mockup ─────────────────────────────────────────────────── */
+.dashboard-mockup-3d {
+    transform: perspective(1200px) rotateX(12deg) rotateY(-3deg) scale(0.96);
+    transform-origin: center top;
+    will-change: transform;
+    transition: box-shadow 0.4s ease;
+    box-shadow:
+        0 80px 160px -20px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        0 40px 80px -20px rgba(255, 75, 31, 0.08);
+}
+
+.dashboard-mockup-3d:hover {
+    box-shadow:
+        0 100px 200px -20px rgba(0, 0, 0, 0.95),
+        0 0 0 1px rgba(255, 255, 255, 0.07),
+        0 60px 100px -20px rgba(255, 75, 31, 0.15);
+}
+
 /* ── Control Room: global typography enforcement ── */
 @layer base {
     /* All numeric data must render in mono — credits, counts, timestamps */
@@ -2342,19 +2372,19 @@ body[data-theme="dark"] {
    ✨ PREMIUM STRATSTUDIO NAVBAR ✨
    ========================================== */
 .floating-nav {
-    background: rgba(10, 10, 18, 0.65) !important;
+    background: color-mix(in srgb, var(--color-bg) 80%, transparent) !important;
     border: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-bottom: 1px solid var(--color-border) !important;
     border-radius: 0 !important;
     backdrop-filter: blur(20px) saturate(150%) !important;
     -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03),
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02),
         0 4px 30px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Nav link styles */
 .floating-nav .nav-link-strat {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--color-text-muted);
     font-size: 0.9375rem;
     font-weight: 500;
     transition: color 0.25s ease;
@@ -2369,14 +2399,14 @@ body[data-theme="dark"] {
     left: 0;
     right: 0;
     height: 1px;
-    background: #ffffff;
+    background: var(--color-accent);
     transform: scaleX(0);
     transition: transform 0.25s ease;
 }
 
 .floating-nav .nav-link-strat:hover,
 .floating-nav .nav-link-strat.active {
-    color: #ffffff;
+    color: var(--color-text);
 }
 
 .floating-nav .nav-link-strat:hover::after,

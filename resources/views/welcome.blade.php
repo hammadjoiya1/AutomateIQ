@@ -18,9 +18,6 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- Vanilla Tilt for 3D wow effects -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js" integrity="sha512-wC/cunGGDjXSl9OHwe00RQm5053048D51m178oIEqYqjBtv1k52rK8HnL/0Jm/E+Bv2wP9rN1e31XN/2V8B52g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <!-- Lenis Smooth Scroll -->
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
 
@@ -137,13 +134,8 @@
 
     <!-- Hero Section -->
     <section class="relative pt-36 pb-24 lg:pt-52 lg:pb-36 overflow-hidden">
-        <!-- Interactive Glowy Waves Background -->
-        <canvas id="glowy-canvas" class="absolute inset-0 h-full w-full pointer-events-none" aria-hidden="true"></canvas>
-        <div class="absolute inset-0 -z-10 pointer-events-none">
-            <div class="absolute left-1/2 top-0 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-foreground/[0.035] blur-[140px] dark:bg-foreground/[0.06]"></div>
-            <div class="absolute bottom-0 right-0 h-[360px] w-[360px] rounded-full bg-foreground/[0.025] blur-[120px] dark:bg-foreground/[0.05]"></div>
-            <div class="absolute top-1/2 left-1/4 h-[400px] w-[400px] rounded-full bg-primary/[0.02] blur-[150px] dark:bg-primary/[0.05]"></div>
-        </div>
+        <!-- Slow-drifting OGL noise mesh, low opacity (spec §2) -->
+        <div id="hero-noise-bg" class="absolute inset-0 h-full w-full pointer-events-none" aria-hidden="true"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <!-- Live badge -->
@@ -255,6 +247,25 @@
         </div>
     </section>
 
+    <!-- Signal Divider — the signature waveform, full-bleed, always visible -->
+    <section class="relative py-10 border-y" style="background: var(--color-surface); border-color: var(--color-border)">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-6">
+            <span class="shrink-0 text-xs font-mono uppercase tracking-widest" style="color: var(--color-text-muted)">Signal</span>
+            <div class="waveform flex-1" style="height: 32px; gap: 4px; justify-content: space-between;">
+                @for ($i = 0; $i < 64; $i++)
+                    <div class="waveform-bar"></div>
+                @endfor
+            </div>
+            <span class="shrink-0 text-xs font-mono uppercase tracking-widest flex items-center gap-2" style="color: var(--color-text-muted)">
+                <span class="relative flex h-1.5 w-1.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background: var(--color-signal)"></span>
+                    <span class="relative inline-flex rounded-full h-1.5 w-1.5" style="background: var(--color-signal)"></span>
+                </span>
+                idle
+            </span>
+        </div>
+    </section>
+
     <!-- Trusted By Marquee -->
     <section class="py-10 border-y border-white/5 bg-white/[0.01] overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 text-center">
@@ -318,7 +329,7 @@
                 <!-- Testimonial content -->
                 <div class="scroll-reveal-left scroll-reveal">
                     <div class="section-badge mb-6">💬 Testimonials</div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-8">What our clients say</h2>
+                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-8" style="color: var(--color-text); font-stretch: expanded;">What our clients say</h2>
                     
                     <div class="testimonial-card">
                         <div class="testimonial-stars">
@@ -328,14 +339,14 @@
                             <svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                             <svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                         </div>
-                        <p class="text-lg text-white/80 leading-relaxed italic mb-6">
+                        <p class="text-lg leading-relaxed italic mb-6" style="color: var(--color-text-muted)">
                             "The automated workflows changed everything for our channels. We scaled script splits and visual cues across five different handles and quadrupled our views inside weeks."
                         </p>
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-white">JT</div>
+                            <div class="w-10 h-10 flex items-center justify-center font-bold font-mono border" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border); color: var(--color-text)">JT</div>
                             <div>
-                                <div class="text-sm font-semibold text-white">Jordan Taylor</div>
-                                <div class="text-xs text-white/40">Project Coordinator</div>
+                                <div class="text-sm font-semibold" style="color: var(--color-text)">Jordan Taylor</div>
+                                <div class="text-xs" style="color: var(--color-text-muted)">Project Coordinator</div>
                             </div>
                         </div>
                     </div>
@@ -344,12 +355,12 @@
                 <!-- Testimonial Stats -->
                 <div class="scroll-reveal-right scroll-reveal space-y-6">
                     <div class="strat-card">
-                        <div class="text-5xl font-black text-white count-up" data-suffix="%" data-value="99">99%</div>
-                        <div class="text-sm text-white/50 mt-2 font-medium">Retention &amp; Engagement Rate</div>
+                        <div class="text-5xl font-black count-up" data-mono data-suffix="%" data-value="99" style="color: var(--color-text); font-family: var(--font-mono)">99%</div>
+                        <div class="text-sm mt-2 font-medium" style="color: var(--color-text-muted)">Retention &amp; Engagement Rate</div>
                     </div>
                     <div class="strat-card">
-                        <div class="text-5xl font-black text-white count-up" data-prefix="+" data-value="7200">+7,200</div>
-                        <div class="text-sm text-white/50 mt-2 font-medium">Short-form Video Runs Automatically Handled</div>
+                        <div class="text-5xl font-black count-up" data-mono data-prefix="+" data-value="7200" style="color: var(--color-text); font-family: var(--font-mono)">+7,200</div>
+                        <div class="text-sm mt-2 font-medium" style="color: var(--color-text-muted)">Short-form Video Runs Automatically Handled</div>
                     </div>
                 </div>
             </div>
@@ -357,142 +368,181 @@
     </section>
 
     <!-- Features Grid (Bento Box) -->
-    <section id="features" class="py-24 relative overflow-hidden">
+    <section id="features" class="py-24 relative overflow-hidden" style="background: var(--color-bg)">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
-                <div class="section-badge mb-4 border border-primary/20 bg-primary/10 text-primary">⚡ Speed, Simplicity</div>
-                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">Everything you need to scale</h2>
-                <p class="text-white/50 text-lg">A unified toolkit designed to replace hours of planning with automated precision.</p>
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <div class="section-badge mb-4">Speed &amp; Simplicity</div>
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-4 tracking-tight" style="color: var(--color-text); font-stretch: expanded;">Everything you need to scale</h2>
+                <p class="text-lg" style="color: var(--color-text-muted)">A unified toolkit designed to replace hours of planning with automated precision.</p>
             </div>
 
             <!-- Bento Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[240px] scroll-reveal-stagger">
-                
-                <!-- Large Feature (Col span 2, Row span 2) -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[240px] reveal">
+
+                <!-- Large Feature (Col span 2, Row span 2) — Script Builder with live mockup -->
                 <x-ui.card padding="p-8" hoverEffect="true" class="col-span-1 md:col-span-2 md:row-span-2 flex flex-col justify-between group">
                     <div class="mb-4">
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-6 border border-primary/20 group-hover:scale-110 transition-transform duration-500">
-                            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        <div class="w-12 h-12 flex items-center justify-center mb-6 border group-hover:scale-110 transition-transform duration-300" data-card-icon style="border-radius: var(--radius-sm); background: var(--color-accent-dim); border-color: var(--color-accent)">
+                            <svg class="w-6 h-6" style="color: var(--color-accent)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-2">Short-form Script Builder</h3>
-                        <p class="text-white/50 text-base">Create time-coded, retention-optimized scripts automatically mapped to visual cues.</p>
+                        <h3 class="text-2xl font-bold mb-2" style="color: var(--color-text)">Short-form Script Builder</h3>
+                        <p class="text-base" style="color: var(--color-text-muted)">Create time-coded, retention-optimized scripts automatically mapped to visual cues.</p>
                     </div>
-                    <div class="relative h-40 w-full rounded-lg border border-white/10 bg-[#0a0a0f] overflow-hidden mt-4">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] to-transparent z-10"></div>
-                        <div class="p-4 space-y-3 opacity-50 font-mono text-xs text-white">
-                            <div class="flex gap-2"><span class="text-primary">[0:00]</span> <span>Hook: The secret to 10M views...</span></div>
-                            <div class="flex gap-2"><span class="text-primary">[0:05]</span> <span>B-Roll: Fast zoom on analytics</span></div>
-                            <div class="flex gap-2"><span class="text-primary">[0:08]</span> <span>Body: Most creators focus on the wrong metric.</span></div>
+                    <div class="relative h-40 w-full overflow-hidden mt-4 border" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
+                        <div class="absolute inset-x-0 bottom-0 h-12 z-10" style="background: linear-gradient(to top, var(--color-surface-raised), transparent)"></div>
+                        <div class="p-4 space-y-3 font-mono text-xs" style="color: var(--color-text-muted)">
+                            <div class="flex gap-2"><span style="color: var(--color-accent)">[0:00]</span> <span>Hook: The secret to 10M views...</span></div>
+                            <div class="flex gap-2"><span style="color: var(--color-accent)">[0:05]</span> <span>B-Roll: Fast zoom on analytics</span></div>
+                            <div class="flex gap-2"><span style="color: var(--color-accent)">[0:08]</span> <span>Body: Most creators focus on the wrong metric.</span></div>
+                            <div class="flex gap-2"><span style="color: var(--color-signal)">[0:14]</span> <span>CTA: Tap the link before this disappears.</span></div>
                         </div>
                     </div>
                 </x-ui.card>
 
-                <!-- Medium Feature (Col span 2, Row span 1) -->
+                <!-- Medium Feature (Col span 2, Row span 1) — Scene Splitter -->
                 <x-ui.card padding="p-8" hoverEffect="true" class="col-span-1 md:col-span-2 flex flex-col justify-center group relative overflow-hidden">
-                    <div class="absolute right-0 top-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors duration-500"></div>
+                    <div class="absolute right-0 top-0 w-48 h-48 blur-3xl pointer-events-none" style="background: radial-gradient(circle, var(--color-accent-dim) 0%, transparent 70%)"></div>
                     <div class="relative z-10">
-                        <h3 class="text-xl font-bold text-white mb-2">Scene Splitter</h3>
-                        <p class="text-white/50 text-sm max-w-sm">Turn raw copy into visual scene lists containing camera angles, text overlays, and cues.</p>
+                        <div class="w-10 h-10 flex items-center justify-center mb-4 border" data-card-icon style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
+                            <svg class="w-5 h-5" style="color: var(--color-text-muted)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Scene Splitter</h3>
+                        <p class="text-sm max-w-sm" style="color: var(--color-text-muted)">Turn raw copy into visual scene lists containing camera angles, text overlays, and cues.</p>
                     </div>
                 </x-ui.card>
 
-                <!-- Small Feature (Col span 1, Row span 1) -->
+                <!-- Small Feature (Col span 1, Row span 1) — AI Image Gen -->
                 <x-ui.card padding="p-6" hoverEffect="true" class="col-span-1 flex flex-col group">
-                    <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                        <svg class="w-5 h-5 text-white/70 group-hover:text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <div class="w-10 h-10 flex items-center justify-center mb-4 border" data-card-icon style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
+                        <svg class="w-5 h-5" style="color: var(--color-text-muted)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-1">AI Image Gen</h3>
-                    <p class="text-white/50 text-sm">Build thumbnail-ready assets instantly.</p>
+                    <h3 class="text-lg font-bold mb-1" style="color: var(--color-text)">AI Image Gen</h3>
+                    <p class="text-sm" style="color: var(--color-text-muted)">Build thumbnail-ready assets instantly.</p>
                 </x-ui.card>
 
-                <!-- Small Feature (Col span 1, Row span 1) -->
+                <!-- Small Feature (Col span 1, Row span 1) — High Conversion -->
                 <x-ui.card padding="p-6" hoverEffect="true" class="col-span-1 flex flex-col group">
-                    <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                        <svg class="w-5 h-5 text-white/70 group-hover:text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <div class="w-10 h-10 flex items-center justify-center mb-4 border" data-card-icon style="border-radius: var(--radius-sm); background: var(--color-signal-dim); border-color: var(--color-signal)">
+                        <svg class="w-5 h-5" style="color: var(--color-signal)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-1">High Conversion</h3>
-                    <p class="text-white/50 text-sm">Formats engineered to stop scrolling.</p>
+                    <h3 class="text-lg font-bold mb-1" style="color: var(--color-text)">High Conversion</h3>
+                    <p class="text-sm" style="color: var(--color-text-muted)">Formats engineered to stop scrolling.</p>
                 </x-ui.card>
 
             </div>
         </div>
     </section>
 
-    <!-- Process Section — Signal Chain -->
+    <!-- Process Section — Signal Chain (asymmetric: nodes left, live monitor offset right) -->
     <section id="process" class="py-24 relative overflow-hidden" style="background: var(--color-surface)">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-20 reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-xl mb-16 reveal">
                 <div class="section-badge mb-4">Process</div>
                 <h2 class="font-display text-3xl md:text-5xl font-bold mb-4" style="color: var(--color-text); font-stretch: expanded;">Signal chain</h2>
                 <p class="text-lg" style="color: var(--color-text-muted)">Three nodes. One automated output.</p>
             </div>
 
-            <!-- Workflow nodes with self-drawing connectors -->
-            <div class="workflow-section max-w-xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 
-                <!-- Node 01 -->
-                <div class="workflow-node reveal">
-                    <div class="flex gap-5 items-start">
-                        <div class="flex flex-col items-center shrink-0">
-                            <div class="workflow-node-dot">
-                                <span class="font-mono text-xs font-bold" style="color: var(--color-accent)">01</span>
+                <!-- Workflow nodes with self-drawing connectors — narrower left column -->
+                <div class="workflow-section lg:col-span-7">
+
+                    <!-- Node 01 -->
+                    <div class="workflow-node reveal">
+                        <div class="flex gap-5 items-start">
+                            <div class="flex flex-col items-center shrink-0">
+                                <div class="workflow-node-dot">
+                                    <span class="font-mono text-xs font-bold" style="color: var(--color-accent)">01</span>
+                                </div>
+                                <div class="workflow-connector-wrap">
+                                    <div class="workflow-connector-bg"></div>
+                                    <div class="workflow-connector-fill"></div>
+                                </div>
                             </div>
-                            <div class="workflow-connector-wrap">
-                                <div class="workflow-connector-bg"></div>
-                                <div class="workflow-connector-fill"></div>
-                            </div>
-                        </div>
-                        <div class="pb-12 flex-1">
-                            <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Choose Your Niche</h3>
-                            <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Select from proven script presets, or configure custom audience filters to map hooks directly to target demographics.</p>
-                            <div class="border p-3 text-xs font-mono" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
-                                <span style="color: var(--color-text-muted)">niche</span><span style="color: var(--color-border)"> → </span><span style="color: var(--color-accent)">finance</span><span style="color: var(--color-border)"> · </span><span style="color: var(--color-signal)">12 presets matched</span>
+                            <div class="pb-12 flex-1">
+                                <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Choose Your Niche</h3>
+                                <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Select from proven script presets, or configure custom audience filters to map hooks directly to target demographics.</p>
+                                <div class="border p-3 text-xs font-mono" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
+                                    <span style="color: var(--color-text-muted)">niche</span><span style="color: var(--color-border)"> → </span><span style="color: var(--color-accent)">finance</span><span style="color: var(--color-border)"> · </span><span style="color: var(--color-signal)">12 presets matched</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Node 02 -->
-                <div class="workflow-node reveal">
-                    <div class="flex gap-5 items-start">
-                        <div class="flex flex-col items-center shrink-0">
-                            <div class="workflow-node-dot">
-                                <span class="font-mono text-xs font-bold" style="color: var(--color-accent)">02</span>
+                    <!-- Node 02 — offset right to break the column's straight edge -->
+                    <div class="workflow-node reveal lg:ml-10">
+                        <div class="flex gap-5 items-start">
+                            <div class="flex flex-col items-center shrink-0">
+                                <div class="workflow-node-dot">
+                                    <span class="font-mono text-xs font-bold" style="color: var(--color-accent)">02</span>
+                                </div>
+                                <div class="workflow-connector-wrap">
+                                    <div class="workflow-connector-bg"></div>
+                                    <div class="workflow-connector-fill"></div>
+                                </div>
                             </div>
-                            <div class="workflow-connector-wrap">
-                                <div class="workflow-connector-bg"></div>
-                                <div class="workflow-connector-fill"></div>
-                            </div>
-                        </div>
-                        <div class="pb-12 flex-1">
-                            <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Storyboarding</h3>
-                            <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Our automation breaks scripts line-by-line, matching overlay prompts and b-roll selections automatically.</p>
-                            <div class="border p-3 space-y-1.5" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
-                                <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[0:00]</span><span style="color: var(--color-text-muted)">Hook: The secret to 10M views...</span></div>
-                                <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[0:05]</span><span style="color: var(--color-text-muted)">B-Roll: Fast zoom on analytics</span></div>
-                                <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[0:10]</span><span style="color: var(--color-text-muted)">Body: Most creators miss this—</span></div>
+                            <div class="pb-12 flex-1">
+                                <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Storyboarding</h3>
+                                <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Our automation breaks scripts line-by-line, matching overlay prompts and b-roll selections automatically.</p>
+                                <div class="border p-3 space-y-1.5" style="border-radius: var(--radius-sm); background: var(--color-surface-raised); border-color: var(--color-border)">
+                                    <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[0:00]</span><span style="color: var(--color-text-muted)">Hook: The secret to 10M views...</span></div>
+                                    <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[0:05]</span><span style="color: var(--color-text-muted)">B-Roll: Fast zoom on analytics</span></div>
+                                    <div class="flex gap-3 text-xs font-mono"><span style="color: var(--color-accent)">[0:10]</span><span style="color: var(--color-text-muted)">Body: Most creators miss this—</span></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Node 03 — signal/live state, no connector after -->
-                <div class="workflow-node reveal">
-                    <div class="flex gap-5 items-start">
-                        <div class="shrink-0">
-                            <div class="workflow-node-dot" style="background: var(--color-signal-dim); border-color: var(--color-signal)">
-                                <span class="font-mono text-xs font-bold" style="color: var(--color-signal)">03</span>
+                    <!-- Node 03 — signal/live state, back to the left edge, no connector after -->
+                    <div class="workflow-node reveal">
+                        <div class="flex gap-5 items-start">
+                            <div class="shrink-0">
+                                <div class="workflow-node-dot" style="background: var(--color-signal-dim); border-color: var(--color-signal)">
+                                    <span class="font-mono text-xs font-bold" style="color: var(--color-signal)">03</span>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Automate &amp; Scale</h3>
+                                <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Synchronize output directly to your media queue, auto-publishing or exporting packaged assets in bulk.</p>
+                                <div class="flex items-center gap-2 text-xs font-mono" style="color: var(--color-signal)">
+                                    <span class="relative flex h-2 w-2">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background: var(--color-signal)"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2" style="background: var(--color-signal)"></span>
+                                    </span>
+                                    3 workflows active — <span data-mono>147</span> assets exported this week
+                                </div>
                             </div>
                         </div>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-bold mb-2" style="color: var(--color-text)">Automate &amp; Scale</h3>
-                            <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">Synchronize output directly to your media queue, auto-publishing or exporting packaged assets in bulk.</p>
-                            <div class="flex items-center gap-2 text-xs font-mono" style="color: var(--color-signal)">
-                                <span class="relative flex h-2 w-2">
+                    </div>
+
+                </div>
+
+                <!-- Live monitor panel — offset right, sticky, breaks the centered template -->
+                <div class="lg:col-span-5 reveal lg:sticky lg:top-32 lg:mt-16">
+                    <div class="border p-5" style="border-radius: var(--radius-lg); background: var(--color-surface-raised); border-color: var(--color-border)">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-mono uppercase tracking-widest" style="color: var(--color-text-muted)">Live Monitor</span>
+                            <span class="flex items-center gap-1.5 text-xs font-mono" style="color: var(--color-signal)">
+                                <span class="relative flex h-1.5 w-1.5">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background: var(--color-signal)"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2" style="background: var(--color-signal)"></span>
+                                    <span class="relative inline-flex rounded-full h-1.5 w-1.5" style="background: var(--color-signal)"></span>
                                 </span>
-                                3 workflows active — <span data-mono>147</span> assets exported this week
+                                live
+                            </span>
+                        </div>
+                        <div class="waveform mb-5" style="height: 48px; gap: 3px;" data-waveform="active">
+                            @for ($i = 0; $i < 28; $i++)
+                                <div class="waveform-bar"></div>
+                            @endfor
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="border p-3" style="border-radius: var(--radius-sm); border-color: var(--color-border)">
+                                <div class="text-2xl font-bold font-mono" data-mono style="color: var(--color-text)">147</div>
+                                <div class="text-xs" style="color: var(--color-text-muted)">Assets this week</div>
+                            </div>
+                            <div class="border p-3" style="border-radius: var(--radius-sm); border-color: var(--color-border)">
+                                <div class="text-2xl font-bold font-mono" data-mono style="color: var(--color-text)">3</div>
+                                <div class="text-xs" style="color: var(--color-text-muted)">Active workflows</div>
                             </div>
                         </div>
                     </div>
@@ -659,34 +709,9 @@
         </div>
     </footer>
 
-    <!-- Interactive Canvas Spotlight & Advanced Motion Effects -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Bento Grid Mouse Spotlight Effect
-            document.addEventListener('mousemove', (e) => {
-                document.querySelectorAll('.strat-card, .stat-card').forEach(card => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    card.style.setProperty('--mouse-x', `${x}px`);
-                    card.style.setProperty('--mouse-y', `${y}px`);
-                });
-            });
-
-            // Initialize 3D Vanilla Tilt on cards
-            if (typeof VanillaTilt !== 'undefined') {
-                VanillaTilt.init(document.querySelectorAll(".strat-card:not(.no-tilt)"), {
-                    max: 8,
-                    speed: 800,
-                    glare: true,
-                    "max-glare": 0.15,
-                    scale: 1.02,
-                    perspective: 1200,
-                    gyroscope: true
-                });
-            }
-
-            // Velocity-Deforming Global Mouse Aura (Spring Physics Lerp)
+            // Velocity-deforming global mouse aura (spring physics lerp)
             const aura = document.getElementById('global-aura');
             if (aura) {
                 let mouseX = window.innerWidth / 2;
