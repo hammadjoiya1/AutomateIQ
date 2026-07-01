@@ -232,7 +232,12 @@ export function mountGradientBlinds(container, opts = {}) {
             lastT = t;
         }
 
-        try { renderer.render({ scene: mesh }); } catch (_) {}
+        try { 
+            renderer.render({ scene: mesh }); 
+        } catch (err) {
+            console.error('[gradient-blinds-render]', err);
+            throw err;
+        }
     }
 
     rafId = requestAnimationFrame(loop);

@@ -66,7 +66,10 @@ function initNavBlinds() {
             mouseDampening: 0.12,
             shineDirection: 'left',
         });
-    }).catch((e) => console.error('[nav-blinds]', e));
+    }).catch((e) => {
+        console.error('[nav-blinds]', e);
+        throw e;
+    });
 }
 
 // ── Per-page init (runs on every Turbo navigation) ────────────────────────────
@@ -169,7 +172,10 @@ function initPage() {
         import('./three-bg').then((module) => {
             const cleanup = module.initThreeBg('three-bg-canvas');
             if (cleanup) document.addEventListener('turbo:before-cache', () => cleanup(), { once: true });
-        }).catch((e) => console.error('[three-bg]', e));
+        }).catch((e) => {
+            console.error('[three-bg]', e);
+            throw e;
+        });
     }
 
     // ── Hero dashboard mockup scroll-tilt ────────────────────────────────────
