@@ -43,8 +43,6 @@
     <!-- Lenis Smooth Scroll -->
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
 
-    <!-- Three.js (3D background effects) -->
-    <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
 
     <style>
         [x-cloak] {

@@ -9,7 +9,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-CsFV7Ujj.js",
+    "file": "assets/app-BPKd1vcc.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -18,7 +18,7 @@
     ]
   },
   "resources/js/three-bg.js": {
-    "file": "assets/three-bg-CdcjxhKx.js",
+    "file": "assets/three-bg-KhbVY4yL.js",
     "name": "three-bg",
     "src": "resources/js/three-bg.js",
     "isDynamicEntry": true
